@@ -1,35 +1,49 @@
 package edplatform.edplat;
 
+import edplatform.edplat.users.User;
+import edplatform.edplat.users.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
-@RequestMapping(path="/home")
+@RequestMapping(path="/")
 public class MainController {
     @Autowired
     private UserRepository userRepository;
 
-    @PostMapping(path="/add") // Map ONLY POST Requests
-    public @ResponseBody String addNewUser (@RequestParam String name
-            , @RequestParam String email) {
-        // @ResponseBody means the returned String is the response, not a view name
-        // @RequestParam means it is a parameter from the GET or POST request
-
-        User n = new User();
-        n.setName(name);
-        n.setEmail(email);
-        userRepository.save(n);
-        return "Saved";
+    @GetMapping("")
+    public String viewHomePage() {
+        return "index";
     }
 
-    @GetMapping(path="/add")
-    public @ResponseBody String greetAdd() {
-        return "Hello, you sent a GET to /home/add!";
+    @GetMapping("/register")
+    public String showRegistrationForm(Model model) {
+        model.addAttribute("user", new User());
+
+        return "signup_form";
     }
 
-    @GetMapping(path="/all")
-    public @ResponseBody Iterable<User> getAllUser() {
-        return userRepository.findAll();
+    @PostMapping("/process_register")
+    public String processRegister(User user) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
+
+        userRepository.save(user);
+
+        return "register_success";
+    }
+
+    @GetMapping("/users")
+    public String listUsers(Model model) {
+        Iterable<User> listUsers = userRepository.findAll();
+        model.addAttribute("listUsers", listUsers);
+
+        return "users";
     }
 }

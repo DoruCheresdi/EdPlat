@@ -1,8 +1,8 @@
-package edplatform.edplat;
+package edplatform.edplat.users;
 
 import org.springframework.data.repository.CrudRepository;
 
 
 public interface UserRepository extends CrudRepository<User, Integer> {
-
+    User findByEmail(String email);
 }
