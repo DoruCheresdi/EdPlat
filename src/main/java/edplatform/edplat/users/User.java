@@ -27,4 +27,13 @@ public class User {
     private String lastName;
 
     private String institution;
+
+    private String photo;
+
+    @Transient
+    public String getPhotosImagePath() {
+        if (photo == null || id == null) return null;
+
+        return "/user-photos/" + id + "/" + photo;
+    }
 }
