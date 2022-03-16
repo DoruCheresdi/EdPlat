@@ -1,5 +1,7 @@
 package edplatform.edplat;
 
+import edplatform.edplat.courses.Course;
+import edplatform.edplat.courses.CourseRepository;
 import edplatform.edplat.users.User;
 import edplatform.edplat.users.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,9 @@ import java.util.List;
 public class MainController {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CourseRepository courseRepository;
 
     @GetMapping("")
     public String viewHomePage() {
@@ -45,5 +50,28 @@ public class MainController {
         model.addAttribute("listUsers", listUsers);
 
         return "users";
+    }
+
+    @GetMapping("/course/new")
+    public String showCourseCreationForm(Model model) {
+        model.addAttribute("course", new Course());
+
+        return "create_course_form";
+    }
+
+    @PostMapping("/course/process_course")
+    public String processCourse(Course course) {
+
+        courseRepository.save(course);
+
+        return "course_creation_success";
+    }
+
+    @GetMapping("/course/courses")
+    public String listCourses(Model model) {
+        Iterable<Course> listCourses = courseRepository.findAll();
+        model.addAttribute("listCourses", listCourses);
+
+        return "courses";
     }
 }
