@@ -8,6 +8,7 @@
     <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
 </head>
 <body>
+<div th:insert="navbar :: navbar"></div>
 <div class="container text-center">
     <div>
         <h1>List of Courses</h1>
@@ -27,7 +28,7 @@
             <tr th:each="course: ${listCourses}">
                 <td th:text="${course.courseName}">Course Name</td>
                 <td th:text="${course.description}">Description</td>
-                <td><img th:src="@{${course.getImagePath()}}" class="img-thumbnail"/></td>
+                <td><img th:src="@{${course.getImagePath()}}" class="img-thumbnail" width="150" height="120"/></td>
                 <td><a class="btn btn-primary" th:href="@{/course/edit(id=${course.id})}" role="button">Edit</a></td>
             </tr>
             </tbody>
