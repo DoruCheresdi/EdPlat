@@ -1,5 +1,6 @@
 package edplatform.edplat.controllers;
 
+import edplatform.edplat.courses.Course;
 import edplatform.edplat.users.User;
 import edplatform.edplat.users.UserRepository;
 import edplatform.edplat.utils.FileUploadUtil;
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
+import java.util.List;
 
 @Controller
 @RequestMapping(path="/")
@@ -75,5 +77,16 @@ public class UserController {
         userRepository.save(user);
 
         return new RedirectView("/users");
+    }
+
+    @GetMapping("/user/courses")
+    public String showUserCourses(Model model,
+                                  Authentication authentication) {
+
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        User user = userRepository.findByEmail(userDetails.getUsername());
+        List<Course> userCourses = user.getCourses();
+        model.addAttribute("userCourses", userCourses);
+        return "user_courses";
     }
 }

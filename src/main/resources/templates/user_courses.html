@@ -3,8 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title>My Courses</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
 </head>
 <body>
-
+<div th:insert="navbar :: navbar"></div>
+<div class="card-deck">
+    <div class="card" th:each="course: ${userCourses}">
+        <img class="card-img-top" th:src="${course.getImagePath}" alt="Card image cap">
+        <div class="card-body">
+            <h5 class="card-title"><a href="/" th:text="${course.getCourseName}"></a></h5>
+            <p class="card-text" th:text="${course.getDescription}"></p>
+            <p class="card-text"><small class="text-muted">Last updated 2 mins ago</small></p>
+        </div>
+    </div>
+</div>
 </body>
 </html>
