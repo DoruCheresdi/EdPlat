@@ -19,6 +19,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping(path="/")
@@ -77,6 +78,7 @@ public class MainController {
 
     @GetMapping("/course/courses")
     public String listCourses(Model model) {
+
         Iterable<Course> listCourses = courseRepository.findAll();
         model.addAttribute("listCourses", listCourses);
 
@@ -89,11 +91,9 @@ public class MainController {
         return "edit_user";
     }
 
-    @PostMapping("/user/process_edit")
+    @PostMapping("/user/process_img_edit")
     public RedirectView savePhotoToUser( @RequestParam("image") MultipartFile multipartFile,
                                  Authentication authentication) throws IOException {
-
-
 
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 
@@ -109,5 +109,39 @@ public class MainController {
         userRepository.save(user);
 
         return new RedirectView("/users");
+    }
+
+    @GetMapping("/course/edit")
+    public String showCourseEditForms(
+            @RequestParam Long id,
+            Model model) {
+        model.addAttribute("CourseId", id);
+        return "edit_course";
+    }
+
+    @PostMapping("/course/process_img_edit")
+    public RedirectView saveImageToCourse(@RequestParam("image") MultipartFile multipartFile,
+                                         @RequestParam Long id) throws IOException {
+
+        String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+
+        // save image name to database:
+        Optional<Course> optionalCourse = courseRepository.findById(id);
+        Course course;
+        if (optionalCourse.isPresent()) {
+            course = optionalCourse.get();
+            course.setImage(fileName);
+        } else {
+            // TODO add error page:
+            return new RedirectView("/course/courses");
+        }
+
+        String uploadDir = "course-photos/" + course.getId();
+
+        FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+
+        courseRepository.save(course);
+
+        return new RedirectView("/course/courses");
     }
 }

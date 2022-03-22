@@ -22,4 +22,11 @@ public class Course {
 
     @ManyToMany(targetEntity = User.class)
     private List<User> users;
+
+    @Transient
+    public String getImagePath() {
+        if (image == null || id == null) return null;
+
+        return "/course-photos/" + id + "/" + image;
+    }
 }

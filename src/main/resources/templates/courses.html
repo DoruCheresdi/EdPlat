@@ -19,12 +19,16 @@
             <tr>
                 <th>Course Name</th>
                 <th>Description</th>
+                <th>Image</th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="course: ${listCourses}">
                 <td th:text="${course.courseName}">Course Name</td>
                 <td th:text="${course.description}">Description</td>
+                <td><img th:src="@{${course.getImagePath()}}" class="img-thumbnail"/></td>
+                <td><a class="btn btn-primary" th:href="@{/course/edit(id=${course.id})}" role="button">Edit</a></td>
             </tr>
             </tbody>
         </table>

@@ -2,19 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Edit User</title>
+    <title>Edit Course</title>
 </head>
 <body>
 <div class="container text-center">
-    <form th:action="@{/user/process_img_edit}"
+    <form th:action="@{/course/process_img_edit(id=${CourseId},${_csrf.parameterName}=${_csrf.token})}"
           method="post"
           enctype="multipart/form-data">
-
         <div>
             <label>Photos: </label>
             <input type="file" name="image" accept="image/png, image/jpeg" />
         </div>
-
         <div>
             <button type="submit" class="btn btn-primary">Upload Photo</button>
         </div>
