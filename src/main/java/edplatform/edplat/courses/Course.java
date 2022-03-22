@@ -20,7 +20,7 @@ public class Course {
 
     private String image;
 
-    @ManyToMany(targetEntity = User.class)
+    @ManyToMany(mappedBy = "courses")
     private List<User> users;
 
     @Transient

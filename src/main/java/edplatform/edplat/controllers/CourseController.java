@@ -3,8 +3,12 @@ package edplatform.edplat.controllers;
 
 import edplatform.edplat.courses.Course;
 import edplatform.edplat.courses.CourseRepository;
+import edplatform.edplat.users.User;
+import edplatform.edplat.users.UserRepository;
 import edplatform.edplat.utils.FileUploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -24,6 +28,9 @@ public class CourseController {
 
     @Autowired
     private CourseRepository courseRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping("/course/new")
     public String showCourseCreationForm(Model model) {
@@ -79,6 +86,27 @@ public class CourseController {
         FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
 
         courseRepository.save(course);
+
+        return new RedirectView("/course/courses");
+    }
+
+    @PostMapping("course/enroll")
+    public RedirectView enrollUserInCourse(@RequestParam Long courseId,
+                                     Authentication authentication) {
+
+        Optional<Course> optionalCourse = courseRepository.findById(courseId);
+        Course course;
+        if (optionalCourse.isPresent()) {
+            course = optionalCourse.get();
+        } else {
+            // TODO add error page:
+            return new RedirectView("course/coursesssss");
+        }
+
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        User user = userRepository.findByEmail(userDetails.getUsername());
+        user.getCourses().add(course);
+        userRepository.save(user);
 
         return new RedirectView("/course/courses");
     }

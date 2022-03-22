@@ -1,5 +1,6 @@
 package edplatform.edplat.users;
 
+import edplatform.edplat.courses.Course;
 import lombok.Data;
 import net.bytebuddy.build.Plugin;
 import org.springframework.security.core.GrantedAuthority;
@@ -9,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 @Data
 @Entity
@@ -29,6 +31,9 @@ public class User {
     private String institution;
 
     private String photo;
+
+    @ManyToMany(targetEntity = Course.class)
+    private List<Course> courses;
 
     @Transient
     public String getPhotosImagePath() {

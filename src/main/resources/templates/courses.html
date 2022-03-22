@@ -22,6 +22,7 @@
                 <th>Description</th>
                 <th>Image</th>
                 <th></th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
@@ -30,6 +31,10 @@
                 <td th:text="${course.description}">Description</td>
                 <td><img th:src="@{${course.getImagePath()}}" class="img-thumbnail" width="150" height="120"/></td>
                 <td><a class="btn btn-primary" th:href="@{/course/edit(id=${course.id})}" role="button">Edit</a></td>
+                <td><form th:action="@{/course/enroll(courseId=${course.id})}" method="post">
+                    <button type="submit" class="btn btn-primary">Enroll</button>
+                </form>
+                    </td>
             </tr>
             </tbody>
         </table>
@@ -37,7 +42,7 @@
 
 </div>
 <div class="container text-center">
-    <h3><a th:href="@{/course/new}">Add a new course</a></h3>
+    <h3><a class="btn btn-primary" th:href="@{/course/new}">Add a new course</a></h3>
 </div>
 </body>
 </html>
