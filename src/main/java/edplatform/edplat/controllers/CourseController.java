@@ -34,6 +34,7 @@ public class CourseController {
 
     @GetMapping("/course/new")
     public String showCourseCreationForm(Model model) {
+
         model.addAttribute("course", new Course());
 
         return "create_course_form";
@@ -105,9 +106,34 @@ public class CourseController {
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         User user = userRepository.findByEmail(userDetails.getUsername());
+        if (user.getCourses().contains(course)) {
+            return new RedirectView("/course/courses");
+        }
         user.getCourses().add(course);
         userRepository.save(user);
 
         return new RedirectView("/course/courses");
     }
+
+    @GetMapping("/course")
+    public String showCourseAssignments(
+            @RequestParam Long id,
+            Model model) {
+
+        Optional<Course> optionalCourse = courseRepository.findById(id);
+        Course course;
+        if (optionalCourse.isPresent()) {
+            course = optionalCourse.get();
+        } else {
+            // TODO add error page:
+            return "courses";
+        }
+
+        model.addAttribute("course", course);
+        model.addAttribute("courseId", id);
+        model.addAttribute("assignments", course.getAssignments());
+        return "course";
+    }
+
+
 }

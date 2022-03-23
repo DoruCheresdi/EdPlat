@@ -1,5 +1,6 @@
 package edplatform.edplat.courses;
 
+import edplatform.edplat.assignment.Assignment;
 import edplatform.edplat.users.User;
 import lombok.Data;
 
@@ -10,6 +11,7 @@ import java.util.List;
 @Entity
 @Table(name = "courses")
 public class Course {
+
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
@@ -19,6 +21,10 @@ public class Course {
     private String description;
 
     private String image;
+
+    @OneToMany(mappedBy = "course",
+            cascade = CascadeType.ALL)
+    private List<Assignment> assignments;
 
     @ManyToMany(mappedBy = "courses")
     private List<User> users;
