@@ -1,6 +1,7 @@
 package edplatform.edplat.courses;
 
 import edplatform.edplat.assignment.Assignment;
+import edplatform.edplat.submission.Submission;
 import edplatform.edplat.users.User;
 import lombok.Data;
 

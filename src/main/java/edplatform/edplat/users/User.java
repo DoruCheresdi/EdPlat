@@ -1,6 +1,7 @@
 package edplatform.edplat.users;
 
 import edplatform.edplat.courses.Course;
+import edplatform.edplat.submission.Submission;
 import lombok.Data;
 import net.bytebuddy.build.Plugin;
 import org.springframework.security.core.GrantedAuthority;
@@ -31,6 +32,10 @@ public class User {
     private String institution;
 
     private String photo;
+
+    @OneToMany(mappedBy = "user",
+            cascade = CascadeType.ALL)
+    private List<Submission> submissions;
 
     @ManyToMany(targetEntity = Course.class)
     private List<Course> courses;

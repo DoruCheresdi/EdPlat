@@ -1,9 +1,11 @@
 package edplatform.edplat.assignment;
 
 import edplatform.edplat.courses.Course;
+import edplatform.edplat.submission.Submission;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Entity
@@ -11,12 +13,16 @@ import javax.persistence.*;
 public class Assignment {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
     Course course;
+
+    @OneToMany(mappedBy = "assignment",
+            cascade = CascadeType.ALL)
+    private List<Submission> submissions;
 
     private String description;
 

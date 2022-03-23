@@ -9,12 +9,14 @@
 </head>
 <body>
 <div th:insert="navbar :: navbar"></div>
-<div class="container-fluid text-center">
+<div class="container text-center">
     <div class="container">
         <h1 th:text="${course.getCourseName}"></h1>
         <h2 th:text="${course.getDescription}"></h2>
     </div>
-    <a class="btn-primary" th:href="@{/assignment/new(courseId=${courseId})}">Create new assignment</a>
+    <div class="container">
+        <a class="btn btn-primary" th:href="@{/assignment/new(courseId=${courseId})}">Create new assignment</a>
+    </div>
     <div class="container text-left" th:each = "assignment: ${assignments}">
         <div class="container">
             <p>
@@ -28,6 +30,10 @@
             </p>
             <p th:text="${assignment.getDescription}"></p>
         </div>
+        <a class="btn btn-primary"
+           th:href="@{/assignment/submission/new(assignmentId=${assignment.getId})}">
+            Add submission
+        </a>
     </div>
 </a>
 </body>
