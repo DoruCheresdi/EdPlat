@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>[[${course.getCourseName}]]</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div th:insert="navbar :: navbar"></div>
+<div class="container text-center">
+    <div class="container">
+        <h1 th:text="${course.getCourseName}"></h1>
+        <h2 th:text="${course.getDescription}"></h2>
+    </div>
+    <div class="container">
+        <a class="btn btn-primary" th:href="@{/assignment/new(courseId=${courseId})}">Create new assignment</a>
+    </div>
+    <div class="container text-left" th:each = "assignment: ${assignments}">
+        <div class="container">
+            <p>
+                <b>Assignment id:</b>
+            </p>
+            <p th:text="${assignment.getId}"></p>
+        </div>
+        <div class="container">
+            <p>
+                <b>Description:</b>
+            </p>
+            <p th:text="${assignment.getDescription}"></p>
+        </div>
+        <a class="btn btn-primary"
+           th:href="@{/assignment/submission/new(assignmentId=${assignment.getId})}">
+            Add submission
+        </a>
+    </div>
+</a>
+</body>
+</html>

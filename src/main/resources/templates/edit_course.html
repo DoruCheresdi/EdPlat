@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Course</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div th:insert="navbar :: navbar"></div>
+<div class="container-fluid text-center">
+    <form th:action="@{/course/process_img_edit(id=${CourseId},${_csrf.parameterName}=${_csrf.token})}"
+          method="post"
+          enctype="multipart/form-data">
+        <div>
+            <label>Change Course Image: </label>
+            <input type="file" name="image" accept="image/png, image/jpeg" />
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary">Upload Photo</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>
