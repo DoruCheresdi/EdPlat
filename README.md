@@ -1,6 +1,6 @@
 # EducationPlatform
 
-An educational platform web application.  
+An educational platform web application created using Spring Framework, Spring Boot, Spring Security, Spring Data and Thymeleaf.  
 
 Supports CRUD operations for users, courses, assignments and submissions. Uses MySQL for data persistence.  
 
@@ -13,6 +13,6 @@ Other pages:
 /user/courses -> a dashboard containing all the courses the currently logged user is enrolled in.  
 /course -> page containing course assignments and user submissions for those assignments, request must contain id attribute  
 /course/new -> page for creating new courses
-/assignment/new -> page containing the form for creating new assignments, GET request must contain courseId  
+/assignment/new -> page containing the form for creating new assignments, GET request must contain courseId attribute  
 
 Currently allows users to access course materials, submit assignments.  
