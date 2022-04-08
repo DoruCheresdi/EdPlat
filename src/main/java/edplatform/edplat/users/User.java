@@ -3,14 +3,8 @@ package edplatform.edplat.users;
 import edplatform.edplat.courses.Course;
 import edplatform.edplat.submission.Submission;
 import lombok.Data;
-import net.bytebuddy.build.Plugin;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 @Data
@@ -21,6 +15,7 @@ public class User {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique=true)
     private String email;
 
     private String password;
