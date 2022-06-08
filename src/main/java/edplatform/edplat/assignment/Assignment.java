@@ -16,6 +16,9 @@ public class Assignment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique=true)
+    private String assignmentName;
+
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
     Course course;
