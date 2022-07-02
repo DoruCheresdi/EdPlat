@@ -1,6 +1,7 @@
 package edplatform.edplat.controllers;
 
 import edplatform.edplat.courses.Course;
+import edplatform.edplat.courses.CourseDisplay;
 import edplatform.edplat.users.User;
 import edplatform.edplat.users.UserRepository;
 import edplatform.edplat.utils.FileUploadUtil;
@@ -19,11 +20,14 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 @RequestMapping(path="/")
 public class UserController {
+
     @Autowired
     private UserRepository userRepository;
 
@@ -36,6 +40,7 @@ public class UserController {
 
     @PostMapping("/process_register")
     public String processRegister(User user) {
+
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
@@ -47,6 +52,7 @@ public class UserController {
 
     @GetMapping("/users")
     public String listUsers(Model model) {
+
         Iterable<User> listUsers = userRepository.findAll();
         model.addAttribute("listUsers", listUsers);
 
@@ -86,7 +92,19 @@ public class UserController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         User user = userRepository.findByEmail(userDetails.getUsername());
         List<Course> userCourses = user.getCourses();
-        model.addAttribute("userCourses", userCourses);
+
+        // get current timestamp for calculating time passed since course creation:
+        Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
+
+        List<CourseDisplay> userCoursesDisplay = new ArrayList<>();
+        for (Course course :
+                userCourses) {
+            userCoursesDisplay.add(new CourseDisplay(
+                    course.getId(), course.getCourseName(), course.getDescription(), course.getImage(),
+                    course.getCreatedAt()));
+        }
+
+        model.addAttribute("userCoursesDisplay", userCoursesDisplay);
         return "user_courses";
     }
 }

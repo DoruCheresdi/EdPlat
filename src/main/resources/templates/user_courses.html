@@ -10,12 +10,12 @@
 <body>
 <div th:insert="navbar :: navbar"></div>
 <div class="card-deck">
-    <div class="card" th:each="course: ${userCourses}">
+    <div class="card" th:each="course: ${userCoursesDisplay}">
         <img class="card-img-top" th:src="${course.getImagePath}" alt="Card image cap" style="width: 200px; height: 150px;" >
         <div class="card-body">
             <h5 class="card-title"><a th:href="@{/course(id=${course.id})}" th:text="${course.getCourseName}"></a></h5>
             <p class="card-text" th:text="${course.getDescription}"></p>
-            <p class="card-text"><small class="text-muted">Last updated 2 mins ago</small></p>
+            <p class="card-text"><small class="text-muted" th:text="${course.getSinceCreatedString}"></small></p>
         </div>
     </div>
 </div>

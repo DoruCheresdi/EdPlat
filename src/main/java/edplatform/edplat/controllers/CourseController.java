@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.Optional;
 
 @Controller
@@ -43,6 +44,10 @@ public class CourseController {
     @PostMapping("/course/process_course")
     public String processCourse(Course course) {
 
+        // add the time it was added to the course:
+        Timestamp courseCreatedAt = new Timestamp(System.currentTimeMillis());
+        course.setCreatedAt(courseCreatedAt);
+
         courseRepository.save(course);
 
         return "course_creation_success";
@@ -61,6 +66,7 @@ public class CourseController {
     public String showCourseEditForms(
             @RequestParam Long id,
             Model model) {
+
         model.addAttribute("CourseId", id);
         return "edit_course";
     }
