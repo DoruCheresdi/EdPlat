@@ -93,9 +93,6 @@ public class UserController {
         User user = userRepository.findByEmail(userDetails.getUsername());
         List<Course> userCourses = user.getCourses();
 
-        // get current timestamp for calculating time passed since course creation:
-        Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
-
         List<CourseDisplay> userCoursesDisplay = new ArrayList<>();
         for (Course course :
                 userCourses) {

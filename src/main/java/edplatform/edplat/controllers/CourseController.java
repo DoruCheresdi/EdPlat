@@ -140,6 +140,4 @@ public class CourseController {
         model.addAttribute("assignments", course.getAssignments());
         return "course";
     }
-
-
 }
