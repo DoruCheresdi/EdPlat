@@ -6,6 +6,7 @@ import edplatform.edplat.courses.Course;
 import edplatform.edplat.courses.CourseRepository;
 import edplatform.edplat.submission.Submission;
 import edplatform.edplat.submission.SubmissionRepository;
+import edplatform.edplat.users.CustomUserDetails;
 import edplatform.edplat.users.User;
 import edplatform.edplat.users.UserRepository;
 import edplatform.edplat.utils.FileUploadUtil;
@@ -93,8 +94,8 @@ public class AssignmentController {
         }
 
         // save image name to database:
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        User user = userRepository.findByEmail(userDetails.getUsername());
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        User user = userDetails.getUser();
 
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 

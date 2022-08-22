@@ -1,13 +1,15 @@
 package edplatform.edplat.users;
 
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
+@Getter
 public class CustomUserDetails implements UserDetails {
 
-    private User user;
+    private final User user;
 
     public CustomUserDetails(User user) {
         this.user = user;
@@ -51,5 +53,4 @@ public class CustomUserDetails implements UserDetails {
     public String getFullName() {
         return user.getFirstName() + " " + user.getLastName();
     }
-
 }
