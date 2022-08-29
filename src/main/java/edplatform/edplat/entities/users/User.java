@@ -36,7 +36,7 @@ public class User {
     @ManyToMany(targetEntity = Course.class)
     private List<Course> courses;
 
-    @ManyToMany(targetEntity = Authority.class)
+    @ManyToMany(targetEntity = Authority.class, fetch = FetchType.EAGER)
     private List<Authority> authorities;
 
     @Transient

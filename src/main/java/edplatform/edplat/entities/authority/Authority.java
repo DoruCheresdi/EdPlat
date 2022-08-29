@@ -18,7 +18,7 @@ public class Authority implements GrantedAuthority {
 
     private String name;
 
-    @ManyToMany(mappedBy = "authorities")
+    @ManyToMany
     @JoinTable(
             name = "users_authorities",
             joinColumns = @JoinColumn(name = "authorities_id"),
