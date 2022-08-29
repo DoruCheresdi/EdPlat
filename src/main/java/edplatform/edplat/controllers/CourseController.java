@@ -1,6 +1,8 @@
 package edplatform.edplat.controllers;
 
 
+import edplatform.edplat.entities.authority.Authority;
+import edplatform.edplat.entities.authority.AuthorityRepository;
 import edplatform.edplat.entities.courses.Course;
 import edplatform.edplat.entities.courses.CourseRepository;
 import edplatform.edplat.entities.users.User;
@@ -8,6 +10,7 @@ import edplatform.edplat.entities.users.UserRepository;
 import edplatform.edplat.utils.FileUploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,6 +36,9 @@ public class CourseController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private AuthorityRepository authorityRepository;
+
     @GetMapping("/course/new")
     public String showCourseCreationForm(Model model) {
 
@@ -49,6 +55,29 @@ public class CourseController {
         course.setCreatedAt(courseCreatedAt);
 
         courseRepository.save(course);
+
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
+                                .getAuthentication().getPrincipal();
+        User user = userRepository.findByEmail(userDetails.getUsername());
+
+        // add the course owner authority to the user that created the course:
+        String authorityName = "course-" + course.getId() + "-owner";
+        Optional<Authority> optionalAuthority = authorityRepository.findByName(authorityName);
+
+        if (optionalAuthority.isPresent()) {
+            // authority is already present in DB, add the authority to the user:
+            Authority authority = optionalAuthority.get();
+            user.getAuthorities().add(authority);
+            userRepository.save(user);
+        } else {
+            // create authority in DB:
+            Authority authority = new Authority(authorityName);
+            authorityRepository.save(authority);
+
+            // add it to the user:
+            user.getAuthorities().add(authority);
+            userRepository.save(user);
+        }
 
         return "course_creation_success";
     }

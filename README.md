@@ -15,4 +15,9 @@ Other pages:
 /course/new -> page for creating new courses
 /assignment/new -> page containing the form for creating new assignments, GET request must contain courseId attribute  
 
-Currently allows users to access course materials, submit assignments.  
+Currently allows users to access course materials, submit assignments.
+
+# Authorization
+Currently there are the following authorities:
+"course-{course.id}-owner" - the user is authorized to create/delete assignments for the course and to the all the submissions, can also accept enrollment requests
+"course-{course.id}-enrolled" - the user is enrolled in the course, being able to submit and delete submissions for the assignments.
