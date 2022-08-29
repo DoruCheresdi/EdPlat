@@ -7,6 +7,7 @@ import edplatform.edplat.entities.courses.Course;
 import edplatform.edplat.entities.courses.CourseRepository;
 import edplatform.edplat.entities.users.User;
 import edplatform.edplat.entities.users.UserRepository;
+import edplatform.edplat.security.AuthorityBuilder;
 import edplatform.edplat.utils.FileUploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -39,6 +40,9 @@ public class CourseController {
     @Autowired
     private AuthorityRepository authorityRepository;
 
+    @Autowired
+    private AuthorityBuilder authorityBuilder;
+
     @GetMapping("/course/new")
     public String showCourseCreationForm(Model model) {
 
@@ -61,7 +65,7 @@ public class CourseController {
         User user = userRepository.findByEmail(userDetails.getUsername());
 
         // add the course owner authority to the user that created the course:
-        String authorityName = "course-" + course.getId() + "-owner";
+        String authorityName = authorityBuilder.getCourseOwnerAuthority(course.getId().toString());
         Optional<Authority> optionalAuthority = authorityRepository.findByName(authorityName);
 
         if (optionalAuthority.isPresent()) {
