@@ -1,4 +1,4 @@
-package edplatform.edplat.submission;
+package edplatform.edplat.entities.submission;
 
 import org.springframework.data.repository.CrudRepository;
 

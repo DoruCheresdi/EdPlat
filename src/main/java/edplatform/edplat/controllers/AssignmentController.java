@@ -1,18 +1,17 @@
 package edplatform.edplat.controllers;
 
-import edplatform.edplat.assignment.Assignment;
-import edplatform.edplat.assignment.AssignmentRepository;
-import edplatform.edplat.courses.Course;
-import edplatform.edplat.courses.CourseRepository;
-import edplatform.edplat.submission.Submission;
-import edplatform.edplat.submission.SubmissionRepository;
-import edplatform.edplat.users.CustomUserDetails;
-import edplatform.edplat.users.User;
-import edplatform.edplat.users.UserRepository;
+import edplatform.edplat.entities.assignment.Assignment;
+import edplatform.edplat.entities.assignment.AssignmentRepository;
+import edplatform.edplat.entities.courses.Course;
+import edplatform.edplat.entities.courses.CourseRepository;
+import edplatform.edplat.entities.submission.Submission;
+import edplatform.edplat.entities.submission.SubmissionRepository;
+import edplatform.edplat.entities.users.CustomUserDetails;
+import edplatform.edplat.entities.users.User;
+import edplatform.edplat.entities.users.UserRepository;
 import edplatform.edplat.utils.FileUploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;

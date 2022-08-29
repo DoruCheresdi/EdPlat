@@ -1,4 +1,4 @@
-package edplatform.edplat.users;
+package edplatform.edplat.entities.users;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

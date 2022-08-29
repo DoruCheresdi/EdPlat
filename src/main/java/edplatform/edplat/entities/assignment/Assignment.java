@@ -1,7 +1,7 @@
-package edplatform.edplat.assignment;
+package edplatform.edplat.entities.assignment;
 
-import edplatform.edplat.courses.Course;
-import edplatform.edplat.submission.Submission;
+import edplatform.edplat.entities.courses.Course;
+import edplatform.edplat.entities.submission.Submission;
 import lombok.Data;
 
 import javax.persistence.*;

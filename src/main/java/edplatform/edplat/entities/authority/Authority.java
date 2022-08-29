@@ -1,6 +1,6 @@
-package edplatform.edplat.authority;
+package edplatform.edplat.entities.authority;
 
-import edplatform.edplat.users.User;
+import edplatform.edplat.entities.users.User;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 

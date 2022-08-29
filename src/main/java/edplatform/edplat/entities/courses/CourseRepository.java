@@ -1,4 +1,4 @@
-package edplatform.edplat.courses;
+package edplatform.edplat.entities.courses;
 
 import org.springframework.data.repository.CrudRepository;
 

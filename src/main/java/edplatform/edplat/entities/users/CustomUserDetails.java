@@ -1,4 +1,4 @@
-package edplatform.edplat.users;
+package edplatform.edplat.entities.users;
 
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;

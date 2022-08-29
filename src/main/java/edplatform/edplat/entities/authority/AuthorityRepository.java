@@ -1,6 +1,6 @@
-package edplatform.edplat.authority;
+package edplatform.edplat.entities.authority;
 
-import edplatform.edplat.courses.Course;
+import edplatform.edplat.entities.courses.Course;
 import org.springframework.data.repository.CrudRepository;
 
 public interface AuthorityRepository extends CrudRepository<Course, Long> {

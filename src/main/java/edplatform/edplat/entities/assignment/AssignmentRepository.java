@@ -1,4 +1,4 @@
-package edplatform.edplat.assignment;
+package edplatform.edplat.entities.assignment;
 
 import org.springframework.data.repository.CrudRepository;
 

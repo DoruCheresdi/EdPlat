@@ -1,10 +1,10 @@
 package edplatform.edplat.controllers;
 
 
-import edplatform.edplat.courses.Course;
-import edplatform.edplat.courses.CourseRepository;
-import edplatform.edplat.users.User;
-import edplatform.edplat.users.UserRepository;
+import edplatform.edplat.entities.courses.Course;
+import edplatform.edplat.entities.courses.CourseRepository;
+import edplatform.edplat.entities.users.User;
+import edplatform.edplat.entities.users.UserRepository;
 import edplatform.edplat.utils.FileUploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;

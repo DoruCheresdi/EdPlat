@@ -1,9 +1,9 @@
 package edplatform.edplat.controllers;
 
-import edplatform.edplat.courses.Course;
-import edplatform.edplat.courses.CourseDisplay;
-import edplatform.edplat.users.User;
-import edplatform.edplat.users.UserRepository;
+import edplatform.edplat.entities.courses.Course;
+import edplatform.edplat.entities.courses.CourseDisplay;
+import edplatform.edplat.entities.users.User;
+import edplatform.edplat.entities.users.UserRepository;
 import edplatform.edplat.utils.FileUploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -20,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
