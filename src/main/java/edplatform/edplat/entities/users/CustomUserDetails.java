@@ -1,6 +1,7 @@
 package edplatform.edplat.entities.users;
 
 import lombok.Getter;
+import org.hibernate.Hibernate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
