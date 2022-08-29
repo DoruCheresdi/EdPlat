@@ -1,5 +1,6 @@
 package edplatform.edplat.users;
 
+import edplatform.edplat.authority.Authority;
 import edplatform.edplat.courses.Course;
 import edplatform.edplat.submission.Submission;
 import lombok.Data;
@@ -34,6 +35,9 @@ public class User {
 
     @ManyToMany(targetEntity = Course.class)
     private List<Course> courses;
+
+    @ManyToMany(targetEntity = Authority.class)
+    private List<Authority> authorities;
 
     @Transient
     public String getPhotosImagePath() {

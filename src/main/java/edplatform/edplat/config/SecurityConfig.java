@@ -1,4 +1,4 @@
-package edplatform.edplat.security;
+package edplatform.edplat.config;
 
 import edplatform.edplat.users.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        // requires authentication for every request except for the login page:
         http.authorizeRequests()
                 .anyRequest().authenticated()
                 .and()
@@ -55,5 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .and()
                 .logout().logoutSuccessUrl("/").permitAll();
+
+
     }
 }
