@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -18,8 +19,9 @@ public class AuthorizationTests {
 
     // "/assignment/new" - needs "course-{id}-owner" authority
     @Test
-    void ShouldNotAccessNewAssignmentUnauthenticated() throws Exception {
+    void ShouldRedirectToLoginPageNewAssignmentUnauthenticated() throws Exception {
         mvc.perform(get("/assignment/new"))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().is3xxRedirection()) // redirect (302)
+                .andExpect(redirectedUrl("http://localhost/login")); // redirect URL
     }
 }
