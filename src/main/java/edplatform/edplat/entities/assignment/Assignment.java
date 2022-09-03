@@ -31,9 +31,6 @@ public class Assignment {
 
     @Override
     public String toString() {
-        return "Assignment{" +
-                "id=" + id +
-                ", courseId=" + course.getId() +
-                '}';
+        return "Assignment string DISABLED";
     }
 }

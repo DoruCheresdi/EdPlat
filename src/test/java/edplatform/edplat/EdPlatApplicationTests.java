@@ -18,5 +18,4 @@ class EdPlatApplicationTests {
     void contextLoads() {
         assertThat(userController).isNotNull();
     }
-
 }
