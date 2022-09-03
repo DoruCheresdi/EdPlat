@@ -40,45 +40,43 @@ public class AuthorizationTests {
     }
 
     @Test
-    @DisplayName("\"/assignment/new\" - authentication test")
-    void shouldRedirectToLoginPageNewAssignmentUnauthenticated() throws Exception {
-        mvc.perform(get("/assignment/new").param("courseId", "3"))
-                .andExpect(status().is3xxRedirection()) // redirect (302)
-                .andExpect(redirectedUrl("http://localhost/login")); // redirect URL
-    }
-
-    @Test
     @DisplayName("\"/assignment/new\" - needs \"course-{id}-owner\" authority")
     void shouldAuthorizeNewAssignment() throws Exception {
-        User user = new User();
-        Authority authority = new Authority();
-        authority.setName("course-3-owner");
-        user.setAuthorities(List.of(authority));
-        user.setFirstName("testLastName");
-        user.setLastName("testLastName");
-
-        UserDetails userDetails = new CustomUserDetails(user);
+        // create user with authority:
+        UserDetails userDetails = getUserDetailsWithAuthority("course-3-owner");
 
         mvc.perform(get("/assignment/new").param("courseId", "3")
                         .with(user(userDetails)))
-                .andExpect(view().name("add_assignment"));
+                .andExpect(view().name("add_assignment"))
+                .andExpect(status().isOk());
     }
-
 
     @Test
     @DisplayName("\"/assignment/new\" - needs \"course-{id}-owner\" authority - Forbidden")
     void shouldNotAuthorizeNewAssignment() throws Exception {
+        // create user with authority:
+        UserDetails userDetails = getUserDetailsWithAuthority("course-4-owner");
+
+        // should fail because it expects "course-3-owner", is given "course-4-owner" instead:
+        mvc.perform(get("/assignment/new").param("courseId", "3")
+                        .with(user(userDetails)))
+                .andExpect(status().isForbidden());
+    }
+
+    /**
+     * method that returns a UserDetails with an application entity user and
+     * gives it an authority with the name authorityName
+     * @param authorityName name of authority needed
+     * @return User details with authority authorityName
+     */
+    private UserDetails getUserDetailsWithAuthority(String authorityName) {
         User user = new User();
         Authority authority = new Authority();
-        authority.setName("course-4-owner");
+        authority.setName(authorityName);
         user.setAuthorities(List.of(authority));
         user.setFirstName("testLastName");
         user.setLastName("testLastName");
 
-        UserDetails userDetails = new CustomUserDetails(user);
-
-        mvc.perform(get("/assignment/new").param("courseId", "3")
-                        .with(user(userDetails)))
-                .andExpect(status().isForbidden());
+        return new CustomUserDetails(user);
     }
 }
