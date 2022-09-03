@@ -31,6 +31,32 @@ public class Assignment {
 
     @Override
     public String toString() {
-        return "Assignment string DISABLED";
+        StringBuilder stringBuilder = new StringBuilder("Assignment{");
+        if (id != null) {
+            stringBuilder.append(", id='");
+            stringBuilder.append(id);
+            stringBuilder.append('\'');
+        }
+        if (assignmentName != null) {
+            stringBuilder.append(", assignmentName='");
+            stringBuilder.append(assignmentName);
+            stringBuilder.append('\'');
+        }
+        if (course != null) {
+            stringBuilder.append(", course='");
+            stringBuilder.append(course);
+            stringBuilder.append('\'');
+        }
+        if (submissions != null) {
+            stringBuilder.append(", submissions='");
+            stringBuilder.append(submissions);
+            stringBuilder.append('\'');
+        }
+        if (description != null) {
+            stringBuilder.append(", description='");
+            stringBuilder.append(description);
+            stringBuilder.append('\'');
+        }
+        return stringBuilder.toString();
     }
 }
