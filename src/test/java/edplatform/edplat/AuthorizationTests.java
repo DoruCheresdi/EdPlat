@@ -63,6 +63,30 @@ public class AuthorizationTests {
                 .andExpect(status().isForbidden());
     }
 
+    @Test
+    @DisplayName("\"/course/edit\" - needs \"course-{id}-owner\" authority")
+    void shouldAuthorizeCourseEdit() throws Exception {
+        // create user with authority:
+        UserDetails userDetails = getUserDetailsWithAuthority("course-3-owner");
+
+        mvc.perform(get("/course/edit").param("id", "3")
+                        .with(user(userDetails)))
+                .andExpect(view().name("edit_course"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("\"/course/edit\" - needs \"course-{id}-owner\" authority - Forbidden")
+    void shouldNotAuthorizeCourseEdit() throws Exception {
+        // create user with authority:
+        UserDetails userDetails = getUserDetailsWithAuthority("course-4-owner");
+
+        // should fail because it expects "course-3-owner", is given "course-4-owner" instead:
+        mvc.perform(get("/course/edit").param("id", "3")
+                        .with(user(userDetails)))
+                .andExpect(status().isForbidden());
+    }
+
     /**
      * method that returns a UserDetails with an application entity user and
      * gives it an authority with the name authorityName

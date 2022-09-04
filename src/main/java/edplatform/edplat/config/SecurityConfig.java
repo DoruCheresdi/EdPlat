@@ -50,15 +50,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         // requires authentication for every request except for the login page:
         http.authorizeRequests()
-                .mvcMatchers(HttpMethod.GET, "/assignment/new")
-                    .access("@securityAuthorizationChecker.checkCourseOwner(authentication,request)")
+                .mvcMatchers("/assignment/new")
+                    .access("@securityAuthorizationChecker.checkCourseOwnerByCourseId(authentication,request)")
+                .mvcMatchers("/course/edit", "/course/process_img_edit")
+                    .access("@securityAuthorizationChecker.checkCourseOwnerById(authentication,request)")
                 .anyRequest().authenticated()
                 .and()
-                .formLogin()
-                .usernameParameter("email")
-                .defaultSuccessUrl("/user/courses")
-                .permitAll()
+                    .formLogin()
+                    .usernameParameter("email")
+                    .defaultSuccessUrl("/user/courses")
+                    .permitAll()
                 .and()
-                .logout().logoutSuccessUrl("/").permitAll();
+                    .logout().logoutSuccessUrl("/").permitAll();
     }
 }
