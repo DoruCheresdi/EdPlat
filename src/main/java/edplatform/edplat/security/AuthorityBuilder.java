@@ -11,4 +11,8 @@ public class AuthorityBuilder {
     public String getCourseOwnerAuthority(String Id) {
         return "course-" + Id + "-owner";
     }
+
+    public String getCourseEnrolledAuthority(String Id) {
+        return "course-" + Id + "-enrolled";
+    }
 }
