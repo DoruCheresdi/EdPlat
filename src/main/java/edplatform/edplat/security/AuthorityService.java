@@ -28,18 +28,18 @@ public class AuthorityService {
     public void giveAuthorityToUser(User user, String authorityName) {
         Optional<Authority> optionalAuthority = authorityRepository.findByName(authorityName);
 
+        Authority authority;
         if (optionalAuthority.isPresent()) {
             // authority is already present in DB, add the authority to the user:
-            Authority authority = optionalAuthority.get();
-            user.getAuthorities().add(authority);
+            authority = optionalAuthority.get();
         } else {
             // create authority in DB:
-            Authority authority = new Authority(authorityName);
+            authority = new Authority(authorityName);
             authorityRepository.save(authority);
-
-            // add it to the user:
-            user.getAuthorities().add(authority);
         }
+
+        // add it to the user:
+        user.getAuthorities().add(authority);
         userRepository.save(user);
     }
 }
