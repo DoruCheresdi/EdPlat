@@ -1,13 +1,10 @@
 package edplatform.edplat.security;
 
-import org.springframework.aop.scope.ScopedProxyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Optional;
 
 /**
  * Bean used in the security filter chain to check if users have certain authorities
@@ -16,7 +13,7 @@ import java.util.Optional;
 public class SecurityAuthorizationChecker {
 
     @Autowired
-    private AuthorityBuilder authorityBuilder;
+    private AuthorityStringBuilder authorityStringBuilder;
 
     /**
      * check if the authenticated user is the owner of the course given in the request parameter:
@@ -47,7 +44,7 @@ public class SecurityAuthorizationChecker {
      */
     private boolean checkCourseOwner(String parameterName, Authentication authentication, HttpServletRequest httpServletRequest) {
         String courseId = httpServletRequest.getParameter(parameterName);
-        String courseOwnerAuthority = authorityBuilder.getCourseOwnerAuthority(courseId);
+        String courseOwnerAuthority = authorityStringBuilder.getCourseOwnerAuthority(courseId);
         // check if there is any authority matching this course:
         var authority = authentication.getAuthorities().stream()
                 .filter(grantedAuthority -> grantedAuthority.getAuthority().equals(courseOwnerAuthority))

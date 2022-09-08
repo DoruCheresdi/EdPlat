@@ -1,12 +1,11 @@
 package edplatform.edplat.controllers;
 
 
-import edplatform.edplat.entities.authority.AuthorityRepository;
 import edplatform.edplat.entities.courses.Course;
 import edplatform.edplat.entities.courses.CourseRepository;
 import edplatform.edplat.entities.users.User;
 import edplatform.edplat.entities.users.UserRepository;
-import edplatform.edplat.security.AuthorityBuilder;
+import edplatform.edplat.security.AuthorityStringBuilder;
 import edplatform.edplat.security.AuthorityService;
 import edplatform.edplat.utils.FileUploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +37,7 @@ public class CourseController {
     private UserRepository userRepository;
 
     @Autowired
-    private AuthorityBuilder authorityBuilder;
+    private AuthorityStringBuilder authorityStringBuilder;
 
     @Autowired
     private AuthorityService authorityService;
@@ -65,7 +64,7 @@ public class CourseController {
         User user = userRepository.findByEmail(userDetails.getUsername());
 
         // add the course owner authority to the user that created the course:
-        String authorityName = authorityBuilder.getCourseOwnerAuthority(course.getId().toString());
+        String authorityName = authorityStringBuilder.getCourseOwnerAuthority(course.getId().toString());
         authorityService.giveAuthorityToUser(user, authorityName);
 
         return "course_creation_success";
@@ -136,7 +135,7 @@ public class CourseController {
         user.getCourses().add(course);
 
         // add the course owner authority to the user that created the course:
-        String authorityName = authorityBuilder.getCourseEnrolledAuthority(course.getId().toString());
+        String authorityName = authorityStringBuilder.getCourseEnrolledAuthority(course.getId().toString());
         authorityService.giveAuthorityToUser(user, authorityName);
 
         return new RedirectView("/course/courses");
