@@ -44,7 +44,6 @@ public class CourseController {
 
     @GetMapping("/course/new")
     public String showCourseCreationForm(Model model) {
-
         model.addAttribute("course", new Course());
 
         return "create_course_form";
@@ -52,7 +51,6 @@ public class CourseController {
 
     @PostMapping("/course/process_course")
     public String processCourse(Course course) {
-
         // add the time it was added to the course:
         Timestamp courseCreatedAt = new Timestamp(System.currentTimeMillis());
         course.setCreatedAt(courseCreatedAt);
@@ -72,7 +70,6 @@ public class CourseController {
 
     @GetMapping("/course/courses")
     public String listCourses(Model model) {
-
         Iterable<Course> listCourses = courseRepository.findAll();
         model.addAttribute("listCourses", listCourses);
 
@@ -83,7 +80,6 @@ public class CourseController {
     public String showCourseEditForms(
             @RequestParam Long id,
             Model model) {
-
         model.addAttribute("CourseId", id);
         return "edit_course";
     }
@@ -91,7 +87,6 @@ public class CourseController {
     @PostMapping("/course/process_img_edit")
     public RedirectView saveImageToCourse(@RequestParam("image") MultipartFile multipartFile,
                                           @RequestParam Long id) throws IOException {
-
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 
         // save image name to database:
@@ -117,7 +112,6 @@ public class CourseController {
     @PostMapping("course/enroll")
     public RedirectView enrollUserInCourse(@RequestParam Long courseId,
                                      Authentication authentication) {
-
         Optional<Course> optionalCourse = courseRepository.findById(courseId);
         Course course;
         if (optionalCourse.isPresent()) {
@@ -145,7 +139,6 @@ public class CourseController {
     public String showCourseAssignments(
             @RequestParam Long id,
             Model model) {
-
         Optional<Course> optionalCourse = courseRepository.findById(id);
         Course course;
         if (optionalCourse.isPresent()) {

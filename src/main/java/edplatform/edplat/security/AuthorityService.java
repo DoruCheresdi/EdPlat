@@ -20,7 +20,7 @@ public class AuthorityService {
     private AuthorityRepository authorityRepository;
 
     /**
-     * Method to give a certain authority to a user. Creates authority if it
+     * Method to give a certain authority to a user, also persisting it. Creates authority if it
      * doesn't exist in the database
      * @param user to be given an authority
      * @param authorityName name of the authority to give to the user

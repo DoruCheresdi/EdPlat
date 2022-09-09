@@ -42,7 +42,6 @@ public class UserController {
 
     @PostMapping("/process_register")
     public String processRegister(User user) {
-
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
 
@@ -53,7 +52,6 @@ public class UserController {
 
     @GetMapping("/users")
     public String listUsers(Model model) {
-
         Iterable<User> listUsers = userRepository.findAll();
         model.addAttribute("listUsers", listUsers);
 
@@ -62,14 +60,12 @@ public class UserController {
 
     @GetMapping("/user/edit")
     public String showUserEditForm(Model model) {
-
         return "edit_user";
     }
 
     @PostMapping("/user/process_img_edit")
     public RedirectView savePhotoToUser(@RequestParam("image") MultipartFile multipartFile,
                                         Authentication authentication) throws IOException {
-
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 
         // save image name to database:
@@ -89,7 +85,6 @@ public class UserController {
     @GetMapping("/user/courses")
     public String showUserCourses(Model model,
                                   Authentication authentication) {
-
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         User user = userRepository.findByEmail(userDetails.getUsername());
         List<Course> userCourses = user.getCourses();

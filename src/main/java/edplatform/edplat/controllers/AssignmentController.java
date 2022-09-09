@@ -42,7 +42,6 @@ public class AssignmentController {
     @GetMapping("/assignment/new")
     public String showNewAssignmentView(@RequestParam Long courseId,
                                         Model model) {
-
         model.addAttribute("courseId", courseId);
 
         model.addAttribute("assignment", new Assignment());
@@ -53,7 +52,6 @@ public class AssignmentController {
     @PostMapping("/assignment/new")
     public RedirectView createAssignment(Assignment assignment,
                                          @RequestParam Long courseId) {
-
         Optional<Course> optionalCourse = courseRepository.findById(courseId);
         Course course;
         if (optionalCourse.isPresent()) {
@@ -72,7 +70,6 @@ public class AssignmentController {
     @GetMapping("/assignment/submission/new")
     public String showNewSubmissionView(@RequestParam Long assignmentId,
                                         Model model) {
-
         model.addAttribute("assignmentId", assignmentId);
 
         return "add_submission";
@@ -82,7 +79,6 @@ public class AssignmentController {
     public RedirectView createSubmission(@RequestParam("resource") MultipartFile multipartFile,
                                          @RequestParam Long assignmentId,
                                          Authentication authentication) throws IOException {
-
         Optional<Assignment> optionalAssignment = assignmentRepository.findById(assignmentId);
         Assignment assignment;
         if (optionalAssignment.isPresent()) {

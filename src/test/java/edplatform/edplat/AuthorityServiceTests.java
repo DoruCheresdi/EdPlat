@@ -8,7 +8,6 @@ import org.hibernate.Hibernate;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -25,9 +24,6 @@ public class AuthorityServiceTests {
     private UserRepository userRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
     private AuthorityStringBuilder authorityStringBuilder;
 
     @Test
@@ -37,7 +33,6 @@ public class AuthorityServiceTests {
         String email = "authorityTest@test.com";
         String testFirstName = "testFirstName";
         user.setEmail(email);
-        user.setPassword(passwordEncoder.encode("passTest"));
         user.setFirstName(testFirstName);
         userRepository.save(user);
 
