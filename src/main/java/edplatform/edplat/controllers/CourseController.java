@@ -8,6 +8,7 @@ import edplatform.edplat.entities.users.UserRepository;
 import edplatform.edplat.security.AuthorityStringBuilder;
 import edplatform.edplat.security.AuthorityService;
 import edplatform.edplat.utils.FileUploadUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,6 +29,7 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping(path="/")
+@Slf4j
 public class CourseController {
 
     @Autowired
@@ -139,6 +141,7 @@ public class CourseController {
     public String showCourseAssignments(
             @RequestParam Long id,
             Model model) {
+        log.info("Showing single course");
         Optional<Course> optionalCourse = courseRepository.findById(id);
         Course course;
         if (optionalCourse.isPresent()) {
