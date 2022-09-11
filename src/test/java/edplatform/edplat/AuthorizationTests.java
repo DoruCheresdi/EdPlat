@@ -98,7 +98,7 @@ public class AuthorizationTests {
         Authority authority = new Authority();
         authority.setName(authorityName);
         user.setAuthorities(List.of(authority));
-        user.setFirstName("testLastName");
+        user.setFirstName("testFirstName");
         user.setLastName("testLastName");
 
         return new CustomUserDetails(user);
