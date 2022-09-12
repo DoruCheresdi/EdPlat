@@ -1,9 +1,12 @@
 package edplatform.edplat;
 
 import edplatform.edplat.entities.courses.Course;
+import edplatform.edplat.entities.courses.CourseRepository;
 import edplatform.edplat.entities.users.CustomUserDetails;
 import edplatform.edplat.entities.users.User;
 import edplatform.edplat.entities.users.UserRepository;
+import edplatform.edplat.security.AuthorityStringBuilder;
+import org.hibernate.Hibernate;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -13,7 +16,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -31,6 +36,12 @@ public class CourseControllerTests {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private CourseRepository courseRepository;
+
+    @Autowired
+    private AuthorityStringBuilder authorityStringBuilder;
+
     @Test
     void shouldGetListContainingAllCourses() throws Exception {
         Course course = new Course();
@@ -46,7 +57,7 @@ public class CourseControllerTests {
 
     @Test
     @Transactional
-    void shouldCreateAndPersistRightCourse() throws Exception {
+    void shouldCreateAndPersistCourse() throws Exception {
         Course course = new Course();
         course.setCourseName("TestControllerCourse");
         course.setDescription("TestCourseControllerDescription");
@@ -60,6 +71,23 @@ public class CourseControllerTests {
                         .with(csrf())
                         .with(user(userDetails)))
                 .andExpect(status().isOk());
+
+        Optional<Course> retrievedCourseOptional = courseRepository.findByCourseName(course.getCourseName());
+
+        assertThat(retrievedCourseOptional.isPresent()).isEqualTo(true);
+
+        Course retrievedCourse = retrievedCourseOptional.get();
+        Hibernate.initialize(retrievedCourse.getUsers());
+
+        // check if it is the same course:
+        assertThat(retrievedCourse.getDescription()).isEqualTo(course.getDescription());
+
+        // test that the authority given is right:
+        Long id = retrievedCourse.getId();
+        String authority = authorityStringBuilder.getCourseOwnerAuthority(id.toString());
+
+        assertThat(userDetails.getUser().getAuthorities().size()).isEqualTo(1);
+        assertThat(userDetails.getUser().getAuthorities().get(0).getAuthority()).isEqualTo(authority);
     }
 
     private UserDetails getSimpleUserDetails() {
