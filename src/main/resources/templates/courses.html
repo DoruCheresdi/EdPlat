@@ -29,11 +29,20 @@
             <tr th:each="course: ${listCourses}">
                 <td th:text="${course.courseName}">Course Name</td>
                 <td th:text="${course.description}">Description</td>
-                <td><img th:src="@{${course.getImagePath()}}" class="img-thumbnail" style="width: 200px; height: 150px;" /></td>
-                <td><a class="btn btn-primary" th:href="@{/course/edit(id=${course.id})}" role="button">Edit</a></td>
+                <td>
+                    <img th:src="@{${course.getImagePath()}}" class="img-thumbnail" style="width: 15vw;" />
+                </td>
+                <td>
+                    <a class="btn btn-primary" th:href="@{/course/edit(id=${course.id})}" role="button">Edit</a>
+                </td>
                 <td>
                     <form th:action="@{/course/enroll(courseId=${course.id})}" method="post">
                         <button type="submit" class="btn btn-primary">Enroll</button>
+                    </form>
+                </td>
+                <td>
+                    <form th:action="@{/course/delete(courseId=${course.id})}" method="post">
+                        <button type="submit" class="btn btn-primary">Delete</button>
                     </form>
                 </td>
             </tr>

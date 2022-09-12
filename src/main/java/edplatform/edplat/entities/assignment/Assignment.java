@@ -24,7 +24,8 @@ public class Assignment {
     Course course;
 
     @OneToMany(mappedBy = "assignment",
-            cascade = CascadeType.ALL)
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private List<Submission> submissions;
 
     private String description;

@@ -27,7 +27,8 @@ public class Course {
     private Timestamp createdAt;
 
     @OneToMany(mappedBy = "course",
-            cascade = CascadeType.ALL)
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private List<Assignment> assignments;
 
     @ManyToMany(mappedBy = "courses")

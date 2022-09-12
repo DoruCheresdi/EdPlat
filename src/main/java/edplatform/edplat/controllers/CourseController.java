@@ -1,6 +1,7 @@
 package edplatform.edplat.controllers;
 
 
+import edplatform.edplat.entities.authority.AuthorityRepository;
 import edplatform.edplat.entities.courses.Course;
 import edplatform.edplat.entities.courses.CourseRepository;
 import edplatform.edplat.entities.users.User;
@@ -11,20 +12,15 @@ import edplatform.edplat.utils.FileUploadUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
-import java.security.Principal;
 import java.sql.Timestamp;
 import java.util.Optional;
 
@@ -155,5 +151,31 @@ public class CourseController {
         model.addAttribute("courseId", id);
         model.addAttribute("assignments", course.getAssignments());
         return "course";
+    }
+
+    @PostMapping("course/delete")
+    public String deleteCourse(@RequestParam Long courseId,
+                                           Authentication authentication) {
+        // find the course:
+        Optional<Course> optionalCourse = courseRepository.findById(courseId);
+        Course course;
+        if (optionalCourse.isPresent()) {
+            course = optionalCourse.get();
+        } else {
+            return "error";
+        }
+
+        // delete all authorities regarding course:
+        // for owners:
+        String ownerAuthority = authorityStringBuilder.getCourseOwnerAuthority(courseId.toString());
+        authorityService.deleteAuthority(ownerAuthority);
+        // for enrolled:
+        String enrolledAuthority = authorityStringBuilder.getCourseEnrolledAuthority(courseId.toString());
+        authorityService.deleteAuthority(enrolledAuthority);
+
+        // delete all assignments and the course itself (delete is cascading):
+        courseRepository.delete(course);
+
+        return "course_deletion_success";
     }
 }

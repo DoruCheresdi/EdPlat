@@ -30,13 +30,15 @@ public class User {
     private String photo;
 
     @OneToMany(mappedBy = "user",
-            cascade = CascadeType.ALL)
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private List<Submission> submissions;
 
     @ManyToMany(targetEntity = Course.class)
     private List<Course> courses;
 
-    @ManyToMany(targetEntity = Authority.class)
+    @ManyToMany(targetEntity = Authority.class,
+            mappedBy = "users")
     private List<Authority> authorities;
 
     @Transient
