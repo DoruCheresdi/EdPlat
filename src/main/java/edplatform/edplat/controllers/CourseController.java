@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.sql.Timestamp;
 import java.util.Optional;
 
@@ -52,15 +53,14 @@ public class CourseController {
     }
 
     @PostMapping("/course/process_course")
-    public String processCourse(Course course) {
+    public String processCourse(Course course, Authentication authentication) {
         // add the time it was added to the course:
         Timestamp courseCreatedAt = new Timestamp(System.currentTimeMillis());
         course.setCreatedAt(courseCreatedAt);
 
         courseRepository.save(course);
 
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
-                                .getAuthentication().getPrincipal();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         User user = userRepository.findByEmail(userDetails.getUsername());
 
         // add the course owner authority to the user that created the course:
