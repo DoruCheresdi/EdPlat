@@ -90,6 +90,12 @@ public class CourseControllerTests {
         assertThat(userDetails.getUser().getAuthorities().get(0).getAuthority()).isEqualTo(authority);
     }
 
+    @Test
+    @Transactional
+    void shouldDeleteSimpleCourse() throws Exception {
+
+    }
+
     private UserDetails getSimpleUserDetails() {
         User user = new User();
         user.setEmail("test@springTest.com");
