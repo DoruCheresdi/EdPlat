@@ -23,6 +23,8 @@
                 <th>Image</th>
                 <th></th>
                 <th></th>
+                <th></th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
@@ -39,6 +41,9 @@
                     <form th:action="@{/course/enroll(courseId=${course.id})}" method="post">
                         <button type="submit" class="btn btn-primary">Enroll</button>
                     </form>
+                </td>
+                <td>
+                    <a class="btn btn-primary" th:href="@{/course/update(id=${course.id})}" role="button">Update</a>
                 </td>
                 <td>
                     <form th:action="@{/course/delete(courseId=${course.id})}" method="post">
