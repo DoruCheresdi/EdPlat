@@ -57,8 +57,7 @@ public class AssignmentController {
         if (optionalCourse.isPresent()) {
             course = optionalCourse.get();
         } else {
-            // TODO add error page:
-            return new RedirectView("course/courses");
+            return new RedirectView("error");
         }
 
         assignment.setCourse(course);
@@ -84,8 +83,7 @@ public class AssignmentController {
         if (optionalAssignment.isPresent()) {
             assignment = optionalAssignment.get();
         } else {
-            // TODO add error page:
-            return new RedirectView("course/courses");
+            return new RedirectView("error");
         }
 
         // save image name to database:

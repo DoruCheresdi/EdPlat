@@ -94,8 +94,7 @@ public class CourseController {
             course = optionalCourse.get();
             course.setImage(fileName);
         } else {
-            // TODO add error page:
-            return new RedirectView("/course/courses");
+            return new RedirectView("error");
         }
 
         String uploadDir = "course-photos/" + course.getId();
@@ -115,8 +114,7 @@ public class CourseController {
         if (optionalCourse.isPresent()) {
             course = optionalCourse.get();
         } else {
-            // TODO add error page:
-            return new RedirectView("course/coursesssss");
+            return new RedirectView("error");
         }
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -143,8 +141,7 @@ public class CourseController {
         if (optionalCourse.isPresent()) {
             course = optionalCourse.get();
         } else {
-            // TODO add error page:
-            return "courses";
+            return "error";
         }
 
         model.addAttribute("course", course);
