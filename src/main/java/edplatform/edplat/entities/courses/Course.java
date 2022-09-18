@@ -31,7 +31,15 @@ public class Course {
             orphanRemoval = true)
     private List<Assignment> assignments;
 
-    @ManyToMany(mappedBy = "courses")
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE,
+    })
+    @JoinTable(
+            name = "users_courses",
+            joinColumns = { @JoinColumn(name = "courses_id") },
+            inverseJoinColumns = { @JoinColumn(name = "users_id") }
+    )
     private List<User> users;
 
     @Transient

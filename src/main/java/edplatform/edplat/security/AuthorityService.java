@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -29,19 +30,23 @@ public class AuthorityService {
     public void giveAuthorityToUser(User user, String authorityName) {
         Optional<Authority> optionalAuthority = authorityRepository.findByName(authorityName);
 
+        log.info("Giving authority {} to username {}", authorityName, user.getEmail());
+
         Authority authority;
         if (optionalAuthority.isPresent()) {
             // authority is already present in DB, add the authority to the user:
+            log.info("Authority already present in db, giving it to user");
             authority = optionalAuthority.get();
         } else {
             // create authority in DB:
+            log.info("Authority is created in db, giving it to user");
             authority = new Authority(authorityName);
-            authorityRepository.save(authority);
+            authority.setUsers(new ArrayList<>());
         }
 
         // add it to the user:
-        user.getAuthorities().add(authority);
-        userRepository.save(user);
+        authority.getUsers().add(user);
+        authorityRepository.save(authority);
     }
 
     public void deleteAuthority(String authorityName) {
@@ -50,12 +55,13 @@ public class AuthorityService {
         Authority authority;
         if (optionalAuthority.isEmpty()) {
             // authority is already present in DB, add the authority to the user:
-            log.error("Trying to delete nonexistent authority");
+            log.error("Trying to delete nonexistent authority with name: {}", authorityName);
         } else {
+            log.info("Deleting authority: {}", authorityName);
             authority = optionalAuthority.get();
-            for (User user : authority.getUsers()) {
-                user.getAuthorities().remove(authority);
-            }
+//            for (User user : authority.getUsers()) {
+//                user.getAuthorities().remove(authority);
+//            }
             authorityRepository.delete(authority);
         }
     }

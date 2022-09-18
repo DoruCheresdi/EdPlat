@@ -54,6 +54,9 @@ public class CourseController {
         Timestamp courseCreatedAt = new Timestamp(System.currentTimeMillis());
         course.setCreatedAt(courseCreatedAt);
 
+        log.info("Creating course with name {} at timestamp {}",
+                course.getCourseName(), courseCreatedAt);
+
         courseRepository.save(course);
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -120,9 +123,12 @@ public class CourseController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         User user = userRepository.findByEmail(userDetails.getUsername());
         if (user.getCourses().contains(course)) {
+            log.error("User {} already has course {}", user.getEmail(), course.getCourseName());
             return new RedirectView("/course/courses");
         }
-        user.getCourses().add(course);
+        course.getUsers().add(user);
+        courseRepository.save(course);
+//        user.getCourses().add(course);
 
         // add the course owner authority to the user that created the course:
         String authorityName = authorityStringBuilder.getCourseEnrolledAuthority(course.getId().toString());
@@ -171,6 +177,9 @@ public class CourseController {
         authorityService.deleteAuthority(enrolledAuthority);
 
         // delete all assignments and the course itself (delete is cascading):
+        for (User user : course.getUsers()) {
+            user.getCourses().remove(course);
+        }
         courseRepository.delete(course);
 
         return "course_deletion_success";

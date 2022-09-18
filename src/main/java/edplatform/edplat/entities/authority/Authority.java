@@ -25,7 +25,15 @@ public class Authority implements GrantedAuthority {
 
     private String name;
 
-    @ManyToMany
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
+    @JoinTable(
+            name = "users_authorities",
+            joinColumns = { @JoinColumn(name = "authorities_id") },
+            inverseJoinColumns = { @JoinColumn(name = "users_id") }
+    )
     private List<User> users;
 
     @Override

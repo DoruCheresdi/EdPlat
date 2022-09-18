@@ -34,11 +34,10 @@ public class User {
             orphanRemoval = true)
     private List<Submission> submissions;
 
-    @ManyToMany(targetEntity = Course.class)
+    @ManyToMany(mappedBy = "users")
     private List<Course> courses;
 
-    @ManyToMany(targetEntity = Authority.class,
-            mappedBy = "users")
+    @ManyToMany(mappedBy = "users")
     private List<Authority> authorities;
 
     @Transient
