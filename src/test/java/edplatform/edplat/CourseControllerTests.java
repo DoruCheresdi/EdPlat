@@ -96,6 +96,12 @@ public class CourseControllerTests {
 
     }
 
+    @Test
+    @Transactional
+    void shouldDeleteCourseWithAssignmentsAndSubmissions() throws Exception {
+
+    }
+
     private UserDetails getSimpleUserDetails() {
         User user = new User();
         user.setEmail("test@springTest.com");

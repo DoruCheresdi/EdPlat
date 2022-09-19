@@ -46,6 +46,7 @@ public class AuthorityService {
 
         // add it to the user:
         authority.getUsers().add(user);
+        user.getAuthorities().add(authority);
         authorityRepository.save(authority);
     }
 
@@ -59,9 +60,6 @@ public class AuthorityService {
         } else {
             log.info("Deleting authority: {}", authorityName);
             authority = optionalAuthority.get();
-//            for (User user : authority.getUsers()) {
-//                user.getAuthorities().remove(authority);
-//            }
             authorityRepository.delete(authority);
         }
     }
