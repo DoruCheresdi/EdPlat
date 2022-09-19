@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -87,7 +88,7 @@ public class CourseControllerTests {
         String authority = authorityStringBuilder.getCourseOwnerAuthority(id.toString());
 
         assertThat(userDetails.getUser().getAuthorities().size()).isEqualTo(1);
-        assertThat(userDetails.getUser().getAuthorities().get(0).getAuthority()).isEqualTo(authority);
+        assertThat(userDetails.getUser().getAuthorities().iterator().next().getAuthority()).isEqualTo(authority);
     }
 
     @Test
@@ -107,7 +108,7 @@ public class CourseControllerTests {
         user.setEmail("test@springTest.com");
         user.setFirstName("testFirstName");
         user.setLastName("testLastName");
-        user.setAuthorities(new ArrayList<>());
+        user.setAuthorities(new HashSet<>());
 
         return new CustomUserDetails(user);
     }

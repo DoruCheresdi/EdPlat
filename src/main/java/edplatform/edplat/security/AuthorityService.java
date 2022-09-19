@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Optional;
 
 @Service
@@ -41,7 +42,7 @@ public class AuthorityService {
             // create authority in DB:
             log.info("Authority is created in db, giving it to user");
             authority = new Authority(authorityName);
-            authority.setUsers(new ArrayList<>());
+            authority.setUsers(new HashSet<>());
         }
 
         // add it to the user:

@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -34,7 +35,7 @@ public class Authority implements GrantedAuthority {
             joinColumns = { @JoinColumn(name = "authorities_id") },
             inverseJoinColumns = { @JoinColumn(name = "users_id") }
     )
-    private List<User> users;
+    private Set<User> users;
 
     @Override
     public String getAuthority() {

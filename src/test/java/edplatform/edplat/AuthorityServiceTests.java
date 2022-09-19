@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -39,7 +40,7 @@ public class AuthorityServiceTests {
         // get user from database and make sure it is the right one:
         User foundUser = userRepository.findByEmail(email);
         Hibernate.initialize(foundUser.getAuthorities());
-        foundUser.setAuthorities(new ArrayList<>());
+        foundUser.setAuthorities(new HashSet<>());
         assertThat(foundUser.getFirstName()).isEqualTo(testFirstName);
 
         authorityService.giveAuthorityToUser(foundUser, authorityStringBuilder.getCourseOwnerAuthority("4"));
@@ -47,7 +48,7 @@ public class AuthorityServiceTests {
         // retrieve the persisted user again:
         foundUser = userRepository.findByEmail(email);
         assertThat(foundUser.getAuthorities().size()).isEqualTo(1);
-        assertThat(foundUser.getAuthorities().get(0).getAuthority())
+        assertThat(foundUser.getAuthorities().iterator().next().getAuthority())
                 .isEqualTo(authorityStringBuilder.getCourseOwnerAuthority("4"));
     }
 }

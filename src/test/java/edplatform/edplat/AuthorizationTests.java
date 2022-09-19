@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -82,7 +83,7 @@ public class AuthorizationTests {
         User user = new User();
         Authority authority = new Authority();
         authority.setName(authorityName);
-        user.setAuthorities(List.of(authority));
+        user.setAuthorities(Set.of(authority));
         user.setFirstName("testFirstName");
         user.setLastName("testLastName");
 
