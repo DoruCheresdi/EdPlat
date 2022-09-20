@@ -165,6 +165,7 @@ public class CourseController {
         if (optionalCourse.isPresent()) {
             course = optionalCourse.get();
         } else {
+            log.info("Trying to delete nonexistent course, check Id");
             return "error";
         }
 

@@ -5,6 +5,7 @@ import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -35,7 +36,7 @@ public class Authority implements GrantedAuthority {
             joinColumns = { @JoinColumn(name = "authorities_id") },
             inverseJoinColumns = { @JoinColumn(name = "users_id") }
     )
-    private Set<User> users;
+    private Set<User> users = new HashSet<>();
 
     @Override
     public String getAuthority() {

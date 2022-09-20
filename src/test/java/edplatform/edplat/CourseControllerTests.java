@@ -1,7 +1,11 @@
 package edplatform.edplat;
 
+import edplatform.edplat.entities.assignment.Assignment;
+import edplatform.edplat.entities.assignment.AssignmentRepository;
 import edplatform.edplat.entities.courses.Course;
 import edplatform.edplat.entities.courses.CourseRepository;
+import edplatform.edplat.entities.submission.Submission;
+import edplatform.edplat.entities.submission.SubmissionRepository;
 import edplatform.edplat.entities.users.CustomUserDetails;
 import edplatform.edplat.entities.users.User;
 import edplatform.edplat.entities.users.UserRepository;
@@ -11,12 +15,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.expression.spel.ast.Assign;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,14 +47,16 @@ public class CourseControllerTests {
     private CourseRepository courseRepository;
 
     @Autowired
+    private AssignmentRepository assignmentRepository;
+
+    @Autowired
+    private SubmissionRepository submissionRepository;
+
+    @Autowired
     private AuthorityStringBuilder authorityStringBuilder;
 
     @Test
     void shouldGetListContainingAllCourses() throws Exception {
-        Course course = new Course();
-        course.setCourseName("TestControllerCourse");
-        course.setDescription("TestCourseControllerDescription");
-
         UserDetails userDetails = getSimpleUserDetails();
 
         mvc.perform(get("/course/courses").with(user(userDetails)))
@@ -94,13 +102,75 @@ public class CourseControllerTests {
     @Test
     @Transactional
     void shouldDeleteSimpleCourse() throws Exception {
+        Course course = new Course();
+        course.setCourseName("TestControllerCourse");
+        course.setDescription("TestCourseControllerDescription");
+        course.setUsers(List.of());
 
+        courseRepository.save(course);
+
+        course = courseRepository.findByCourseName(course.getCourseName()).get();
+
+        CustomUserDetails userDetails = (CustomUserDetails) getSimpleUserDetails();
+//        userRepository.save(userDetails.getUser());
+
+        mvc.perform(post("/course/delete")
+                        .param("courseId", course.getId().toString())
+                        .with(csrf())
+                        .with(user(userDetails)))
+                .andExpect(status().isOk())
+                .andExpect(view().name("course_deletion_success"));
+
+        // course must be deleted, therefore it must not be found in the query:
+        assertThat(courseRepository.findByCourseName(course.getCourseName()).isPresent()).isEqualTo(false);
     }
 
     @Test
     @Transactional
-    void shouldDeleteCourseWithAssignmentsAndSubmissions() throws Exception {
+    void shouldDeleteCourseWithAssignmentsSubmissionsAndAuthorities() throws Exception {
+        Course course = new Course();
+        course.setCourseName("TestControllerCourse");
+        course.setDescription("TestCourseControllerDescription");
+        course.setUsers(List.of());
 
+
+        CustomUserDetails userDetails = (CustomUserDetails) getSimpleUserDetails();
+        userRepository.save(userDetails.getUser());
+
+        Assignment assignment = new Assignment();
+        assignment.setAssignmentName("TestAssignment");
+
+        Submission submission = new Submission();
+//        submission.setUser(userDetails.getUser());
+        submission.setSubmissionResource("submissionResource");
+
+        // save the entities:
+        courseRepository.save(course);
+        assignmentRepository.save(assignment);
+        submissionRepository.save(submission);
+
+
+        course.setAssignments(List.of(assignment));
+
+        // retrieve them to check them later:
+        assignment = assignmentRepository.findByAssignmentName("TestAssignment").get();
+        submission = assignment.getSubmissions().get(0);
+        Long submissionId = submission.getId();
+        assertThat(submissionRepository.findById(submissionId).isPresent()).isEqualTo(true);
+
+        course = courseRepository.findByCourseName(course.getCourseName()).get();
+
+        mvc.perform(post("/course/delete")
+                        .param("courseId", course.getId().toString())
+                        .with(csrf())
+                        .with(user(userDetails)))
+                .andExpect(status().isOk())
+                .andExpect(view().name("course_deletion_success"));
+
+        // course must be deleted, therefore it must not be found in the query:
+        assertThat(courseRepository.findByCourseName(course.getCourseName()).isPresent()).isEqualTo(false);
+        assertThat(assignmentRepository.findByAssignmentName("TestAssignment").isPresent()).isEqualTo(false);
+        assertThat(submissionRepository.findById(submissionId).isPresent()).isEqualTo(false);
     }
 
     private UserDetails getSimpleUserDetails() {
@@ -108,7 +178,6 @@ public class CourseControllerTests {
         user.setEmail("test@springTest.com");
         user.setFirstName("testFirstName");
         user.setLastName("testLastName");
-        user.setAuthorities(new HashSet<>());
 
         return new CustomUserDetails(user);
     }

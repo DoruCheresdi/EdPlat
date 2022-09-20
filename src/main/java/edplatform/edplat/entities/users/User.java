@@ -6,6 +6,7 @@ import edplatform.edplat.entities.submission.Submission;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -40,7 +41,7 @@ public class User {
     private List<Course> courses;
 
     @ManyToMany(mappedBy = "users")
-    private Set<Authority> authorities;
+    private Set<Authority> authorities = new HashSet<>();
 
     @Transient
     public String getPhotosImagePath() {
