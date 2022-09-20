@@ -20,10 +20,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -105,14 +102,13 @@ public class CourseControllerTests {
         Course course = new Course();
         course.setCourseName("TestControllerCourse");
         course.setDescription("TestCourseControllerDescription");
-        course.setUsers(List.of());
+        course.setUsers(new ArrayList<>());
 
         courseRepository.save(course);
 
         course = courseRepository.findByCourseName(course.getCourseName()).get();
 
         CustomUserDetails userDetails = (CustomUserDetails) getSimpleUserDetails();
-//        userRepository.save(userDetails.getUser());
 
         mvc.perform(post("/course/delete")
                         .param("courseId", course.getId().toString())
@@ -127,32 +123,63 @@ public class CourseControllerTests {
 
     @Test
     @Transactional
-    void shouldDeleteCourseWithAssignmentsSubmissionsAndAuthorities() throws Exception {
+    void shouldFailDeletingSimpleNonexistentCourse() throws Exception {
         Course course = new Course();
         course.setCourseName("TestControllerCourse");
         course.setDescription("TestCourseControllerDescription");
-        course.setUsers(List.of());
+        course.setUsers(new ArrayList<>());
 
+        courseRepository.save(course);
+
+        course = courseRepository.findByCourseName(course.getCourseName()).get();
 
         CustomUserDetails userDetails = (CustomUserDetails) getSimpleUserDetails();
-        userRepository.save(userDetails.getUser());
+
+        // get course Id, deleting it afterwards probably guarantees
+        // that there isn't a course with that id:
+        Long courseId = course.getId();
+
+        courseRepository.delete(course);
+
+        assertThat(courseRepository.findByCourseName("TestControllerCourse").isPresent())
+                .isEqualTo(false);
+
+        // now trying to delete nonexisting course, should give error page as a response:
+        mvc.perform(post("/course/delete")
+                        .param("courseId", course.getId().toString())
+                        .with(csrf())
+                        .with(user(userDetails)))
+                .andExpect(status().isOk())
+                .andExpect(view().name("error"));
+    }
+
+    @Test
+    @Transactional
+    void shouldDeleteCourseWithAssignmentsSubmissionsAndAuthorities() throws Exception {
+        // create entities:
+        CustomUserDetails userDetails = (CustomUserDetails) getSimpleUserDetails();
+
+        Course course = new Course();
+        course.setCourseName("TestControllerCourse");
+        course.setDescription("TestCourseControllerDescription");
+        course.setUsers(Arrays.asList(userDetails.getUser()));
+        userDetails.getUser().setCourses(new ArrayList<>());
+        userDetails.getUser().getCourses().add(course);
 
         Assignment assignment = new Assignment();
         assignment.setAssignmentName("TestAssignment");
+        assignment.setCourse(course);
+        course.setAssignments(Arrays.asList(assignment));
 
         Submission submission = new Submission();
-//        submission.setUser(userDetails.getUser());
+        submission.setUser(userDetails.getUser());
         submission.setSubmissionResource("submissionResource");
+        submission.setAssignment(assignment);
+        assignment.setSubmissions(Arrays.asList(submission));
 
-        // save the entities:
         courseRepository.save(course);
-        assignmentRepository.save(assignment);
-        submissionRepository.save(submission);
 
-
-        course.setAssignments(List.of(assignment));
-
-        // retrieve them to check them later:
+        // retrieve entities to check them later:
         assignment = assignmentRepository.findByAssignmentName("TestAssignment").get();
         submission = assignment.getSubmissions().get(0);
         Long submissionId = submission.getId();

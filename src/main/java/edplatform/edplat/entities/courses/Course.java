@@ -33,7 +33,7 @@ public class Course {
 
     @ManyToMany(cascade = {
             CascadeType.PERSIST,
-            CascadeType.MERGE,
+            CascadeType.MERGE
     })
     @JoinTable(
             name = "users_courses",
