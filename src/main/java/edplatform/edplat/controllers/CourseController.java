@@ -10,6 +10,7 @@ import edplatform.edplat.security.AuthorityStringBuilder;
 import edplatform.edplat.security.AuthorityService;
 import edplatform.edplat.utils.FileUploadUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -61,6 +62,10 @@ public class CourseController {
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         User user = userRepository.findByEmail(userDetails.getUsername());
+
+        // add course to user:
+        user.getCourses().add(course);
+        userRepository.save(user);
 
         // add the course owner authority to the user that created the course:
         String authorityName = authorityStringBuilder.getCourseOwnerAuthority(course.getId().toString());

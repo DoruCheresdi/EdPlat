@@ -10,13 +10,14 @@ import edplatform.edplat.entities.users.CustomUserDetails;
 import edplatform.edplat.entities.users.User;
 import edplatform.edplat.entities.users.UserRepository;
 import edplatform.edplat.security.AuthorityStringBuilder;
+import net.bytebuddy.asm.Advice;
 import org.hibernate.Hibernate;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.expression.spel.ast.Assign;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +40,9 @@ public class CourseControllerTests {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     @Autowired
     private CourseRepository courseRepository;
@@ -83,17 +87,20 @@ public class CourseControllerTests {
         assertThat(retrievedCourseOptional.isPresent()).isEqualTo(true);
 
         Course retrievedCourse = retrievedCourseOptional.get();
-        Hibernate.initialize(retrievedCourse.getUsers());
 
         // check if it is the same course:
         assertThat(retrievedCourse.getDescription()).isEqualTo(course.getDescription());
 
+        // check that the user is given the course:
+        User retrievedUser = userRepository.findByEmail(userDetails.getUser().getEmail());
+        assertThat(retrievedUser.getCourses().get(0)).isEqualTo(retrievedCourse);
+
         // test that the authority given is right:
+        assertThat(retrievedUser.getAuthorities().size()).isEqualTo(1);
+
         Long id = retrievedCourse.getId();
         String authority = authorityStringBuilder.getCourseOwnerAuthority(id.toString());
-
-        assertThat(userDetails.getUser().getAuthorities().size()).isEqualTo(1);
-        assertThat(userDetails.getUser().getAuthorities().iterator().next().getAuthority()).isEqualTo(authority);
+        assertThat(retrievedUser.getAuthorities().iterator().next().getAuthority()).isEqualTo(authority);
     }
 
     @Test
@@ -205,6 +212,7 @@ public class CourseControllerTests {
         user.setEmail("test@springTest.com");
         user.setFirstName("testFirstName");
         user.setLastName("testLastName");
+        user.setCourses(new ArrayList<>());
 
         return new CustomUserDetails(user);
     }
