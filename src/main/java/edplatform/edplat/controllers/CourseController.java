@@ -133,7 +133,6 @@ public class CourseController {
         }
         course.getUsers().add(user);
         courseRepository.save(course);
-//        user.getCourses().add(course);
 
         // add the course owner authority to the user that created the course:
         String authorityName = authorityStringBuilder.getCourseEnrolledAuthority(course.getId().toString());
