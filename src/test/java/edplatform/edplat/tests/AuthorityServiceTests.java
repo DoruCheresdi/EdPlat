@@ -1,4 +1,4 @@
-package edplatform.edplat;
+package edplatform.edplat.tests;
 
 import edplatform.edplat.entities.users.User;
 import edplatform.edplat.entities.users.UserRepository;

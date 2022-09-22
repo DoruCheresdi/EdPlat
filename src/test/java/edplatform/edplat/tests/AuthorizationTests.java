@@ -1,4 +1,4 @@
-package edplatform.edplat;
+package edplatform.edplat.tests;
 
 import edplatform.edplat.entities.authority.Authority;
 import edplatform.edplat.entities.users.CustomUserDetails;

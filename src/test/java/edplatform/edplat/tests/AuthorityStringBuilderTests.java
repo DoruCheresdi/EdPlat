@@ -1,4 +1,4 @@
-package edplatform.edplat;
+package edplatform.edplat.tests;
 
 import edplatform.edplat.security.AuthorityStringBuilder;
 import org.junit.jupiter.api.Test;
