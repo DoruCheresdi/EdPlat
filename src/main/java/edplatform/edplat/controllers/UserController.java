@@ -50,7 +50,7 @@ public class UserController {
         return "register_success";
     }
 
-    @GetMapping("/users")
+    @GetMapping("/users/all")
     public String listUsers(Model model) {
         Iterable<User> listUsers = userRepository.findAll();
         model.addAttribute("listUsers", listUsers);

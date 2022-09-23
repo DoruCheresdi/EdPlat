@@ -60,7 +60,7 @@ public class CourseControllerTests {
     void shouldGetListContainingAllCourses() throws Exception {
         UserDetails userDetails = getSimpleUserDetails();
 
-        mvc.perform(get("/course/courses").with(user(userDetails)))
+        mvc.perform(get("/course/courses/all").with(user(userDetails)))
                 .andExpect(status().isOk())
                 .andExpect(view().name("courses"));
     }

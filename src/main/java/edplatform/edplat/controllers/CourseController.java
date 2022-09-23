@@ -74,7 +74,7 @@ public class CourseController {
         return "course_creation_success";
     }
 
-    @GetMapping("/course/courses")
+    @GetMapping("/course/courses/all")
     public String listCourses(Model model) {
         Iterable<Course> listCourses = courseRepository.findAll();
         model.addAttribute("listCourses", listCourses);

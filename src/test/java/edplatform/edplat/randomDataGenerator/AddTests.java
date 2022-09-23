@@ -59,11 +59,9 @@ public class AddTests {
         int rightLimit = 122; // letter 'z'
         Random random = new Random();
 
-        String generatedName = random.ints(leftLimit, rightLimit + 1)
+        return random.ints(leftLimit, rightLimit + 1)
                 .limit(nameSize)
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
-
-        return generatedName;
     }
 }
