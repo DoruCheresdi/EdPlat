@@ -39,7 +39,6 @@ public class AuthorityServiceTests {
 
         // get user from database and make sure it is the right one:
         User foundUser = userRepository.findByEmail(email);
-        Hibernate.initialize(foundUser.getAuthorities());
         foundUser.setAuthorities(new HashSet<>());
         assertThat(foundUser.getFirstName()).isEqualTo(testFirstName);
 

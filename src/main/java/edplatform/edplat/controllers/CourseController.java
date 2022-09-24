@@ -1,7 +1,6 @@
 package edplatform.edplat.controllers;
 
 
-import edplatform.edplat.entities.authority.AuthorityRepository;
 import edplatform.edplat.entities.courses.Course;
 import edplatform.edplat.entities.courses.CourseRepository;
 import edplatform.edplat.entities.users.User;
@@ -10,8 +9,10 @@ import edplatform.edplat.security.AuthorityStringBuilder;
 import edplatform.edplat.security.AuthorityService;
 import edplatform.edplat.utils.FileUploadUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -80,6 +81,19 @@ public class CourseController {
         model.addAttribute("listCourses", listCourses);
 
         return "courses";
+    }
+
+    @GetMapping("/course/courses")
+    public String listCoursesByPage(Model model, @RequestParam Integer pageNumber) {
+        // default page size is 10:
+        int pageSize = 10;
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        Page<Course> listCourses = courseRepository.findAll(pageable);
+        model.addAttribute("listCourses", listCourses);
+
+        return "courses_paged";
     }
 
     @GetMapping("/course/edit")
