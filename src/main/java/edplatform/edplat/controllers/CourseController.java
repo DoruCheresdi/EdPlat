@@ -84,14 +84,22 @@ public class CourseController {
     }
 
     @GetMapping("/course/courses")
-    public String listCoursesByPage(Model model, @RequestParam Integer pageNumber) {
+    public String listCoursesByPage(Model model, @RequestParam(required = false) Integer pageNumber) {
         // default page size is 10:
-        int pageSize = 10;
+        int pageSize = 5;
+
+        // if pageNumber is not present in URL, set it to default:
+        if (pageNumber == null) {
+            pageNumber = 0;
+        }
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
         Page<Course> listCourses = courseRepository.findAll(pageable);
         model.addAttribute("listCourses", listCourses);
+
+        model.addAttribute("currentPageNumber", pageNumber);
+        model.addAttribute("numberPages", listCourses.getTotalPages());
 
         return "courses_paged";
     }
