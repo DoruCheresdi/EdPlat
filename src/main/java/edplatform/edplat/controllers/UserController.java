@@ -6,6 +6,9 @@ import edplatform.edplat.entities.users.User;
 import edplatform.edplat.entities.users.UserRepository;
 import edplatform.edplat.utils.FileUploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -56,6 +59,27 @@ public class UserController {
         model.addAttribute("listUsers", listUsers);
 
         return "users";
+    }
+
+    @GetMapping("/users")
+    public String listUsersByPage(Model model, @RequestParam(required = false) Integer pageNumber) {
+        // default page size is 10:
+        int pageSize = 5;
+
+        // if pageNumber is not present in URL, set it to default:
+        if (pageNumber == null) {
+            pageNumber = 0;
+        }
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        Page<User> listUsers = userRepository.findAll(pageable);
+        model.addAttribute("listUsers", listUsers);
+
+        model.addAttribute("currentPageNumber", pageNumber);
+        model.addAttribute("numberPages", listUsers.getTotalPages());
+
+        return "users_paged";
     }
 
     @GetMapping("/user/edit")
