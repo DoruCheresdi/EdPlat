@@ -37,7 +37,7 @@ public class SecurityAuthorizationChecker {
 
     /**
      * check if the authenticated user is the owner of the course given in the request parameter:
-     * @param parameter parameter where the courseId is
+     * @param parameterName name of the parameter where the courseId is
      * @param authentication authentication
      * @param httpServletRequest
      * @return whether the authorities in the authentication match the one needed for the request

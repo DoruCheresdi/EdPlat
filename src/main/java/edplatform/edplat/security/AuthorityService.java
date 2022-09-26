@@ -17,9 +17,6 @@ import java.util.Optional;
 public class AuthorityService {
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private AuthorityRepository authorityRepository;
 
     /**
