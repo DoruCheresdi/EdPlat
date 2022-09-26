@@ -109,6 +109,17 @@ public class CourseController {
             @RequestParam Long id,
             Model model) {
         model.addAttribute("CourseId", id);
+
+        // get course to get its name:
+        Optional<Course> optionalCourse = courseRepository.findById(id);
+        Course course;
+        if (optionalCourse.isPresent()) {
+            course = optionalCourse.get();
+        } else {
+            return "error";
+        }
+
+        model.addAttribute("courseName", course.getCourseName());
         return "edit_course";
     }
 
@@ -122,15 +133,52 @@ public class CourseController {
         Course course;
         if (optionalCourse.isPresent()) {
             course = optionalCourse.get();
-            course.setImage(fileName);
         } else {
             return new RedirectView("error");
         }
+
+        course.setImage(fileName);
 
         String uploadDir = "course-photos/" + course.getId();
 
         FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
 
+        courseRepository.save(course);
+
+        return new RedirectView("/course/courses");
+    }
+
+    @PostMapping("/course/change_name")
+    public RedirectView changeCourseName(@RequestParam Long id,
+                                         @RequestParam String newCourseName) throws IOException {
+
+        Optional<Course> optionalCourse = courseRepository.findById(id);
+        Course course;
+        if (optionalCourse.isPresent()) {
+            course = optionalCourse.get();
+        } else {
+            return new RedirectView("error");
+        }
+
+        course.setCourseName(newCourseName);
+        courseRepository.save(course);
+
+        return new RedirectView("/course/courses");
+    }
+
+    @PostMapping("/course/change_description")
+    public RedirectView changeCourseDescription(@RequestParam Long id,
+                                         @RequestParam String newDescription) throws IOException {
+
+        Optional<Course> optionalCourse = courseRepository.findById(id);
+        Course course;
+        if (optionalCourse.isPresent()) {
+            course = optionalCourse.get();
+        } else {
+            return new RedirectView("error");
+        }
+
+        course.setDescription(newDescription);
         courseRepository.save(course);
 
         return new RedirectView("/course/courses");
