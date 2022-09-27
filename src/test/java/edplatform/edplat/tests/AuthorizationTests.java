@@ -58,7 +58,7 @@ public class AuthorizationTests {
         mvc.perform(get("/course/edit").param("id", "3")
                         .with(user(userDetails)))
                 .andExpect(view().name("edit_course"))
-                .andExpect(status().isOk());
+                .andExpect(status().isForbidden());
     }
 
     @Test
