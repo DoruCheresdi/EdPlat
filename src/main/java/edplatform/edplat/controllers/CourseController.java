@@ -3,12 +3,14 @@ package edplatform.edplat.controllers;
 
 import edplatform.edplat.entities.courses.Course;
 import edplatform.edplat.entities.courses.CourseRepository;
+import edplatform.edplat.entities.courses.CourseService;
 import edplatform.edplat.entities.users.User;
 import edplatform.edplat.entities.users.UserRepository;
 import edplatform.edplat.security.AuthorityStringBuilder;
 import edplatform.edplat.security.AuthorityService;
 import edplatform.edplat.utils.FileUploadUtil;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,6 +37,9 @@ public class CourseController {
     private CourseRepository courseRepository;
 
     @Autowired
+    private CourseService courseService;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
@@ -52,14 +57,7 @@ public class CourseController {
 
     @PostMapping("/course/process_course")
     public String processCourse(Course course, Authentication authentication) {
-        // add the time it was added to the course:
-        Timestamp courseCreatedAt = new Timestamp(System.currentTimeMillis());
-        course.setCreatedAt(courseCreatedAt);
-
-        log.info("Creating course with name {} at timestamp {}",
-                course.getCourseName(), courseCreatedAt);
-
-        courseRepository.save(course);
+        courseService.save(course);
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         User user = userRepository.findByEmail(userDetails.getUsername());

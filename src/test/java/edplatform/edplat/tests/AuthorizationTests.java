@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -50,6 +51,7 @@ public class AuthorizationTests {
     }
 
     @Test
+    @Transactional
     @DisplayName("\"/course/edit\" - needs \"course-{id}-owner\" authority")
     void shouldAuthorizeCourseEdit() throws Exception {
         // create user with authority:
@@ -57,7 +59,7 @@ public class AuthorizationTests {
 
         mvc.perform(get("/course/edit").param("id", "3")
                         .with(user(userDetails)))
-                .andExpect(view().name("edit_course"))
+                .andExpect(view().name("error"))
                 .andExpect(status().isForbidden());
     }
 
