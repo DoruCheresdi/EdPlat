@@ -2,15 +2,13 @@ package edplatform.edplat.controllers;
 
 
 import edplatform.edplat.entities.courses.Course;
-import edplatform.edplat.entities.courses.CourseRepository;
 import edplatform.edplat.entities.courses.CourseService;
 import edplatform.edplat.entities.users.User;
-import edplatform.edplat.entities.users.UserRepository;
+import edplatform.edplat.entities.users.UserService;
 import edplatform.edplat.security.AuthorityStringBuilder;
 import edplatform.edplat.security.AuthorityService;
 import edplatform.edplat.utils.FileUploadUtil;
 import lombok.extern.slf4j.Slf4j;
-import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,7 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.util.Optional;
 
 @Controller
@@ -34,13 +31,10 @@ import java.util.Optional;
 public class CourseController {
 
     @Autowired
-    private CourseRepository courseRepository;
-
-    @Autowired
     private CourseService courseService;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Autowired
     private AuthorityStringBuilder authorityStringBuilder;
@@ -60,25 +54,12 @@ public class CourseController {
         courseService.save(course);
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        User user = userRepository.findByEmail(userDetails.getUsername());
+        User user = userService.findByEmail(userDetails.getUsername());
 
         // add course to user:
-        user.getCourses().add(course);
-        userRepository.save(user);
-
-        // add the course owner authority to the user that created the course:
-        String authorityName = authorityStringBuilder.getCourseOwnerAuthority(course.getId().toString());
-        authorityService.giveAuthorityToUser(user, authorityName);
+        courseService.createCourse(user, course);
 
         return "course_creation_success";
-    }
-
-    @GetMapping("/course/courses/all")
-    public String listCourses(Model model) {
-        Iterable<Course> listCourses = courseRepository.findAll();
-        model.addAttribute("listCourses", listCourses);
-
-        return "courses";
     }
 
     @GetMapping("/course/courses")
@@ -93,7 +74,7 @@ public class CourseController {
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-        Page<Course> listCourses = courseRepository.findAll(pageable);
+        Page<Course> listCourses = courseService.findAll(pageable);
         model.addAttribute("listCourses", listCourses);
 
         model.addAttribute("currentPageNumber", pageNumber);
@@ -109,7 +90,7 @@ public class CourseController {
         model.addAttribute("CourseId", id);
 
         // get course to get its name:
-        Optional<Course> optionalCourse = courseRepository.findById(id);
+        Optional<Course> optionalCourse = courseService.findById(id);
         Course course;
         if (optionalCourse.isPresent()) {
             course = optionalCourse.get();
@@ -127,7 +108,7 @@ public class CourseController {
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 
         // save image name to database:
-        Optional<Course> optionalCourse = courseRepository.findById(id);
+        Optional<Course> optionalCourse = courseService.findById(id);
         Course course;
         if (optionalCourse.isPresent()) {
             course = optionalCourse.get();
@@ -141,7 +122,7 @@ public class CourseController {
 
         FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
 
-        courseRepository.save(course);
+        courseService.save(course);
 
         return new RedirectView("/course/courses");
     }
@@ -150,7 +131,7 @@ public class CourseController {
     public RedirectView changeCourseName(@RequestParam Long id,
                                          @RequestParam String newCourseName) throws IOException {
 
-        Optional<Course> optionalCourse = courseRepository.findById(id);
+        Optional<Course> optionalCourse = courseService.findById(id);
         Course course;
         if (optionalCourse.isPresent()) {
             course = optionalCourse.get();
@@ -159,7 +140,7 @@ public class CourseController {
         }
 
         course.setCourseName(newCourseName);
-        courseRepository.save(course);
+        courseService.save(course);
 
         return new RedirectView("/course/courses");
     }
@@ -168,7 +149,7 @@ public class CourseController {
     public RedirectView changeCourseDescription(@RequestParam Long id,
                                          @RequestParam String newDescription) throws IOException {
 
-        Optional<Course> optionalCourse = courseRepository.findById(id);
+        Optional<Course> optionalCourse = courseService.findById(id);
         Course course;
         if (optionalCourse.isPresent()) {
             course = optionalCourse.get();
@@ -177,7 +158,7 @@ public class CourseController {
         }
 
         course.setDescription(newDescription);
-        courseRepository.save(course);
+        courseService.save(course);
 
         return new RedirectView("/course/courses");
     }
@@ -185,7 +166,7 @@ public class CourseController {
     @PostMapping("course/enroll")
     public RedirectView enrollUserInCourse(@RequestParam Long courseId,
                                      Authentication authentication) {
-        Optional<Course> optionalCourse = courseRepository.findById(courseId);
+        Optional<Course> optionalCourse = courseService.findById(courseId);
         Course course;
         if (optionalCourse.isPresent()) {
             course = optionalCourse.get();
@@ -194,17 +175,8 @@ public class CourseController {
         }
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        User user = userRepository.findByEmail(userDetails.getUsername());
-        if (user.getCourses().contains(course)) {
-            log.error("User {} already has course {}", user.getEmail(), course.getCourseName());
-            return new RedirectView("/course/courses");
-        }
-        course.getUsers().add(user);
-        courseRepository.save(course);
-
-        // add the course owner authority to the user that created the course:
-        String authorityName = authorityStringBuilder.getCourseEnrolledAuthority(course.getId().toString());
-        authorityService.giveAuthorityToUser(user, authorityName);
+        User user = userService.findByEmail(userDetails.getUsername());
+        courseService.enrollUserToCourse(course, user);
 
         return new RedirectView("/course/courses");
     }
@@ -214,7 +186,7 @@ public class CourseController {
             @RequestParam Long id,
             Model model) {
         log.info("Showing single course");
-        Optional<Course> optionalCourse = courseRepository.findById(id);
+        Optional<Course> optionalCourse = courseService.findById(id);
         Course course;
         if (optionalCourse.isPresent()) {
             course = optionalCourse.get();
@@ -232,7 +204,7 @@ public class CourseController {
     public String deleteCourse(@RequestParam Long courseId,
                                            Authentication authentication) {
         // find the course:
-        Optional<Course> optionalCourse = courseRepository.findById(courseId);
+        Optional<Course> optionalCourse = courseService.findById(courseId);
         Course course;
         if (optionalCourse.isPresent()) {
             course = optionalCourse.get();
@@ -241,19 +213,7 @@ public class CourseController {
             return "error";
         }
 
-        // delete all authorities regarding course:
-        // for owners:
-        String ownerAuthority = authorityStringBuilder.getCourseOwnerAuthority(courseId.toString());
-        authorityService.deleteAuthority(ownerAuthority);
-        // for enrolled:
-        String enrolledAuthority = authorityStringBuilder.getCourseEnrolledAuthority(courseId.toString());
-        authorityService.deleteAuthority(enrolledAuthority);
-
-        // delete all assignments and the course itself (delete is cascading):
-        for (User user : course.getUsers()) {
-            user.getCourses().remove(course);
-        }
-        courseRepository.delete(course);
+        courseService.deleteCourse(course);
 
         return "course_deletion_success";
     }
