@@ -35,6 +35,7 @@ public class CourseServiceImpl implements CourseService {
         return courseRepository.findById(id);
     }
 
+    @Override
     public Page<Course> findAll(Pageable pageable) {
         return courseRepository.findAll(pageable);
     }
@@ -80,10 +81,10 @@ public class CourseServiceImpl implements CourseService {
     public void deleteCourse(Course course) {
         // delete all authorities regarding course:
         // for owners:
-        String ownerAuthority = authorityStringBuilder.getCourseOwnerAuthority(courseId.toString());
+        String ownerAuthority = authorityStringBuilder.getCourseOwnerAuthority(course.getId().toString());
         authorityService.deleteAuthority(ownerAuthority);
         // for enrolled:
-        String enrolledAuthority = authorityStringBuilder.getCourseEnrolledAuthority(courseId.toString());
+        String enrolledAuthority = authorityStringBuilder.getCourseEnrolledAuthority(course.getId().toString());
         authorityService.deleteAuthority(enrolledAuthority);
 
         // delete all assignments and the course itself (delete is cascading):

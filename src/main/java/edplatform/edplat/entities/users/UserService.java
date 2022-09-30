@@ -1,6 +1,8 @@
 package edplatform.edplat.entities.users;
 
 import edplatform.edplat.entities.courses.Course;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface UserService {
 
@@ -9,6 +11,13 @@ public interface UserService {
      * @param email user's email
      */
     public User findByEmail(String email);
+
+    /**
+     * Method to return a list of results indicated by the pageable object
+     * @param pageable object containing information about the page
+     * @return
+     */
+    public Page<User> findAll(Pageable pageable);
 
     public void save(User user);
 }

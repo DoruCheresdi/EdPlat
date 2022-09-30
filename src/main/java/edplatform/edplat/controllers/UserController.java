@@ -4,6 +4,7 @@ import edplatform.edplat.entities.courses.Course;
 import edplatform.edplat.entities.courses.CourseDisplay;
 import edplatform.edplat.entities.users.User;
 import edplatform.edplat.entities.users.UserRepository;
+import edplatform.edplat.entities.users.UserService;
 import edplatform.edplat.utils.FileUploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -31,7 +32,7 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
@@ -48,17 +49,9 @@ public class UserController {
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
 
-        userRepository.save(user);
+        userService.save(user);
 
         return "register_success";
-    }
-
-    @GetMapping("/users/all")
-    public String listUsers(Model model) {
-        Iterable<User> listUsers = userRepository.findAll();
-        model.addAttribute("listUsers", listUsers);
-
-        return "users";
     }
 
     @GetMapping("/users")
@@ -73,7 +66,7 @@ public class UserController {
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-        Page<User> listUsers = userRepository.findAll(pageable);
+        Page<User> listUsers = userService.findAll(pageable);
         model.addAttribute("listUsers", listUsers);
 
         model.addAttribute("currentPageNumber", pageNumber);
@@ -94,14 +87,14 @@ public class UserController {
 
         // save image name to database:
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        User user = userRepository.findByEmail(userDetails.getUsername());
+        User user = userService.findByEmail(userDetails.getUsername());
         user.setPhoto(fileName);
 
         String uploadDir = "user-photos/" + user.getId();
 
         FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
 
-        userRepository.save(user);
+        userService.save(user);
 
         return new RedirectView("/users");
     }
@@ -110,7 +103,7 @@ public class UserController {
     public String showUserCourses(Model model,
                                   Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        User user = userRepository.findByEmail(userDetails.getUsername());
+        User user = userService.findByEmail(userDetails.getUsername());
         List<Course> userCourses = user.getCourses();
 
         List<CourseDisplay> userCoursesDisplay = new ArrayList<>();
