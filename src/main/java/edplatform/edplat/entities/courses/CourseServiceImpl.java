@@ -5,6 +5,7 @@ import edplatform.edplat.entities.users.UserService;
 import edplatform.edplat.security.AuthorityService;
 import edplatform.edplat.security.AuthorityStringBuilder;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -89,7 +90,7 @@ public class CourseServiceImpl implements CourseService {
 
         // delete all assignments and the course itself (delete is cascading):
         for (User user : course.getUsers()) {
-            user.getCourses().remove(course);
+            course.getUsers().remove(user);
         }
         courseRepository.delete(course);
     }
