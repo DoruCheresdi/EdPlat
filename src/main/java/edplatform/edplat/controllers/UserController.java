@@ -34,9 +34,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
-
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
         model.addAttribute("user", new User());
@@ -46,8 +43,7 @@ public class UserController {
 
     @PostMapping("/process_register")
     public String processRegister(User user) {
-        String encodedPassword = passwordEncoder.encode(user.getPassword());
-        user.setPassword(encodedPassword);
+        userService.encryptPassword(user);
 
         userService.save(user);
 

@@ -19,5 +19,11 @@ public interface UserService {
      */
     public Page<User> findAll(Pageable pageable);
 
+    /**
+     * Encrypts a user password
+     * @param user User with password in plain to be encrypted
+     */
+    public void encryptPassword(User user);
+
     public void save(User user);
 }

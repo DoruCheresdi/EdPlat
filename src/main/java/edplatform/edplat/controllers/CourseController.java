@@ -51,8 +51,6 @@ public class CourseController {
 
     @PostMapping("/course/process_course")
     public String processCourse(Course course, Authentication authentication) {
-        courseService.save(course);
-
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         User user = userService.findByEmail(userDetails.getUsername());
 

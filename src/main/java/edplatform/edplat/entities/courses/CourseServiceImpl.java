@@ -47,7 +47,7 @@ public class CourseServiceImpl implements CourseService {
         Timestamp courseCreatedAt = new Timestamp(System.currentTimeMillis());
         course.setCreatedAt(courseCreatedAt);
 
-        log.info("Creating course with name {} at timestamp {}",
+        log.info("Saving course with name {} at timestamp {}",
                 course.getCourseName(), courseCreatedAt);
 
         courseRepository.save(course);
@@ -62,6 +62,8 @@ public class CourseServiceImpl implements CourseService {
         // add the course owner authority to the user that created the course:
         String authorityName = authorityStringBuilder.getCourseOwnerAuthority(course.getId().toString());
         authorityService.giveAuthorityToUser(user, authorityName);
+
+        this.save(course);
     }
 
     @Override
