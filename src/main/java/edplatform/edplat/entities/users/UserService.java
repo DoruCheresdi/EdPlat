@@ -4,13 +4,15 @@ import edplatform.edplat.entities.courses.Course;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Optional;
+
 public interface UserService {
 
     /**
      * Retrieve a user by its email
-     * @param email user's email
+     * @param email User's email
      */
-    public User findByEmail(String email);
+    public Optional<User> findByEmail(String email);
 
     /**
      * Method to return a list of results indicated by the pageable object
@@ -25,5 +27,9 @@ public interface UserService {
      */
     public void encryptPassword(User user);
 
+    /**
+     * Persists a User
+     * @param user User to be persisted
+     */
     public void save(User user);
 }

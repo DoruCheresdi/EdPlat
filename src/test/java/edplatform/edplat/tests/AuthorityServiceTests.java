@@ -38,14 +38,14 @@ public class AuthorityServiceTests {
         userRepository.save(user);
 
         // get user from database and make sure it is the right one:
-        User foundUser = userRepository.findByEmail(email);
+        User foundUser = userRepository.findByEmail(email).get();
         foundUser.setAuthorities(new HashSet<>());
         assertThat(foundUser.getFirstName()).isEqualTo(testFirstName);
 
         authorityService.giveAuthorityToUser(foundUser, authorityStringBuilder.getCourseOwnerAuthority("4"));
 
         // retrieve the persisted user again:
-        foundUser = userRepository.findByEmail(email);
+        foundUser = userRepository.findByEmail(email).get();
         assertThat(foundUser.getAuthorities().size()).isEqualTo(1);
         assertThat(foundUser.getAuthorities().iterator().next().getAuthority())
                 .isEqualTo(authorityStringBuilder.getCourseOwnerAuthority("4"));

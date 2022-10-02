@@ -83,7 +83,7 @@ public class UserController {
 
         // save image name to database:
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        User user = userService.findByEmail(userDetails.getUsername());
+        User user = userService.findByEmail(userDetails.getUsername()).get();
         user.setPhoto(fileName);
 
         String uploadDir = "user-photos/" + user.getId();
@@ -99,7 +99,7 @@ public class UserController {
     public String showUserCourses(Model model,
                                   Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        User user = userService.findByEmail(userDetails.getUsername());
+        User user = userService.findByEmail(userDetails.getUsername()).get();
         List<Course> userCourses = user.getCourses();
 
         List<CourseDisplay> userCoursesDisplay = new ArrayList<>();

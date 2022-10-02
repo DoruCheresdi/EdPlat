@@ -2,10 +2,16 @@ package edplatform.edplat.randomDataGenerator;
 
 import edplatform.edplat.entities.courses.Course;
 import edplatform.edplat.entities.courses.CourseRepository;
+import edplatform.edplat.entities.courses.CourseService;
+import edplatform.edplat.entities.users.User;
+import edplatform.edplat.entities.users.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -15,11 +21,16 @@ import java.util.Random;
 public class AddTests {
 
     @Autowired
-    private CourseRepository courseRepository;
+    private CourseService courseService;
+
+    @Autowired
+    private UserService userService;
 
     @Test
-    public void add10Courses() {
-        addCourses(10);
+    @Transactional
+    @Rollback(value = false)
+    public void add100Courses() {
+        addCourses(100);
     }
 
     /**
@@ -27,10 +38,16 @@ public class AddTests {
      * @param numberOfCourses number of courses to be added
      */
     public void addCourses(Integer numberOfCourses) {
+        User user = createRandomUser();
+
         // create and save courses:
         for (int i = 0; i < numberOfCourses; i++) {
             Course generatedCourse = createRandomCourse();
-            courseRepository.save(generatedCourse);
+            courseService.save(generatedCourse);
+
+            // retrieved the course so that it has an ID:
+            Course retrievedCourse = courseService.findByCourseName(generatedCourse.getCourseName()).get();
+            courseService.createCourse(user, retrievedCourse);
         }
     }
 
@@ -38,7 +55,7 @@ public class AddTests {
      * Generates a Course with a random name and description
      * @return generated course
      */
-    public Course createRandomCourse() {
+    private Course createRandomCourse() {
         int courseNameSize = 12;
         int courseDescriptionSize = 20;
 
@@ -54,7 +71,7 @@ public class AddTests {
      * @param nameSize number of letter the name has
      * @return a string containing lowercase letters
      */
-    public String generateRandomName(Integer nameSize) {
+    private String generateRandomName(Integer nameSize) {
         int leftLimit = 97; // letter 'a'
         int rightLimit = 122; // letter 'z'
         Random random = new Random();
@@ -63,5 +80,37 @@ public class AddTests {
                 .limit(nameSize)
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
+    }
+
+    /**
+     * Creates a random user, encrypts its password and persists it
+     * @return user created
+     */
+    private User createRandomUser() {
+        User user = getRandomUser();
+        userService.encryptPassword(user);
+        userService.save(user);
+
+        return user;
+    }
+
+    /**
+     * Returns a random user with valid data (email is unique).
+     * @return
+     */
+    private User getRandomUser() {
+        User user = new User();
+
+        String email;
+        do {
+            email = generateRandomName(10) + "@" + generateRandomName(4);
+        } while(userService.findByEmail(email).isPresent());
+        user.setEmail(email);
+        user.setFirstName(generateRandomName(10));
+        user.setLastName(generateRandomName(13));
+        user.setPassword(generateRandomName(14));
+        user.setCourses(new ArrayList<>());
+
+        return user;
     }
 }

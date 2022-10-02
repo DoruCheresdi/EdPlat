@@ -92,7 +92,7 @@ public class CourseControllerTests {
         assertThat(retrievedCourse.getDescription()).isEqualTo(course.getDescription());
 
         // check that the user is given the course:
-        User retrievedUser = userRepository.findByEmail(userDetails.getUser().getEmail());
+        User retrievedUser = userRepository.findByEmail(userDetails.getUser().getEmail()).get();
         assertThat(retrievedUser.getCourses().get(0)).isEqualTo(retrievedCourse);
 
         // test that the authority given is right:

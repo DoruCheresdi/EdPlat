@@ -15,6 +15,12 @@ public interface CourseService {
     public Optional<Course> findById(Long id);
 
     /**
+     * Retrieved a course from db by courseName
+     * @param courseName CourseName of the course to be retrieved
+     */
+    public Optional<Course> findByCourseName(String courseName);
+
+    /**
      * Method to return a list of results indicated by the pageable object
      * @param pageable object containing information about the page
      * @return

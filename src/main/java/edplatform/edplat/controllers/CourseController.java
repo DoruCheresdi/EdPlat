@@ -52,7 +52,7 @@ public class CourseController {
     @PostMapping("/course/process_course")
     public String processCourse(Course course, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        User user = userService.findByEmail(userDetails.getUsername());
+        User user = userService.findByEmail(userDetails.getUsername()).get();
 
         // add course to user:
         courseService.createCourse(user, course);
@@ -173,7 +173,7 @@ public class CourseController {
         }
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        User user = userService.findByEmail(userDetails.getUsername());
+        User user = userService.findByEmail(userDetails.getUsername()).get();
         courseService.enrollUserToCourse(course, user);
 
         return new RedirectView("/course/courses");
