@@ -4,6 +4,7 @@ import edplatform.edplat.entities.users.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface CourseService {
@@ -47,6 +48,13 @@ public interface CourseService {
      * @param user user to be given the course
      */
     public void enrollUserToCourse(Course course, User user);
+
+    /**
+     * Returns all the owners of the course
+     * @param course Course whose owners are sought
+     * @return A list of all owner Users
+     */
+    public List<User> getOwnerUsers(Course course);
 
     /**
      * Deletes a course and all its authorities, assignments and submissions

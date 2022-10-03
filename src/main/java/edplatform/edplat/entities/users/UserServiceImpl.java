@@ -1,8 +1,8 @@
 package edplatform.edplat.entities.users;
 
+import edplatform.edplat.entities.authority.Authority;
 import edplatform.edplat.entities.courses.Course;
-import edplatform.edplat.security.AuthorityService;
-import edplatform.edplat.security.AuthorityStringBuilder;
+import edplatform.edplat.entities.courses.CourseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,6 +18,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CourseService courseService;
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
@@ -36,6 +39,24 @@ public class UserServiceImpl implements UserService {
     public void encryptPassword(User user) {
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
+    }
+
+    @Override
+    public void deleteUser(User user) {
+        for (Course course :
+                user.getCourses()) {
+            // delete course if the user deleted is the only owner of the course:
+            if(courseService.getOwnerUsers(course).size() <= 1) {
+                courseService.deleteCourse(course);
+            }
+        }
+
+        for (Authority authority :
+                user.getAuthorities()) {
+            authority.getUsers().remove(user);
+        }
+
+        userRepository.delete(user);
     }
 
     @Override

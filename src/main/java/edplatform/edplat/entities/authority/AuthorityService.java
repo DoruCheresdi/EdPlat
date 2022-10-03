@@ -1,4 +1,4 @@
-package edplatform.edplat.security;
+package edplatform.edplat.entities.authority;
 
 import edplatform.edplat.entities.authority.Authority;
 import edplatform.edplat.entities.authority.AuthorityRepository;
@@ -18,6 +18,10 @@ public class AuthorityService {
 
     @Autowired
     private AuthorityRepository authorityRepository;
+
+    public Optional<Authority> findByName(String name) {
+        return authorityRepository.findByName(name);
+    }
 
     /**
      * Method to give a certain authority to a user, also persisting it. Creates authority if it

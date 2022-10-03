@@ -6,7 +6,7 @@ import edplatform.edplat.entities.courses.CourseService;
 import edplatform.edplat.entities.users.User;
 import edplatform.edplat.entities.users.UserService;
 import edplatform.edplat.security.AuthorityStringBuilder;
-import edplatform.edplat.security.AuthorityService;
+import edplatform.edplat.entities.authority.AuthorityService;
 import edplatform.edplat.utils.FileUploadUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

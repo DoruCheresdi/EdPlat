@@ -51,29 +51,29 @@ public class Course {
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder("Assignment{");
+        StringBuilder stringBuilder = new StringBuilder("Course{");
         if (id != null) {
             stringBuilder.append(", id='");
             stringBuilder.append(id);
             stringBuilder.append('\'');
         }
         if (courseName != null) {
-            stringBuilder.append(", assignmentName='");
+            stringBuilder.append(", courseName='");
             stringBuilder.append(courseName);
             stringBuilder.append('\'');
         }
         if (description != null) {
-            stringBuilder.append(", course='");
+            stringBuilder.append(", description='");
             stringBuilder.append(description);
             stringBuilder.append('\'');
         }
         if (image != null) {
-            stringBuilder.append(", submissions='");
+            stringBuilder.append(", image='");
             stringBuilder.append(image);
             stringBuilder.append('\'');
         }
         if (createdAt != null) {
-            stringBuilder.append(", description='");
+            stringBuilder.append(", createdAt='");
             stringBuilder.append(createdAt);
             stringBuilder.append('\'');
         }

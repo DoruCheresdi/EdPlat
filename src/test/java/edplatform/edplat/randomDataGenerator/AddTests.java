@@ -29,8 +29,8 @@ public class AddTests {
     @Test
     @Transactional
     @Rollback(value = false)
-    public void add100Courses() {
-        addCourses(100);
+    public void addCourses() {
+        addCourses(10);
     }
 
     /**
@@ -43,11 +43,7 @@ public class AddTests {
         // create and save courses:
         for (int i = 0; i < numberOfCourses; i++) {
             Course generatedCourse = createRandomCourse();
-            courseService.save(generatedCourse);
-
-            // retrieved the course so that it has an ID:
-            Course retrievedCourse = courseService.findByCourseName(generatedCourse.getCourseName()).get();
-            courseService.createCourse(user, retrievedCourse);
+            courseService.createCourse(user, generatedCourse);
         }
     }
 
@@ -62,6 +58,7 @@ public class AddTests {
         Course generatedCourse = new Course();
         generatedCourse.setCourseName(generateRandomName(courseNameSize));
         generatedCourse.setDescription(generateRandomName(courseDescriptionSize));
+        generatedCourse.setUsers(new ArrayList<>());
 
         return generatedCourse;
     }

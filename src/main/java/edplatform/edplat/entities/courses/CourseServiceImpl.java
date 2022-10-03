@@ -1,19 +1,22 @@
 package edplatform.edplat.entities.courses;
 
 import edplatform.edplat.entities.users.User;
+import edplatform.edplat.entities.users.UserRepository;
 import edplatform.edplat.entities.users.UserService;
-import edplatform.edplat.security.AuthorityService;
+import edplatform.edplat.entities.authority.AuthorityService;
 import edplatform.edplat.security.AuthorityStringBuilder;
+import edplatform.edplat.security.SecurityAuthorizationChecker;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.view.RedirectView;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -29,7 +32,10 @@ public class CourseServiceImpl implements CourseService {
     private AuthorityService authorityService;
 
     @Autowired
-    private UserService userService;
+    private UserRepository userRepository;
+
+    @Autowired
+    private SecurityAuthorizationChecker securityAuthorizationChecker;
 
     @Override
     public Optional<Course> findById(Long id) {
@@ -61,14 +67,14 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public void createCourse(User user, Course course) {
         // add course to user:
-        user.getCourses().add(course);
-        userService.save(user);
+        course.getUsers().add(user);
+        this.save(course);
+        // retrieve from DB to get id for authority creation:
+        course = courseRepository.findByCourseName(course.getCourseName()).get();
 
         // add the course owner authority to the user that created the course:
         String authorityName = authorityStringBuilder.getCourseOwnerAuthority(course.getId().toString());
         authorityService.giveAuthorityToUser(user, authorityName);
-
-        this.save(course);
     }
 
     @Override
@@ -86,6 +92,13 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public List<User> getOwnerUsers(Course course) {
+        return course.getUsers().stream()
+                .filter(user -> securityAuthorizationChecker.checkCourseOwner(user, course))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void deleteCourse(Course course) {
         // delete all authorities regarding course:
         // for owners:
@@ -96,9 +109,7 @@ public class CourseServiceImpl implements CourseService {
         authorityService.deleteAuthority(enrolledAuthority);
 
         // delete all assignments and the course itself (delete is cascading):
-        for (User user : course.getUsers()) {
-            course.getUsers().remove(user);
-        }
+        course.setUsers(new ArrayList<>());
         courseRepository.delete(course);
     }
 }

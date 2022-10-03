@@ -1,5 +1,9 @@
 package edplatform.edplat.security;
 
+import edplatform.edplat.entities.authority.Authority;
+import edplatform.edplat.entities.authority.AuthorityService;
+import edplatform.edplat.entities.courses.Course;
+import edplatform.edplat.entities.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -14,6 +18,9 @@ public class SecurityAuthorizationChecker {
 
     @Autowired
     private AuthorityStringBuilder authorityStringBuilder;
+
+    @Autowired
+    private AuthorityService authorityService;
 
     /**
      * check if the authenticated user is the owner of the course given in the request parameter:
@@ -50,5 +57,17 @@ public class SecurityAuthorizationChecker {
                 .filter(grantedAuthority -> grantedAuthority.getAuthority().equals(courseOwnerAuthority))
                 .findFirst();
         return authority.isPresent();
+    }
+
+    /**
+     * Checks if a user is a owner of a course
+     * @param user user to be checked
+     * @param course course whose owner the user must be
+     * @return whether the user is an owner of the course
+     */
+    public boolean checkCourseOwner(User user, Course course) {
+        String courseOwnerAuthorityName = authorityStringBuilder.getCourseOwnerAuthority(course.getId().toString());
+        Authority authority = authorityService.findByName(courseOwnerAuthorityName).get();
+        return user.getAuthorities().contains(authority);
     }
 }

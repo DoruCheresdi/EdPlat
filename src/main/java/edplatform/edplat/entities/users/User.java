@@ -62,4 +62,45 @@ public class User {
     public int hashCode() {
         return Objects.hash(id, email, password, firstName, lastName, institution, photo);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder("User{");
+        if (id != null) {
+            stringBuilder.append(", id='");
+            stringBuilder.append(id);
+            stringBuilder.append('\'');
+        }
+        if (email != null) {
+            stringBuilder.append(", email='");
+            stringBuilder.append(email);
+            stringBuilder.append('\'');
+        }
+        if (password != null) {
+            stringBuilder.append(", password='");
+            stringBuilder.append(password);
+            stringBuilder.append('\'');
+        }
+        if (firstName != null) {
+            stringBuilder.append(", firstName='");
+            stringBuilder.append(firstName);
+            stringBuilder.append('\'');
+        }
+        if (lastName != null) {
+            stringBuilder.append(", lastName='");
+            stringBuilder.append(lastName);
+            stringBuilder.append('\'');
+        }
+        if (institution != null) {
+            stringBuilder.append(", institution='");
+            stringBuilder.append(institution);
+            stringBuilder.append('\'');
+        }
+        if (photo != null) {
+            stringBuilder.append(", photo='");
+            stringBuilder.append(photo);
+            stringBuilder.append('\'');
+        }
+        return stringBuilder.toString();
+    }
 }

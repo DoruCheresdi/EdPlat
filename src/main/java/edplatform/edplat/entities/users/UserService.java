@@ -28,6 +28,13 @@ public interface UserService {
     public void encryptPassword(User user);
 
     /**
+     * Deletes a user and all its submissions.
+     * Deletes courses user owns if they don't have any other owners.
+     * @param user User to be deleted
+     */
+    public void deleteUser(User user);
+
+    /**
      * Persists a User
      * @param user User to be persisted
      */

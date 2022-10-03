@@ -2,15 +2,13 @@ package edplatform.edplat.tests;
 
 import edplatform.edplat.entities.users.User;
 import edplatform.edplat.entities.users.UserRepository;
-import edplatform.edplat.security.AuthorityService;
+import edplatform.edplat.entities.authority.AuthorityService;
 import edplatform.edplat.security.AuthorityStringBuilder;
-import org.hibernate.Hibernate;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
