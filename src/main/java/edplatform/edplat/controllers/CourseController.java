@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Controller
@@ -55,6 +56,7 @@ public class CourseController {
         User user = userService.findByEmail(userDetails.getUsername()).get();
 
         // add course to user:
+        course.setUsers(new ArrayList<>());
         courseService.createCourse(user, course);
 
         return "course_creation_success";

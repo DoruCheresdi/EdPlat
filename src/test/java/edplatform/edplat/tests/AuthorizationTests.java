@@ -1,9 +1,11 @@
 package edplatform.edplat.tests;
 
 import edplatform.edplat.entities.authority.Authority;
+import edplatform.edplat.entities.courses.Course;
 import edplatform.edplat.entities.users.CustomUserDetails;
 import edplatform.edplat.entities.users.User;
 import edplatform.edplat.randomDataGenerator.DataGenerator;
+import edplatform.edplat.security.AuthorityStringBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,9 @@ public class AuthorizationTests {
     @Autowired
     private DataGenerator dataGenerator;
 
+    @Autowired
+    private AuthorityStringBuilder authorityStringBuilder;
+
     @Test
     @DisplayName("\"/assignment/new\" - needs \"course-{id}-owner\" authority")
     void shouldAuthorizeNewAssignment() throws Exception {
@@ -43,6 +48,7 @@ public class AuthorizationTests {
     }
 
     @Test
+    @Transactional
     @DisplayName("\"/assignment/new\" - needs \"course-{id}-owner\" authority - Forbidden")
     void shouldNotAuthorizeNewAssignment() throws Exception {
         // create user with authority:
@@ -58,13 +64,20 @@ public class AuthorizationTests {
     @Transactional
     @DisplayName("\"/course/edit\" - needs \"course-{id}-owner\" authority")
     void shouldAuthorizeCourseEdit() throws Exception {
-        // create user with authority:
-        UserDetails userDetails = getUserDetailsWithAuthority("course-3-owner");
+        // Create user so that it doesn't return an error when the controller is
+        // trying to retrieve it:
+        User user = dataGenerator.createRandomUser();
+        Course course = dataGenerator.createAndPersistRandomCourseWithUser(user);
 
-        mvc.perform(get("/course/edit").param("id", "3")
+        String courseAuthority = authorityStringBuilder.getCourseOwnerAuthority(course.getId().toString());
+
+        // create user with authority:
+        UserDetails userDetails = getUserDetailsWithAuthority(courseAuthority);
+
+        mvc.perform(get("/course/edit").param("id", course.getId().toString())
                         .with(user(userDetails)))
-                .andExpect(view().name("error"))
-                .andExpect(status().isForbidden());
+                .andExpect(view().name("edit_course"))
+                .andExpect(status().isOk());
     }
 
     @Test

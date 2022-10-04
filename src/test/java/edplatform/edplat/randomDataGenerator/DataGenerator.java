@@ -1,6 +1,7 @@
 package edplatform.edplat.randomDataGenerator;
 
 import edplatform.edplat.entities.courses.Course;
+import edplatform.edplat.entities.courses.CourseService;
 import edplatform.edplat.entities.users.User;
 import edplatform.edplat.entities.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,9 @@ public class DataGenerator {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private CourseService courseService;
 
     /**
      * Creates a random user, encrypts its password and persists it
@@ -45,6 +49,17 @@ public class DataGenerator {
         user.setCourses(new ArrayList<>());
 
         return user;
+    }
+
+    /**
+     * Creates and persist a random course, using the given user as owner
+     * @param user User to be used as owner
+     * @return Created coursed retrieved from the database
+     */
+    public Course createAndPersistRandomCourseWithUser(User user) {
+        Course generatedCourse = createRandomCourse();
+        courseService.createCourse(user, generatedCourse);
+        return courseService.findByCourseName(generatedCourse.getCourseName()).get();
     }
 
     /**
