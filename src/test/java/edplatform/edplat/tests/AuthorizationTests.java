@@ -3,6 +3,7 @@ package edplatform.edplat.tests;
 import edplatform.edplat.entities.authority.Authority;
 import edplatform.edplat.entities.users.CustomUserDetails;
 import edplatform.edplat.entities.users.User;
+import edplatform.edplat.randomDataGenerator.DataGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class AuthorizationTests {
 
     @Autowired
     private MockMvc mvc;
+
+    @Autowired
+    private DataGenerator dataGenerator;
 
     @Test
     @DisplayName("\"/assignment/new\" - needs \"course-{id}-owner\" authority")
