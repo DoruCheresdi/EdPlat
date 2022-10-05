@@ -46,8 +46,4 @@ public class AddTests {
             courseService.createCourse(user, generatedCourse);
         }
     }
-
-
-
-
 }
