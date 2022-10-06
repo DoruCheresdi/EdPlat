@@ -1,8 +1,10 @@
 package edplatform.edplat.controllers;
 
 
+import edplatform.edplat.entities.authority.Authority;
 import edplatform.edplat.entities.courses.Course;
 import edplatform.edplat.entities.courses.CourseService;
+import edplatform.edplat.entities.users.CustomUserDetails;
 import edplatform.edplat.entities.users.User;
 import edplatform.edplat.entities.users.UserService;
 import edplatform.edplat.security.AuthorityStringBuilder;
@@ -13,7 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,7 +28,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
+import java.security.Security;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -58,6 +65,18 @@ public class CourseController {
         // add course to user:
         course.setUsers(new ArrayList<>());
         courseService.createCourse(user, course);
+
+        // update authorities on the authenticated user:
+        Authority authority = new Authority(
+                authorityStringBuilder.getCourseOwnerAuthority(course.getId().toString()));
+
+        List<GrantedAuthority> updatedAuthorities = new ArrayList<>(authentication.getAuthorities());
+        updatedAuthorities.add(authority);
+
+        Authentication newAuth = new UsernamePasswordAuthenticationToken(
+                authentication.getPrincipal(), authentication.getCredentials(), updatedAuthorities);
+
+        SecurityContextHolder.getContext().setAuthentication(newAuth);
 
         return "course_creation_success";
     }

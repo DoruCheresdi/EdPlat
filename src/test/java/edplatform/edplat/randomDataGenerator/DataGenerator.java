@@ -40,7 +40,7 @@ public class DataGenerator {
 
         String email;
         do {
-            email = generateRandomName(10) + "@" + generateRandomName(4);
+            email = generateRandomName(10) + "@" + generateRandomName(4) + ".com";
         } while(userService.findByEmail(email).isPresent());
         user.setEmail(email);
         user.setFirstName(generateRandomName(10));
