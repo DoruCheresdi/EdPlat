@@ -27,10 +27,19 @@ public class Course {
     private Timestamp createdAt;
 
     @OneToMany(mappedBy = "course",
-            cascade = CascadeType.ALL)
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private List<Assignment> assignments;
 
-    @ManyToMany(mappedBy = "courses")
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
+    @JoinTable(
+            name = "users_courses",
+            joinColumns = { @JoinColumn(name = "courses_id") },
+            inverseJoinColumns = { @JoinColumn(name = "users_id") }
+    )
     private List<User> users;
 
     @Transient
@@ -38,5 +47,36 @@ public class Course {
         if (image == null || id == null) return null;
 
         return "/course-photos/" + id + "/" + image;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder("Course{");
+        if (id != null) {
+            stringBuilder.append(", id='");
+            stringBuilder.append(id);
+            stringBuilder.append('\'');
+        }
+        if (courseName != null) {
+            stringBuilder.append(", courseName='");
+            stringBuilder.append(courseName);
+            stringBuilder.append('\'');
+        }
+        if (description != null) {
+            stringBuilder.append(", description='");
+            stringBuilder.append(description);
+            stringBuilder.append('\'');
+        }
+        if (image != null) {
+            stringBuilder.append(", image='");
+            stringBuilder.append(image);
+            stringBuilder.append('\'');
+        }
+        if (createdAt != null) {
+            stringBuilder.append(", createdAt='");
+            stringBuilder.append(createdAt);
+            stringBuilder.append('\'');
+        }
+        return stringBuilder.toString();
     }
 }

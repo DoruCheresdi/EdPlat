@@ -31,4 +31,20 @@ public class Submission {
 
         return "/submissions/" + assignment.getId() + "-" + user.getId() + "/" + submissionResource;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder("Assignment{");
+        if (id != null) {
+            stringBuilder.append(", id='");
+            stringBuilder.append(id);
+            stringBuilder.append('\'');
+        }
+        if (submissionResource != null) {
+            stringBuilder.append(", assignmentName='");
+            stringBuilder.append(submissionResource);
+            stringBuilder.append('\'');
+        }
+        return stringBuilder.toString();
+    }
 }

@@ -4,8 +4,12 @@ import edplatform.edplat.entities.courses.Course;
 import edplatform.edplat.entities.courses.CourseDisplay;
 import edplatform.edplat.entities.users.User;
 import edplatform.edplat.entities.users.UserRepository;
+import edplatform.edplat.entities.users.UserService;
 import edplatform.edplat.utils.FileUploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -28,10 +32,7 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private UserService userService;
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
@@ -42,46 +43,54 @@ public class UserController {
 
     @PostMapping("/process_register")
     public String processRegister(User user) {
+        userService.encryptPassword(user);
 
-        String encodedPassword = passwordEncoder.encode(user.getPassword());
-        user.setPassword(encodedPassword);
-
-        userRepository.save(user);
+        userService.save(user);
 
         return "register_success";
     }
 
     @GetMapping("/users")
-    public String listUsers(Model model) {
+    public String listUsersByPage(Model model, @RequestParam(required = false) Integer pageNumber) {
+        // default page size is 10:
+        int pageSize = 5;
 
-        Iterable<User> listUsers = userRepository.findAll();
+        // if pageNumber is not present in URL, set it to default:
+        if (pageNumber == null) {
+            pageNumber = 0;
+        }
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        Page<User> listUsers = userService.findAll(pageable);
         model.addAttribute("listUsers", listUsers);
 
-        return "users";
+        model.addAttribute("currentPageNumber", pageNumber);
+        model.addAttribute("numberPages", listUsers.getTotalPages());
+
+        return "users_paged";
     }
 
     @GetMapping("/user/edit")
     public String showUserEditForm(Model model) {
-
         return "edit_user";
     }
 
     @PostMapping("/user/process_img_edit")
     public RedirectView savePhotoToUser(@RequestParam("image") MultipartFile multipartFile,
                                         Authentication authentication) throws IOException {
-
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 
         // save image name to database:
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        User user = userRepository.findByEmail(userDetails.getUsername());
+        User user = userService.findByEmail(userDetails.getUsername()).get();
         user.setPhoto(fileName);
 
         String uploadDir = "user-photos/" + user.getId();
 
         FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
 
-        userRepository.save(user);
+        userService.save(user);
 
         return new RedirectView("/users");
     }
@@ -89,9 +98,8 @@ public class UserController {
     @GetMapping("/user/courses")
     public String showUserCourses(Model model,
                                   Authentication authentication) {
-
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        User user = userRepository.findByEmail(userDetails.getUsername());
+        User user = userService.findByEmail(userDetails.getUsername()).get();
         List<Course> userCourses = user.getCourses();
 
         List<CourseDisplay> userCoursesDisplay = new ArrayList<>();

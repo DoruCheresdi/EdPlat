@@ -1,4 +1,4 @@
-package edplatform.edplat;
+package edplatform.edplat.tests;
 
 
 import org.junit.jupiter.api.DisplayName;

@@ -1,4 +1,4 @@
-package edplatform.edplat;
+package edplatform.edplat.tests;
 
 import edplatform.edplat.controllers.UserController;
 import org.junit.jupiter.api.Test;

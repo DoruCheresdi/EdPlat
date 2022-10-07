@@ -7,6 +7,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
 public class CustomUserDetailsService implements UserDetailsService {
 
     @Autowired
@@ -15,10 +18,11 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepo.findByEmail(username);
-        if (user == null) {
+        Optional<User> optionalUser = userRepo.findByEmail(username);
+        if (optionalUser.isEmpty()) {
             throw new UsernameNotFoundException("User not found");
         }
+        User user = optionalUser.get();
         Hibernate.initialize(user.getAuthorities());
         return new CustomUserDetails(user);
     }

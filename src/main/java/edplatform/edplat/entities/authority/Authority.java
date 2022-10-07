@@ -5,7 +5,9 @@ import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -25,8 +27,16 @@ public class Authority implements GrantedAuthority {
 
     private String name;
 
-    @ManyToMany(mappedBy = "authorities")
-    private List<User> users;
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
+    @JoinTable(
+            name = "users_authorities",
+            joinColumns = { @JoinColumn(name = "authorities_id") },
+            inverseJoinColumns = { @JoinColumn(name = "users_id") }
+    )
+    private Set<User> users = new HashSet<>();
 
     @Override
     public String getAuthority() {

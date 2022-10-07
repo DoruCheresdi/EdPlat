@@ -2,10 +2,12 @@ package edplatform.edplat.controllers;
 
 import edplatform.edplat.entities.assignment.Assignment;
 import edplatform.edplat.entities.assignment.AssignmentRepository;
+import edplatform.edplat.entities.assignment.AssignmentService;
 import edplatform.edplat.entities.courses.Course;
 import edplatform.edplat.entities.courses.CourseRepository;
 import edplatform.edplat.entities.submission.Submission;
 import edplatform.edplat.entities.submission.SubmissionRepository;
+import edplatform.edplat.entities.submission.SubmissionService;
 import edplatform.edplat.entities.users.CustomUserDetails;
 import edplatform.edplat.entities.users.User;
 import edplatform.edplat.entities.users.UserRepository;
@@ -31,18 +33,14 @@ public class AssignmentController {
     private CourseRepository courseRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    AssignmentService assignmentService;
 
     @Autowired
-    AssignmentRepository assignmentRepository;
-
-    @Autowired
-    SubmissionRepository submissionRepository;
+    SubmissionService submissionService;
 
     @GetMapping("/assignment/new")
     public String showNewAssignmentView(@RequestParam Long courseId,
                                         Model model) {
-
         model.addAttribute("courseId", courseId);
 
         model.addAttribute("assignment", new Assignment());
@@ -53,18 +51,16 @@ public class AssignmentController {
     @PostMapping("/assignment/new")
     public RedirectView createAssignment(Assignment assignment,
                                          @RequestParam Long courseId) {
-
         Optional<Course> optionalCourse = courseRepository.findById(courseId);
         Course course;
         if (optionalCourse.isPresent()) {
             course = optionalCourse.get();
         } else {
-            // TODO add error page:
-            return new RedirectView("course/courses");
+            return new RedirectView("error");
         }
 
         assignment.setCourse(course);
-        assignmentRepository.save(assignment);
+        assignmentService.save(assignment);
 
         return new RedirectView("/course?id=" + assignment.getCourse().getId());
     }
@@ -72,7 +68,6 @@ public class AssignmentController {
     @GetMapping("/assignment/submission/new")
     public String showNewSubmissionView(@RequestParam Long assignmentId,
                                         Model model) {
-
         model.addAttribute("assignmentId", assignmentId);
 
         return "add_submission";
@@ -82,23 +77,21 @@ public class AssignmentController {
     public RedirectView createSubmission(@RequestParam("resource") MultipartFile multipartFile,
                                          @RequestParam Long assignmentId,
                                          Authentication authentication) throws IOException {
-
-        Optional<Assignment> optionalAssignment = assignmentRepository.findById(assignmentId);
+        Optional<Assignment> optionalAssignment = assignmentService.findById(assignmentId);
         Assignment assignment;
         if (optionalAssignment.isPresent()) {
             assignment = optionalAssignment.get();
         } else {
-            // TODO add error page:
-            return new RedirectView("course/courses");
+            return new RedirectView("error");
         }
 
-        // save image name to database:
+        // save submission file name to database:
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         User user = userDetails.getUser();
 
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 
-        // save image name to database:
+        // create submission:
         Submission submission = new Submission();
         submission.setAssignment(assignment);
         submission.setUser(user);
@@ -108,7 +101,7 @@ public class AssignmentController {
 
         FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
 
-        submissionRepository.save(submission);
+        submissionService.save(submission);
 
         return new RedirectView("/course?id=" + assignment.getCourse().getId());
     }
