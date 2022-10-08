@@ -148,7 +148,7 @@ public class CourseController {
 
     @PostMapping("/course/change_name")
     public RedirectView changeCourseName(@RequestParam Long id,
-                                         @RequestParam String newCourseName) throws IOException {
+                                         @RequestParam String newCourseName) {
 
         Optional<Course> optionalCourse = courseService.findById(id);
         Course course;
@@ -166,7 +166,7 @@ public class CourseController {
 
     @PostMapping("/course/change_description")
     public RedirectView changeCourseDescription(@RequestParam Long id,
-                                         @RequestParam String newDescription) throws IOException {
+                                         @RequestParam String newDescription) {
 
         Optional<Course> optionalCourse = courseService.findById(id);
         Course course;
