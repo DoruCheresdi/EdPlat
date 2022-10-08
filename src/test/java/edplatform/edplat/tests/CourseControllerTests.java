@@ -2,6 +2,7 @@ package edplatform.edplat.tests;
 
 import edplatform.edplat.entities.assignment.Assignment;
 import edplatform.edplat.entities.assignment.AssignmentRepository;
+import edplatform.edplat.entities.authority.Authority;
 import edplatform.edplat.entities.courses.Course;
 import edplatform.edplat.entities.courses.CourseRepository;
 import edplatform.edplat.entities.submission.Submission;
@@ -116,6 +117,7 @@ public class CourseControllerTests {
         course = courseRepository.findByCourseName(course.getCourseName()).get();
 
         CustomUserDetails userDetails = (CustomUserDetails) getSimpleUserDetails();
+        giveCourseOwnerAuthorityToUserDetails(userDetails, course);
 
         mvc.perform(post("/course/delete")
                         .param("courseId", course.getId().toString())
@@ -142,9 +144,7 @@ public class CourseControllerTests {
 
         CustomUserDetails userDetails = (CustomUserDetails) getSimpleUserDetails();
 
-        // get course Id, deleting it afterwards probably guarantees
-        // that there isn't a course with that id:
-        Long courseId = course.getId();
+        giveCourseOwnerAuthorityToUserDetails(userDetails, course);
 
         courseRepository.delete(course);
 
@@ -193,6 +193,7 @@ public class CourseControllerTests {
         assertThat(submissionRepository.findById(submissionId).isPresent()).isEqualTo(true);
 
         course = courseRepository.findByCourseName(course.getCourseName()).get();
+        giveCourseOwnerAuthorityToUserDetails(userDetails, course);
 
         mvc.perform(post("/course/delete")
                         .param("courseId", course.getId().toString())
@@ -205,6 +206,13 @@ public class CourseControllerTests {
         assertThat(courseRepository.findByCourseName(course.getCourseName()).isPresent()).isEqualTo(false);
         assertThat(assignmentRepository.findByAssignmentName("TestAssignment").isPresent()).isEqualTo(false);
         assertThat(submissionRepository.findById(submissionId).isPresent()).isEqualTo(false);
+    }
+
+    private void giveCourseOwnerAuthorityToUserDetails(CustomUserDetails userDetails, Course course) {
+        userDetails.getUser().getAuthorities().add(
+                new Authority(
+                        authorityStringBuilder.getCourseOwnerAuthority(
+                                course.getId().toString())));
     }
 
     private UserDetails getSimpleUserDetails() {
