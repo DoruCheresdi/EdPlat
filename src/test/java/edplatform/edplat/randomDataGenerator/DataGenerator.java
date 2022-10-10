@@ -1,5 +1,6 @@
 package edplatform.edplat.randomDataGenerator;
 
+import edplatform.edplat.entities.assignment.Assignment;
 import edplatform.edplat.entities.courses.Course;
 import edplatform.edplat.entities.courses.CourseService;
 import edplatform.edplat.entities.users.User;
@@ -74,8 +75,37 @@ public class DataGenerator {
         generatedCourse.setCourseName(generateRandomName(courseNameSize));
         generatedCourse.setDescription(generateRandomName(courseDescriptionSize));
         generatedCourse.setUsers(new ArrayList<>());
+        generatedCourse.setAssignments(new ArrayList<>());
 
         return generatedCourse;
+    }
+
+    /**
+     * Gives random assignments to course
+     * @param course
+     */
+    public void giveRandomAssignmentsToCourse(Course course) {
+        int numberAssignments = 10;
+
+        for (int i = 0; i < numberAssignments; i++) {
+            Assignment assignment = createRandomAssignment();
+            assignment.setCourse(course);
+            course.getAssignments().add(assignment);
+        }
+    }
+
+    /**
+     * Creates a random assignment
+     * @return generated assignment
+     */
+    public Assignment createRandomAssignment() {
+        int nameSize = 10;
+
+        Assignment assignment = new Assignment();
+        assignment.setAssignmentName(generateRandomName(nameSize));
+        assignment.setDescription(generateRandomName(nameSize));
+
+        return assignment;
     }
 
     /**
