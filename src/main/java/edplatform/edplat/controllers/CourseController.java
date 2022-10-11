@@ -1,6 +1,7 @@
 package edplatform.edplat.controllers;
 
 
+import edplatform.edplat.entities.assignment.AssignmentService;
 import edplatform.edplat.entities.authority.Authority;
 import edplatform.edplat.entities.courses.Course;
 import edplatform.edplat.entities.courses.CourseService;
@@ -45,10 +46,10 @@ public class CourseController {
     private UserService userService;
 
     @Autowired
-    private AuthorityStringBuilder authorityStringBuilder;
+    private AssignmentService assignmentService;
 
     @Autowired
-    private AuthorityService authorityService;
+    private AuthorityStringBuilder authorityStringBuilder;
 
     @GetMapping("/course/new")
     public String showCourseCreationForm(Model model) {
@@ -215,6 +216,7 @@ public class CourseController {
     @GetMapping("/course")
     public String showCourseAssignments(
             @RequestParam Long id,
+            Authentication authentication,
             Model model) {
         log.info("Showing single course");
         Optional<Course> optionalCourse = courseService.findById(id);
@@ -228,6 +230,9 @@ public class CourseController {
         model.addAttribute("course", course);
         model.addAttribute("courseId", id);
         model.addAttribute("assignments", course.getAssignments());
+        model.addAttribute("assignmentService", assignmentService);
+        User user = ((CustomUserDetails)authentication.getPrincipal()).getUser();
+        model.addAttribute("user", user);
         return "course";
     }
 

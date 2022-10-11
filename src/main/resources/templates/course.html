@@ -20,9 +20,9 @@
     <div class="container text-left" th:each = "assignment: ${assignments}">
         <div class="container">
             <p>
-                <b>Assignment id:</b>
+                <b>Assignment name:</b>
             </p>
-            <p th:text="${assignment.getId}"></p>
+            <p th:text="${assignment.getAssignmentName}"></p>
         </div>
         <div class="container">
             <p>
@@ -30,11 +30,13 @@
             </p>
             <p th:text="${assignment.getDescription}"></p>
         </div>
-        <a class="btn btn-primary"
-           th:href="@{/assignment/submission/new(assignmentId=${assignment.getId})}">
-            Add submission
-        </a>
+        <div th:if="${!assignmentService.hasUserSubmitted(assignment, user)}">
+            <a class="btn btn-primary"
+               th:href="@{/assignment/submission/new(assignmentId=${assignment.getId})}">
+                Add submission
+            </a>
+        </div>
     </div>
-</a>
+</div>
 </body>
 </html>
