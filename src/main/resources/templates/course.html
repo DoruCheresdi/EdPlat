@@ -31,10 +31,17 @@
             <p th:text="${assignment.getDescription}"></p>
         </div>
         <div th:if="${!assignmentService.hasUserSubmitted(assignment, user)}">
+            <p>Submission is missing</p>
             <a class="btn btn-primary"
                th:href="@{/assignment/submission/new(assignmentId=${assignment.getId})}">
                 Add submission
             </a>
+        </div>
+        <div th:if="${assignmentService.hasUserSubmitted(assignment, user)}">
+            <p>Submission is present</p>
+            <form th:action="@{/assignment/submission/delete(assignmentId=${assignment.getId})}" method="post">
+                <button type="submit" class="btn btn-primary">Delete Submission</button>
+            </form>
         </div>
     </div>
 </div>

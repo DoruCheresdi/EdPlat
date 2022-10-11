@@ -11,7 +11,9 @@ import edplatform.edplat.entities.submission.SubmissionService;
 import edplatform.edplat.entities.users.CustomUserDetails;
 import edplatform.edplat.entities.users.User;
 import edplatform.edplat.entities.users.UserRepository;
+import edplatform.edplat.utils.FilePathBuilder;
 import edplatform.edplat.utils.FileUploadUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -27,6 +29,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 @Controller
+@Slf4j
 public class AssignmentController {
 
     @Autowired
@@ -37,6 +40,9 @@ public class AssignmentController {
 
     @Autowired
     SubmissionService submissionService;
+
+    @Autowired
+    FilePathBuilder filePathBuilder;
 
     @GetMapping("/assignment/new")
     public String showNewAssignmentView(@RequestParam Long courseId,
@@ -65,6 +71,7 @@ public class AssignmentController {
         return new RedirectView("/course?id=" + assignment.getCourse().getId());
     }
 
+
     @GetMapping("/assignment/submission/new")
     public String showNewSubmissionView(@RequestParam Long assignmentId,
                                         Model model) {
@@ -85,23 +92,39 @@ public class AssignmentController {
             return new RedirectView("error");
         }
 
-        // save submission file name to database:
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         User user = userDetails.getUser();
-
-        String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 
         // create submission:
         Submission submission = new Submission();
         submission.setAssignment(assignment);
         submission.setUser(user);
+        String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
         submission.setSubmissionResource(fileName);
-
-        String uploadDir = "submissions/" + assignment.getId() + "-" + user.getId();
-
+        // save submission file:
+        String uploadDir = filePathBuilder.getSubmissionFileDirectory(assignment, user);
         FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
 
+        // save submission to database:
         submissionService.save(submission);
+
+        return new RedirectView("/course?id=" + assignment.getCourse().getId());
+    }
+
+    @PostMapping("/assignment/submission/delete")
+    public RedirectView deleteSubmission(@RequestParam Long assignmentId,
+                                         Authentication authentication) throws IOException {
+        User user = ((CustomUserDetails)authentication.getPrincipal()).getUser();
+
+        Assignment assignment = assignmentService.findById(assignmentId).get();
+        if (!assignmentService.hasUserSubmitted(assignment, user)) {
+            log.error("Trying to delete submission for a user that has no submission on assignment");
+            return new RedirectView("/course?id=" + assignment.getCourse().getId());
+        }
+
+        Submission submission = assignmentService.getSubmissionForUser(assignment, user);
+        // delete submission:
+        submissionService.delete(submission);
 
         return new RedirectView("/course?id=" + assignment.getCourse().getId());
     }
