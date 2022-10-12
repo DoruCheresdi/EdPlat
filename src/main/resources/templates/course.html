@@ -43,6 +43,12 @@
                 <button type="submit" class="btn btn-primary">Delete Submission</button>
             </form>
         </div>
+        <div th:if="${assignmentService.hasUserSubmitted(assignment, user)}">
+            <a class="btn btn-primary"
+               th:href="@{/assignment/submission/download(assignmentId=${assignment.getId})}">
+                Download submission
+            </a>
+        </div>
     </div>
 </div>
 </body>

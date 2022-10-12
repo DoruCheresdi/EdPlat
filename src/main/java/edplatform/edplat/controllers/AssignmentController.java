@@ -1,7 +1,6 @@
 package edplatform.edplat.controllers;
 
 import edplatform.edplat.entities.assignment.Assignment;
-import edplatform.edplat.entities.assignment.AssignmentRepository;
 import edplatform.edplat.entities.assignment.AssignmentService;
 import edplatform.edplat.entities.courses.Course;
 import edplatform.edplat.entities.courses.CourseRepository;
@@ -14,7 +13,9 @@ import edplatform.edplat.entities.users.UserRepository;
 import edplatform.edplat.utils.FilePathBuilder;
 import edplatform.edplat.utils.FileUploadUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,10 +23,18 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
 
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 @Controller
@@ -109,6 +118,20 @@ public class AssignmentController {
         submissionService.save(submission);
 
         return new RedirectView("/course?id=" + assignment.getCourse().getId());
+    }
+
+    @GetMapping(value = "/assignment/submission/download",
+            produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public @ResponseBody byte[] downloadSubmission(@RequestParam Long assignmentId,
+                                            Authentication authentication) throws IOException {
+        // get submission:
+        User user = ((CustomUserDetails)authentication.getPrincipal()).getUser();
+        Assignment assignment = assignmentService.findById(assignmentId).get();
+        Submission submission = assignmentService.getSubmissionForUser(assignment, user);
+        // get file input stream:
+        File initialFile = new File(submission.getResourcePath());
+        InputStream targetStream = new FileInputStream(initialFile);
+        return IOUtils.toByteArray(targetStream);
     }
 
     @PostMapping("/assignment/submission/delete")

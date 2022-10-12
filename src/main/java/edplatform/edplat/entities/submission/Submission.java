@@ -29,7 +29,7 @@ public class Submission {
     public String getResourcePath() {
         if (submissionResource == null || id == null) return null;
 
-        return "/submissions/" + assignment.getId() + "-" + user.getId() + "/" + submissionResource;
+        return "submissions/" + assignment.getId() + "-" + user.getId() + "/" + submissionResource;
     }
 
     @Override
