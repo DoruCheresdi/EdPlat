@@ -128,7 +128,6 @@ public class CourseController {
     public RedirectView saveImageToCourse(@RequestParam("image") MultipartFile multipartFile,
                                           @RequestParam Long id) throws IOException {
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-
         // save image name to database:
         Optional<Course> optionalCourse = courseService.findById(id);
         Course course;
@@ -152,7 +151,6 @@ public class CourseController {
     @PostMapping("/course/change_name")
     public RedirectView changeCourseName(@RequestParam Long id,
                                          @RequestParam String newCourseName) {
-
         Optional<Course> optionalCourse = courseService.findById(id);
         Course course;
         if (optionalCourse.isPresent()) {
@@ -170,7 +168,6 @@ public class CourseController {
     @PostMapping("/course/change_description")
     public RedirectView changeCourseDescription(@RequestParam Long id,
                                          @RequestParam String newDescription) {
-
         Optional<Course> optionalCourse = courseService.findById(id);
         Course course;
         if (optionalCourse.isPresent()) {
@@ -236,6 +233,7 @@ public class CourseController {
         User user = ((CustomUserDetails)authentication.getPrincipal()).getUser();
         model.addAttribute("user", user);
 
+        // return the appropriate template:
         if (securityAuthorizationChecker.checkCourseOwner(user, course)) {
             return "course_owner";
         } else {

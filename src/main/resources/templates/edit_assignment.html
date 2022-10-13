@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Assignment</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div th:insert="navbar :: navbar"></div>
+<div class="container text-center">
+    <div class="row align-items-center">
+        <form th:action="@{/assignment/change_description(assignmentId=${assignmentId})}"
+              method="post"
+              id="description_form">
+            <div>
+                <button type="submit" class="btn btn-primary">Change Assignment Description</button>
+            </div>
+        </form>
+        <textarea rows="4" cols="50" name="newDescription" form="description_form">Enter description text here...</textarea>
+    </div>
+</div>
+</body>
+</html>

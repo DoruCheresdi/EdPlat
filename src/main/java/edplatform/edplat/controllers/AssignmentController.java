@@ -151,4 +151,29 @@ public class AssignmentController {
 
         return new RedirectView("/course?id=" + assignment.getCourse().getId());
     }
+
+    @GetMapping("/assignment/edit")
+    public String getAssignmentEditPage(@RequestParam Long assignmentId,
+                                        Model model) {
+        model.addAttribute("assignmentId", assignmentId);
+        return "edit_assignment";
+    }
+
+    @PostMapping("/assignment/change_description")
+    public RedirectView changeAssignmentName(@RequestParam Long assignmentId,
+                                             @RequestParam String newDescription) {
+        Optional<Assignment> optionalAssignment = assignmentService.findById(assignmentId);
+        Assignment assignment;
+        if (optionalAssignment.isPresent()) {
+            assignment = optionalAssignment.get();
+        } else {
+            return new RedirectView("error");
+        }
+
+        assignment.setDescription(newDescription);
+        assignmentService.save(assignment);
+
+        String courseId = assignment.getCourse().getId().toString();
+        return new RedirectView("/course?id=" + courseId);
+    }
 }
