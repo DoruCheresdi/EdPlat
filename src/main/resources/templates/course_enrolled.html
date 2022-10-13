@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>[[${course.getCourseName}]]</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div th:insert="navbar :: navbar"></div>
+<div class="container text-center">
+    <div class="container">
+        <h1 th:text="${course.getCourseName}"></h1>
+        <h2 th:text="${course.getDescription}"></h2>
+    </div>
+    <div class="container">
+        <a class="btn btn-primary" th:href="@{/assignment/new(courseId=${courseId})}">Create new assignment</a>
+    </div>
+    <div class="container text-center py-5" th:each = "assignment: ${assignments}">
+        <hr>
+        <div class="row">
+            <p>
+                <b>Assignment name:</b>
+            </p>
+            <p th:text="${assignment.getAssignmentName}"></p>
+        </div>
+        <div class="row">
+            <p>
+                <b>Description:</b>
+            </p>
+            <p th:text="${assignment.getDescription}"></p>
+        </div>
+        <div class="container text-center" th:if="${!assignmentService.hasUserSubmitted(assignment, user)}">
+            <div class="row">
+                <p>Submission is missing</p>
+            </div>
+            <div class="row">
+                <a class="btn btn-primary"
+                   th:href="@{/assignment/submission/new(assignmentId=${assignment.getId})}">
+                    Add submission
+                </a>
+            </div>
+        </div>
+        <div class="container text-center" th:if="${assignmentService.hasUserSubmitted(assignment, user)}">
+            <div class="row">
+                <p>Submission is present</p>
+            </div>
+            <div class="row justify-content-start">
+                <div class="column">
+                    <form th:action="@{/assignment/submission/delete(assignmentId=${assignment.getId})}" method="post">
+                        <button type="submit" class="btn btn-primary">Delete Submission</button>
+                    </form>
+                </div>
+                <div class="column offset-md-1">
+                    <a class="btn btn-primary"
+                       th:href="@{/assignment/submission/download(assignmentId=${assignment.getId})}">
+                        Download submission
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

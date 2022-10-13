@@ -9,7 +9,7 @@ import edplatform.edplat.entities.users.CustomUserDetails;
 import edplatform.edplat.entities.users.User;
 import edplatform.edplat.entities.users.UserService;
 import edplatform.edplat.security.AuthorityStringBuilder;
-import edplatform.edplat.entities.authority.AuthorityService;
+import edplatform.edplat.security.SecurityAuthorizationChecker;
 import edplatform.edplat.utils.FileUploadUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
-import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -50,6 +49,9 @@ public class CourseController {
 
     @Autowired
     private AuthorityStringBuilder authorityStringBuilder;
+
+    @Autowired
+    private SecurityAuthorizationChecker securityAuthorizationChecker;
 
     @GetMapping("/course/new")
     public String showCourseCreationForm(Model model) {
@@ -233,7 +235,12 @@ public class CourseController {
         model.addAttribute("assignmentService", assignmentService);
         User user = ((CustomUserDetails)authentication.getPrincipal()).getUser();
         model.addAttribute("user", user);
-        return "course";
+
+        if (securityAuthorizationChecker.checkCourseOwner(user, course)) {
+            return "course_owner";
+        } else {
+            return "course_enrolled";
+        }
     }
 
     @PostMapping("course/delete")

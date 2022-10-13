@@ -1,8 +1,8 @@
 package edplatform.edplat.tests;
 
+import edplatform.edplat.entities.authority.AuthorityService;
 import edplatform.edplat.entities.users.User;
 import edplatform.edplat.entities.users.UserRepository;
-import edplatform.edplat.entities.authority.AuthorityService;
 import edplatform.edplat.security.AuthorityStringBuilder;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
