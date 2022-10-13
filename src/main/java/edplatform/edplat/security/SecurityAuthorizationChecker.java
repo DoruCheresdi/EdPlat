@@ -44,7 +44,7 @@ public class SecurityAuthorizationChecker {
 
     /**
      * check if the authenticated user is the owner of the course given in the request parameter:
-     * @param parameterName name of the parameter where the courseId is
+     * @param parameterName name of the parameter from the request where the courseId is
      * @param authentication authentication
      * @param httpServletRequest
      * @return whether the authorities in the authentication match the one needed for the request
@@ -67,6 +67,18 @@ public class SecurityAuthorizationChecker {
      */
     public boolean checkCourseOwner(User user, Course course) {
         String courseOwnerAuthorityName = authorityStringBuilder.getCourseOwnerAuthority(course.getId().toString());
+        Authority authority = authorityService.findByName(courseOwnerAuthorityName).get();
+        return user.getAuthorities().contains(authority);
+    }
+
+    /**
+     * Checks if a user is enrolled in a course
+     * @param user user to be checked
+     * @param course course where the user is verified to be enrolled
+     * @return whether the user is enrolled in the course
+     */
+    public boolean checkCourseEnrolled(User user, Course course) {
+        String courseOwnerAuthorityName = authorityStringBuilder.getCourseEnrolledAuthority(course.getId().toString());
         Authority authority = authorityService.findByName(courseOwnerAuthorityName).get();
         return user.getAuthorities().contains(authority);
     }

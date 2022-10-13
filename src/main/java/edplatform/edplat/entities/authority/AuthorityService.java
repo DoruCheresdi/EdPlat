@@ -17,6 +17,12 @@ public interface AuthorityService {
     public void giveAuthorityToUser(User user, String authorityName);
 
     /**
+     * Creates enrolled authority for course and persists it
+     * @param courseId id of the course whose authority must be created
+     */
+    public Authority createEnrolledAuthority(Long courseId);
+
+    /**
      * Method to delete an authority
      * @param authorityName authority to be deleted
      */

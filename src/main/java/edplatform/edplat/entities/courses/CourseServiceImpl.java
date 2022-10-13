@@ -31,9 +31,6 @@ public class CourseServiceImpl implements CourseService {
     private AuthorityService authorityService;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private SecurityAuthorizationChecker securityAuthorizationChecker;
 
     @Override
@@ -77,6 +74,9 @@ public class CourseServiceImpl implements CourseService {
         // add the course owner authority to the user that created the course:
         String authorityName = authorityStringBuilder.getCourseOwnerAuthority(course.getId().toString());
         authorityService.giveAuthorityToUser(user, authorityName);
+
+        // ensure that the enrolled authority for the course is created:
+        authorityService.createEnrolledAuthority(course.getId());
     }
 
     @Override

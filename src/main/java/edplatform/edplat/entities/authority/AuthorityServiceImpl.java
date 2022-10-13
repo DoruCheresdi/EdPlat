@@ -1,6 +1,7 @@
 package edplatform.edplat.entities.authority;
 
 import edplatform.edplat.entities.users.User;
+import edplatform.edplat.security.AuthorityStringBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,8 +16,21 @@ public class AuthorityServiceImpl implements AuthorityService {
     @Autowired
     private AuthorityRepository authorityRepository;
 
+    @Autowired
+    private AuthorityStringBuilder authorityStringBuilder;
+
     public Optional<Authority> findByName(String name) {
         return authorityRepository.findByName(name);
+    }
+
+    public Authority createEnrolledAuthority(Long courseId) {
+        String authorityName = authorityStringBuilder
+                .getCourseEnrolledAuthority(courseId.toString());
+        Authority authority = new Authority(authorityName);
+        authority.setUsers(new HashSet<>());
+
+        authorityRepository.save(authority);
+        return authority;
     }
 
     public void giveAuthorityToUser(User user, String authorityName) {

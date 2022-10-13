@@ -16,6 +16,7 @@
             <h5 class="card-title"><a th:href="@{/course(id=${course.id})}" th:text="${course.getCourseName}"></a></h5>
             <p class="card-text" th:text="${course.getDescription}"></p>
             <p class="card-text"><small class="text-muted" th:text="${course.getSinceCreatedString}"></small></p>
+            <p class="card-text"><small class="text-muted" th:text="${course.userAuthority}"></small></p>
         </div>
     </div>
 </div>

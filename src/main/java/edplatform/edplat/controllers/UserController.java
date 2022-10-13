@@ -5,7 +5,9 @@ import edplatform.edplat.entities.courses.CourseDisplay;
 import edplatform.edplat.entities.users.User;
 import edplatform.edplat.entities.users.UserRepository;
 import edplatform.edplat.entities.users.UserService;
+import edplatform.edplat.security.SecurityAuthorizationChecker;
 import edplatform.edplat.utils.FileUploadUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,10 +31,14 @@ import java.util.List;
 
 @Controller
 @RequestMapping(path="/")
+@Slf4j
 public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private SecurityAuthorizationChecker securityAuthorizationChecker;
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
@@ -105,9 +111,20 @@ public class UserController {
         List<CourseDisplay> userCoursesDisplay = new ArrayList<>();
         for (Course course :
                 userCourses) {
+            String userAuthority;
+            if (securityAuthorizationChecker.checkCourseOwner(user, course)) {
+                userAuthority = "Owner";
+            } else if (securityAuthorizationChecker.checkCourseEnrolled(user, course)) {
+                userAuthority = "Enrolled";
+            } else {
+                log.error("Error determining user authority for user {} for course with id: {}",
+                        user.getEmail(), course.getId());
+                userAuthority = "Unknown";
+            }
+
             userCoursesDisplay.add(new CourseDisplay(
                     course.getId(), course.getCourseName(), course.getDescription(), course.getImage(),
-                    course.getCreatedAt()));
+                    course.getCreatedAt(), userAuthority));
         }
 
         model.addAttribute("userCoursesDisplay", userCoursesDisplay);

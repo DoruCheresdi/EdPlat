@@ -46,7 +46,8 @@ public class DataGenerator {
         user.setEmail(email);
         user.setFirstName(generateRandomName(10));
         user.setLastName(generateRandomName(13));
-        user.setPassword(generateRandomName(14));
+        // set simple to be able to log in as user:
+        user.setPassword("test");
         user.setCourses(new ArrayList<>());
 
         return user;

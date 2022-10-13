@@ -8,28 +8,35 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 /**
- * Class for displaying information about a course
+ * DTO for displaying information about a course for a specific user
  */
 @Data
 public class CourseDisplay {
 
-    public CourseDisplay(Long id, String courseName, String description, String image, Timestamp createdAt) {
+    public CourseDisplay(Long id, String courseName, String description,
+                         String image, Timestamp createdAt, String userAuthority) {
         this.id = id;
         this.courseName = courseName;
         this.description = description;
         this.image = image;
         this.createdAt = createdAt;
+        this.userAuthority = userAuthority;
     }
 
-    private Long id;
+    private final Long id;
 
-    private String courseName;
+    private final String courseName;
 
-    private String description;
+    private final String description;
 
-    private String image;
+    private final String image;
 
-    private Timestamp createdAt;
+    private final Timestamp createdAt;
+
+    /**
+     * Authority of the user that requested the page over this course:
+     */
+    private final String userAuthority;
 
     public String getImagePath() {
         if (image == null || id == null) return null;
