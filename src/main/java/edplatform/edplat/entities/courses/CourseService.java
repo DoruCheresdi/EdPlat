@@ -1,5 +1,6 @@
 package edplatform.edplat.entities.courses;
 
+import edplatform.edplat.entities.assignment.Assignment;
 import edplatform.edplat.entities.users.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +34,13 @@ public interface CourseService {
      * @param course entity to be saved
      */
     public void save(Course course);
+
+    /**
+     * Adds an assignment to a course and persists the entities
+     * @param assignment
+     * @param courseId
+     */
+    public void addAssignmentToCourse(Assignment assignment, Long courseId) throws Exception;
 
     /**
      * Creates course and adds the user as the course's owner. Also creates and adds

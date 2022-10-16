@@ -4,6 +4,7 @@ import edplatform.edplat.entities.assignment.Assignment;
 import edplatform.edplat.entities.assignment.AssignmentService;
 import edplatform.edplat.entities.courses.Course;
 import edplatform.edplat.entities.courses.CourseRepository;
+import edplatform.edplat.entities.courses.CourseService;
 import edplatform.edplat.entities.submission.Submission;
 import edplatform.edplat.entities.submission.SubmissionRepository;
 import edplatform.edplat.entities.submission.SubmissionService;
@@ -42,7 +43,7 @@ import java.util.Optional;
 public class AssignmentController {
 
     @Autowired
-    private CourseRepository courseRepository;
+    private CourseService courseService;
 
     @Autowired
     AssignmentService assignmentService;
@@ -66,16 +67,12 @@ public class AssignmentController {
     @PostMapping("/assignment/new")
     public RedirectView createAssignment(Assignment assignment,
                                          @RequestParam Long courseId) {
-        Optional<Course> optionalCourse = courseRepository.findById(courseId);
-        Course course;
-        if (optionalCourse.isPresent()) {
-            course = optionalCourse.get();
-        } else {
+        try {
+            courseService.addAssignmentToCourse(assignment, courseId);
+        } catch (Exception e) {
+            e.printStackTrace();
             return new RedirectView("error");
         }
-
-        assignment.setCourse(course);
-        assignmentService.save(assignment);
 
         return new RedirectView("/course?id=" + assignment.getCourse().getId());
     }
@@ -92,31 +89,18 @@ public class AssignmentController {
     @PostMapping("/assignment/submission/new")
     public RedirectView createSubmission(@RequestParam("resource") MultipartFile multipartFile,
                                          @RequestParam Long assignmentId,
-                                         Authentication authentication) throws IOException {
-        Optional<Assignment> optionalAssignment = assignmentService.findById(assignmentId);
-        Assignment assignment;
-        if (optionalAssignment.isPresent()) {
-            assignment = optionalAssignment.get();
-        } else {
-            return new RedirectView("error");
-        }
-
+                                         Authentication authentication) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         User user = userDetails.getUser();
 
-        // create submission:
-        Submission submission = new Submission();
-        submission.setAssignment(assignment);
-        submission.setUser(user);
-        String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-        submission.setSubmissionResource(fileName);
-        // save submission file:
-        String uploadDir = filePathBuilder.getSubmissionFileDirectory(assignment, user);
-        FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+        try {
+            assignmentService.addSubmission(multipartFile, assignmentId, user);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new RedirectView("error");
+        }
 
-        // save submission to database:
-        submissionService.save(submission);
-
+        Assignment assignment = assignmentService.findById(assignmentId).get();
         return new RedirectView("/course?id=" + assignment.getCourse().getId());
     }
 

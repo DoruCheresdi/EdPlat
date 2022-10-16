@@ -1,5 +1,7 @@
 package edplatform.edplat.entities.courses;
 
+import edplatform.edplat.entities.assignment.Assignment;
+import edplatform.edplat.entities.assignment.AssignmentRepository;
 import edplatform.edplat.entities.authority.AuthorityService;
 import edplatform.edplat.entities.users.User;
 import edplatform.edplat.entities.users.UserRepository;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -31,6 +34,9 @@ public class CourseServiceImpl implements CourseService {
     private AuthorityService authorityService;
 
     @Autowired
+    private AssignmentRepository assignmentRepository;
+
+    @Autowired
     private SecurityAuthorizationChecker securityAuthorizationChecker;
 
     @Override
@@ -50,12 +56,8 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public void save(Course course) {
-        // add the time it was added to the course:
-        Timestamp courseCreatedAt = new Timestamp(System.currentTimeMillis());
-        course.setCreatedAt(courseCreatedAt);
-
         log.info("Saving course with name {} at timestamp {}",
-                course.getCourseName(), courseCreatedAt);
+                course.getCourseName(), course.getCreatedAt());
 
         courseRepository.save(course);
     }
@@ -67,6 +69,8 @@ public class CourseServiceImpl implements CourseService {
         // I don't know why I have to do this(course is the owner of the relationship, so adding
         // the course to the user's list shouldn't be necessary):
         user.getCourses().add(course);
+        // add the time it was added to the course:
+        updateCourseTimestamp(course);
         this.save(course);
         // retrieve from DB to get id for authority creation:
         course = courseRepository.findByCourseName(course.getCourseName()).get();
@@ -77,6 +81,23 @@ public class CourseServiceImpl implements CourseService {
 
         // ensure that the enrolled authority for the course is created:
         authorityService.createEnrolledAuthority(course.getId());
+    }
+
+    @Override
+    public void addAssignmentToCourse(Assignment assignment, Long courseId) throws Exception {
+        Optional<Course> optionalCourse = courseRepository.findById(courseId);
+        Course course;
+        if (optionalCourse.isPresent()) {
+            course = optionalCourse.get();
+        } else {
+            throw new Exception("Error retrieving course from database");
+        }
+
+        assignment.setCourse(course);
+        course.getAssignments().add(assignment);
+        // update timestamp(since course was modified):
+        updateCourseTimestamp(course);
+        assignmentRepository.save(assignment);
     }
 
     @Override
@@ -113,5 +134,10 @@ public class CourseServiceImpl implements CourseService {
         // delete all assignments and the course itself (delete is cascading):
         course.setUsers(new ArrayList<>());
         courseRepository.delete(course);
+    }
+
+    private void updateCourseTimestamp(Course course) {
+        Timestamp courseCreatedAt = new Timestamp(System.currentTimeMillis());
+        course.setCreatedAt(courseCreatedAt);
     }
 }

@@ -2,6 +2,7 @@ package edplatform.edplat.entities.assignment;
 
 import edplatform.edplat.entities.submission.Submission;
 import edplatform.edplat.entities.users.User;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -14,6 +15,8 @@ public interface AssignmentService {
      * @param assignment
      */
     public void save(Assignment assignment);
+
+    public void addSubmission(MultipartFile multipartFile, Long assignmentId, User user) throws Exception;
 
     /**
      * Method that returns whether the user has made a submission
