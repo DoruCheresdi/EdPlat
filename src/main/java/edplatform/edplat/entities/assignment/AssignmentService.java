@@ -16,6 +16,13 @@ public interface AssignmentService {
      */
     public void save(Assignment assignment);
 
+    /**
+     * Adds a new submission to the assignment, using the multipart file as a resource
+     * @param multipartFile file to be used as a resource
+     * @param assignmentId id of the assignment to add the submission to
+     * @param user user who submits the resource as a submission
+     * @throws Exception
+     */
     public void addSubmission(MultipartFile multipartFile, Long assignmentId, User user) throws Exception;
 
     /**
