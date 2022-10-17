@@ -14,9 +14,6 @@
         <h1 th:text="${course.getCourseName}"></h1>
         <h2 th:text="${course.getDescription}"></h2>
     </div>
-    <div class="container">
-        <a class="btn btn-primary" th:href="@{/assignment/new(courseId=${courseId})}">Create new assignment</a>
-    </div>
     <div class="container text-center py-5" th:each = "assignment: ${assignments}">
         <hr>
         <div class="row">
