@@ -52,9 +52,12 @@
 </div>
 <nav aria-label="Course pagination">
     <ul class="pagination justify-content-center">
-        <li class="page-item" th:if="${currentPageNumber} > 0">
-            <a class="page-link" th:href="@{/users(pageNumber=${currentPageNumber}-1)}">Previous</a>
+        <li class="page-item" th:if="${currentPageNumber} > 1">
+            <a class="page-link" th:href="@{/users(pageNumber=0)}">0</a>
         </li>
+<!--        <li class="page-item" th:if="${currentPageNumber} > 0">-->
+<!--            <a class="page-link" th:href="@{/users(pageNumber=${currentPageNumber}-1)}">Previous</a>-->
+<!--        </li>-->
         <li class="page-item" th:if="${currentPageNumber} > 0">
             <a class="page-link" th:href="@{/users(pageNumber=${currentPageNumber}-1)}" th:text="${currentPageNumber}-1"></a>
         </li>
@@ -64,8 +67,11 @@
         <li class="page-item" th:if="${currentPageNumber} < ${numberPages} - 1">
             <a class="page-link" th:href="@{/users(pageNumber=${currentPageNumber}+1)}" th:text="${currentPageNumber}+1"></a>
         </li>
-        <li class="page-item" th:if="${currentPageNumber} < ${numberPages} - 1">
-            <a class="page-link" th:href="@{/users(pageNumber=${currentPageNumber}+1)}">Next</a>
+<!--        <li class="page-item" th:if="${currentPageNumber} < ${numberPages} - 1">-->
+<!--            <a class="page-link" th:href="@{/users(pageNumber=${currentPageNumber}+1)}">Next</a>-->
+<!--        </li>-->
+        <li class="page-item" th:if="${currentPageNumber} < ${numberPages} - 2">
+            <a class="page-link" th:href="@{/users(pageNumber=${numberPages}-1)}" th:text="${numberPages}-1"></a>
         </li>
     </ul>
 </nav>
