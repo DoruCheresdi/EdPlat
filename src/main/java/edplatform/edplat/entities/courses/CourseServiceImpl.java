@@ -140,4 +140,8 @@ public class CourseServiceImpl implements CourseService {
         Timestamp courseCreatedAt = new Timestamp(System.currentTimeMillis());
         course.setCreatedAt(courseCreatedAt);
     }
+
+    public Page<Course> findAllByCourseNameContains(String contains, Pageable pageable) {
+        return courseRepository.findAllByCourseNameContains(contains, pageable);
+    }
 }

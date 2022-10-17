@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Search Result</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div th:insert="navbar :: navbar"></div>
+<div class="container text-center">
+    <div>
+        <h1 th:text="'Search Results for ' + ${searchName} + ':'"></h1>
+    </div>
+    <div>
+        <table class="table table-striped table-bordered">
+            <thead class="thead-dark">
+            <tr>
+                <th>Course Name</th>
+                <th>Description</th>
+                <th>Image</th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="course: ${listCourses}">
+                <td th:text="${course.courseName}">Course Name</td>
+                <td th:text="${course.description}">Description</td>
+                <td>
+                    <img th:src="@{${course.getImagePath()}}" class="img-thumbnail" style="width: 15vw;" />
+                </td>
+                <td>
+                    <a class="btn btn-primary" th:href="@{/course/edit(id=${course.id})}" role="button">Edit</a>
+                </td>
+                <td>
+                    <form th:action="@{/course/enroll(courseId=${course.id})}" method="post">
+                        <button type="submit" class="btn btn-primary">Enroll</button>
+                    </form>
+                </td>
+                <td>
+                    <form th:action="@{/course/delete(courseId=${course.id})}" method="post">
+                        <button type="submit" class="btn btn-primary">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+<div class="container text-center">
+    <h3><p th:text="'There are ' + ${numberPages} + ' pages'"></p></h3>
+</div>
+<nav aria-label="Course pagination">
+    <ul class="pagination justify-content-center">
+        <li class="page-item" th:if="${currentPageNumber} > 0">
+            <a class="page-link" th:href="@{/course/courses(pageNumber=${currentPageNumber}-1)}">Previous</a>
+        </li>
+        <li class="page-item" th:if="${currentPageNumber} > 0">
+            <a class="page-link" th:href="@{/course/courses(pageNumber=${currentPageNumber}-1)}" th:text="${currentPageNumber}-1"></a>
+        </li>
+        <li class="page-item active" aria-current="page">
+            <a class="page-link" href="#" th:text="${currentPageNumber}"></a>
+        </li>
+        <li class="page-item" th:if="${currentPageNumber} < ${numberPages} - 1">
+            <a class="page-link" th:href="@{/course/courses(pageNumber=${currentPageNumber}+1)}" th:text="${currentPageNumber}+1"></a>
+        </li>
+        <li class="page-item" th:if="${currentPageNumber} < ${numberPages} - 1">
+            <a class="page-link" th:href="@{/course/courses(pageNumber=${currentPageNumber}+1)}">Next</a>
+        </li>
+    </ul>
+</nav>
+</body>
+</html>

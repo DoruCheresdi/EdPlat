@@ -69,4 +69,12 @@ public interface CourseService {
      * @param course course to be deleted
      */
     public void deleteCourse(Course course);
+
+    /**
+     * Returns all courses which name contains the string provided
+     * @param contains string used to search course names
+     * @param pageable specifies the page to return
+     * @return A list containing courses matching the search and the pagination
+     */
+    Page<Course> findAllByCourseNameContains(String contains, Pageable pageable);
 }

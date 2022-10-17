@@ -86,7 +86,7 @@ public class CourseController {
 
     @GetMapping("/course/courses")
     public String listCoursesByPage(Model model, @RequestParam(required = false) Integer pageNumber) {
-        // default page size is 10:
+        // default page size is 5:
         int pageSize = 5;
 
         // if pageNumber is not present in URL, set it to default:
@@ -182,7 +182,7 @@ public class CourseController {
         return new RedirectView("/course/courses");
     }
 
-    @PostMapping("course/enroll")
+    @PostMapping("/course/enroll")
     public RedirectView enrollUserInCourse(@RequestParam Long courseId,
                                      Authentication authentication) {
         Optional<Course> optionalCourse = courseService.findById(courseId);
@@ -241,7 +241,7 @@ public class CourseController {
         }
     }
 
-    @PostMapping("course/delete")
+    @PostMapping("/course/delete")
     public String deleteCourse(@RequestParam Long courseId,
                                            Authentication authentication) {
         // find the course:
@@ -257,5 +257,34 @@ public class CourseController {
         courseService.deleteCourse(course);
 
         return "course_deletion_success";
+    }
+
+    @GetMapping("/course/search")
+    public String showSearchView() {
+        return "course_search";
+    }
+
+    @PostMapping("/course/search_course_name")
+    public String showSearchResultsForCourseName(@RequestParam String courseName,
+                                                 @RequestParam(required = false) Integer pageNumber,
+                                                 Model model) {
+        // default page size is 5:
+        int pageSize = 5;
+        // if pageNumber is not present in URL, set it to default:
+        if (pageNumber == null) {
+            pageNumber = 0;
+        }
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        Page<Course> listCourses = courseService.findAllByCourseNameContains(courseName, pageable);
+        model.addAttribute("listCourses", listCourses);
+
+        model.addAttribute("currentPageNumber", pageNumber);
+        model.addAttribute("numberPages", listCourses.getTotalPages());
+
+        // add search string to model for displaying on the view:
+        model.addAttribute("searchName", courseName);
+
+        return "course_search_result";
     }
 }
