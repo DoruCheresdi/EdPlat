@@ -47,6 +47,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .access("not @securityAuthorizationChecker.checkCourseOwnerByCourseId(authentication,request)")
                 .mvcMatchers("/assignment/new", "/course/delete")
                     .access("@securityAuthorizationChecker.checkCourseOwnerByCourseId(authentication,request)")
+                .mvcMatchers("/assignment/edit", "/assignment/change_description")
+                    .access("@securityAuthorizationChecker.checkCourseOwnerByAssignmentId(authentication,request)")
                 .mvcMatchers("/course/edit", "/course/process_img_edit",
                         "/course/change_name", "/course/change_description")
                     .access("@securityAuthorizationChecker.checkCourseOwnerById(authentication,request)")
