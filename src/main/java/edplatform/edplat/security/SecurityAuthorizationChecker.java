@@ -82,7 +82,7 @@ public class SecurityAuthorizationChecker {
      * Check if the authenticated user is the owner of the course given in the request parameter:
      * @param parameterName name of the parameter from the request where the courseId is
      * @param authentication authentication
-     * @param httpServletRequest
+     * @param httpServletRequest request
      * @return whether the authorities in the authentication match the one needed for the request
      */
     private boolean checkCourseOwner(String parameterName, Authentication authentication, HttpServletRequest httpServletRequest) {
@@ -98,11 +98,11 @@ public class SecurityAuthorizationChecker {
     /**
      * Checks if a user is a owner of a course
      * @param user user to be checked
-     * @param course course whose owner the user must be
+     * @param courseId id of course whose owner the user must be
      * @return whether the user is an owner of the course
      */
-    public boolean checkCourseOwner(User user, Course course) {
-        String courseOwnerAuthorityName = authorityStringBuilder.getCourseOwnerAuthority(course.getId().toString());
+    public boolean checkCourseOwner(User user, Long courseId) {
+        String courseOwnerAuthorityName = authorityStringBuilder.getCourseOwnerAuthority(courseId.toString());
         Authority authority = authorityService.findByName(courseOwnerAuthorityName).get();
         return user.getAuthorities().contains(authority);
     }
@@ -110,11 +110,11 @@ public class SecurityAuthorizationChecker {
     /**
      * Checks if a user is enrolled in a course
      * @param user user to be checked
-     * @param course course where the user is verified to be enrolled
+     * @param courseId id of course where the user is verified to be enrolled
      * @return whether the user is enrolled in the course
      */
-    public boolean checkCourseEnrolled(User user, Course course) {
-        String courseOwnerAuthorityName = authorityStringBuilder.getCourseEnrolledAuthority(course.getId().toString());
+    public boolean checkCourseEnrolled(User user, Long courseId) {
+        String courseOwnerAuthorityName = authorityStringBuilder.getCourseEnrolledAuthority(courseId.toString());
         Authority authority = authorityService.findByName(courseOwnerAuthorityName).get();
         return user.getAuthorities().contains(authority);
     }

@@ -112,9 +112,9 @@ public class UserController {
         for (Course course :
                 userCourses) {
             String userAuthority;
-            if (securityAuthorizationChecker.checkCourseOwner(user, course)) {
+            if (securityAuthorizationChecker.checkCourseOwner(user, course.getId())) {
                 userAuthority = "Owner";
-            } else if (securityAuthorizationChecker.checkCourseEnrolled(user, course)) {
+            } else if (securityAuthorizationChecker.checkCourseEnrolled(user, course.getId())) {
                 userAuthority = "Enrolled";
             } else {
                 log.error("Error determining user authority for user {} for course with id: {}",

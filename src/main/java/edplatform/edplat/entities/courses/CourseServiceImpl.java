@@ -117,7 +117,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<User> getOwnerUsers(Course course) {
         return course.getUsers().stream()
-                .filter(user -> securityAuthorizationChecker.checkCourseOwner(user, course))
+                .filter(user -> securityAuthorizationChecker.checkCourseOwner(user, course.getId()))
                 .collect(Collectors.toList());
     }
 

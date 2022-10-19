@@ -234,7 +234,7 @@ public class CourseController {
         model.addAttribute("user", user);
 
         // return the appropriate template:
-        if (securityAuthorizationChecker.checkCourseOwner(user, course)) {
+        if (securityAuthorizationChecker.checkCourseOwner(user, course.getId())) {
             return "course_owner";
         } else {
             return "course_enrolled";
