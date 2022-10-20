@@ -233,7 +233,7 @@ public class CourseController {
         User user = ((CustomUserDetails)authentication.getPrincipal()).getUser();
         model.addAttribute("user", user);
 
-        // return the appropriate template:
+        // return the appropriate view:
         if (securityAuthorizationChecker.checkCourseOwner(user, course.getId())) {
             return "course_owner";
         } else {
