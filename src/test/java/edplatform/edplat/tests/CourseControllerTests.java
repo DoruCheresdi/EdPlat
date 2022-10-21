@@ -206,6 +206,29 @@ public class CourseControllerTests {
         assertThat(submissionRepository.findById(submissionId).isPresent()).isEqualTo(false);
     }
 
+    @Test
+    public void shouldChangeDescription() {
+        // create entities:
+        CustomUserDetails userDetails = (CustomUserDetails) getSimpleUserDetails();
+
+        Course course = new Course();
+        course.setCourseName("TestControllerCourse");
+        course.setDescription("TestCourseControllerDescription");
+        course.setUsers(Arrays.asList(userDetails.getUser()));
+        userDetails.getUser().setCourses(new ArrayList<>());
+        userDetails.getUser().getCourses().add(course);
+
+        courseRepository.save(course);
+
+
+        mvc.perform(post("/course/change_description")
+                        .param("courseId", course.getId().toString())
+                        .with(csrf())
+                        .with(user(userDetails)))
+                .andExpect(status().isOk())
+                .andExpect(view().name("course_deletion_success"));
+    }
+
     private void giveCourseOwnerAuthorityToUserDetails(CustomUserDetails userDetails, Course course) {
         userDetails.getUser().getAuthorities().add(
                 new Authority(

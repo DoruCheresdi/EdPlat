@@ -166,9 +166,9 @@ public class CourseController {
     }
 
     @PostMapping("/course/change_description")
-    public RedirectView changeCourseDescription(@RequestParam Long id,
+    public RedirectView changeCourseDescription(@RequestParam Long courseId,
                                          @RequestParam String newDescription) {
-        Optional<Course> optionalCourse = courseService.findById(id);
+        Optional<Course> optionalCourse = courseService.findById(courseId);
         Course course;
         if (optionalCourse.isPresent()) {
             course = optionalCourse.get();

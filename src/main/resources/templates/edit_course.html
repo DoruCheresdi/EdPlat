@@ -38,7 +38,7 @@
     </div>
     <hr>
     <div class="container align-items-center m-5">
-        <form th:action="@{/course/change_description(id=${CourseId})}"
+        <form th:action="@{/course/change_description(courseId=${CourseId})}"
               method="post"
               id="description_form">
             <label>Change Course Description: </label>
