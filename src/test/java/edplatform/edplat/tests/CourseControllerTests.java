@@ -5,6 +5,7 @@ import edplatform.edplat.entities.assignment.AssignmentRepository;
 import edplatform.edplat.entities.authority.Authority;
 import edplatform.edplat.entities.courses.Course;
 import edplatform.edplat.entities.courses.CourseRepository;
+import edplatform.edplat.entities.courses.CourseService;
 import edplatform.edplat.entities.submission.Submission;
 import edplatform.edplat.entities.submission.SubmissionRepository;
 import edplatform.edplat.entities.users.CustomUserDetails;
@@ -45,6 +46,9 @@ public class CourseControllerTests {
 
     @Autowired
     private CourseRepository courseRepository;
+
+    @Autowired
+    private CourseService courseService;
 
     @Autowired
     private AssignmentRepository assignmentRepository;
@@ -207,26 +211,29 @@ public class CourseControllerTests {
     }
 
     @Test
-    public void shouldChangeDescription() {
+    @Transactional
+    public void shouldChangeDescription() throws Exception {
         // create entities:
         CustomUserDetails userDetails = (CustomUserDetails) getSimpleUserDetails();
 
         Course course = new Course();
         course.setCourseName("TestControllerCourse");
         course.setDescription("TestCourseControllerDescription");
-        course.setUsers(Arrays.asList(userDetails.getUser()));
+        course.setUsers(new ArrayList<>(Arrays.asList(userDetails.getUser())));
         userDetails.getUser().setCourses(new ArrayList<>());
         userDetails.getUser().getCourses().add(course);
 
-        courseRepository.save(course);
-
+        courseService.createCourse(userDetails.getUser(), course);
 
         mvc.perform(post("/course/change_description")
                         .param("courseId", course.getId().toString())
+                        .param("newDescription", "newDescription")
                         .with(csrf())
                         .with(user(userDetails)))
-                .andExpect(status().isOk())
-                .andExpect(view().name("course_deletion_success"));
+                .andExpect(status().is3xxRedirection());
+
+        Course retrievedCourse = courseRepository.findByCourseName("TestControllerCourse").get();
+        assertThat(retrievedCourse.getDescription()).isEqualTo("newDescription");
     }
 
     private void giveCourseOwnerAuthorityToUserDetails(CustomUserDetails userDetails, Course course) {
