@@ -1,6 +1,7 @@
 package edplatform.edplat.controllers;
 
 
+import edplatform.edplat.controllers.controllerUtils.AuthenticationUpdater;
 import edplatform.edplat.entities.assignment.AssignmentService;
 import edplatform.edplat.entities.authority.Authority;
 import edplatform.edplat.entities.courses.Course;
@@ -51,6 +52,9 @@ public class CourseController {
     @Autowired
     private SecurityAuthorizationChecker securityAuthorizationChecker;
 
+    @Autowired
+    private AuthenticationUpdater authenticationUpdater;
+
     @GetMapping("/course/new")
     public String showCourseCreationForm(Model model) {
         model.addAttribute("course", new Course());
@@ -70,7 +74,7 @@ public class CourseController {
         // update authorities on the authenticated user:
         Authority authority = new Authority(
                 authorityStringBuilder.getCourseOwnerAuthority(course.getId().toString()));
-        addAuthorityToAuthentication(authority, authentication);
+        authenticationUpdater.addAuthorityToAuthentication(authority, authentication);
 
         return "course_creation_success";
     }
@@ -191,7 +195,7 @@ public class CourseController {
         // update authorities on the authenticated user:
         Authority authority = new Authority(
                 authorityStringBuilder.getCourseEnrolledAuthority(course.getId().toString()));
-        addAuthorityToAuthentication(authority, authentication);
+        authenticationUpdater.addAuthorityToAuthentication(authority, authentication);
 
         return new RedirectView("/course/courses");
     }
@@ -270,34 +274,5 @@ public class CourseController {
         model.addAttribute("searchName", courseName);
 
         return "course_search_result";
-    }
-
-    /**
-     * Method to add a new authority to the current authentication
-     * @param authority authority to be added
-     * @param authentication authentication to be updated
-     */
-    private void addAuthorityToAuthentication(Authority authority,
-                                              Authentication authentication) {
-        // create list of updated authorities:
-        List<GrantedAuthority> updatedAuthorities =
-                new ArrayList<>(authentication.getAuthorities());
-        updatedAuthorities.add(authority);
-        // create updated authentication to replace the old one:
-        Authentication newAuth = new UsernamePasswordAuthenticationToken(
-                authentication.getPrincipal(), authentication.getCredentials(), updatedAuthorities);
-
-        // add the authorities to the principal's user,
-        // some methods used the authorities as stored here
-        // and not the authentication:
-        Set<Authority> castAuthorities = new HashSet<>();
-        for (GrantedAuthority auth :
-                updatedAuthorities) {
-            castAuthorities.add((Authority) auth);
-        }
-        User userOfPrincipal = ((CustomUserDetails)newAuth.getPrincipal()).getUser();
-        userOfPrincipal.setAuthorities(castAuthorities);
-
-        SecurityContextHolder.getContext().setAuthentication(newAuth);
     }
 }
