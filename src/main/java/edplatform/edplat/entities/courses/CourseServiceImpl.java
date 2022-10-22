@@ -66,19 +66,15 @@ public class CourseServiceImpl implements CourseService {
     public void createCourse(User user, Course course) {
         // add course to user:
         course.getUsers().add(user);
-        // I don't know why I have to do this(course is the owner of the relationship, so adding
-        // the course to the user's list shouldn't be necessary):
         user.getCourses().add(course);
         // add the time it was added to the course:
         updateCourseTimestamp(course);
         this.save(course);
         // retrieve from DB to get id for authority creation:
         course = courseRepository.findByCourseName(course.getCourseName()).get();
-
         // add the course owner authority to the user that created the course:
         String authorityName = authorityStringBuilder.getCourseOwnerAuthority(course.getId().toString());
         authorityService.giveAuthorityToUser(user, authorityName);
-
         // ensure that the enrolled authority for the course is created:
         authorityService.createEnrolledAuthority(course.getId());
     }

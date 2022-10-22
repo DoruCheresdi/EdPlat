@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 /**
  * Bean used in the security filter chain to check if users have certain authorities
@@ -103,8 +104,8 @@ public class SecurityAuthorizationChecker {
      */
     public boolean checkCourseOwner(User user, Long courseId) {
         String courseOwnerAuthorityName = authorityStringBuilder.getCourseOwnerAuthority(courseId.toString());
-        Authority authority = authorityService.findByName(courseOwnerAuthorityName).get();
-        return user.getAuthorities().contains(authority);
+        return user.getAuthorities().stream()
+                .anyMatch(authority -> authority.getName().equals(courseOwnerAuthorityName));
     }
 
     /**
@@ -115,7 +116,7 @@ public class SecurityAuthorizationChecker {
      */
     public boolean checkCourseEnrolled(User user, Long courseId) {
         String courseOwnerAuthorityName = authorityStringBuilder.getCourseEnrolledAuthority(courseId.toString());
-        Authority authority = authorityService.findByName(courseOwnerAuthorityName).get();
-        return user.getAuthorities().contains(authority);
+        return user.getAuthorities().stream()
+                .anyMatch(authority -> authority.getName().equals(courseOwnerAuthorityName));
     }
 }
