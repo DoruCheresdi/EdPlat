@@ -77,4 +77,12 @@ public interface CourseService {
      * @return A list containing courses matching the search and the pagination
      */
     Page<Course> findAllByCourseNameContains(String contains, Pageable pageable);
+
+    /**
+     * Returns all courses which description contains the string provided
+     * @param containsDescription string used to search descriptions
+     * @param pageable specifies the page to return
+     * @return A list containing courses matching the search and the pagination
+     */
+    Page<Course> findAllByDescriptionContains(String containsDescription, Pageable pageable);
 }

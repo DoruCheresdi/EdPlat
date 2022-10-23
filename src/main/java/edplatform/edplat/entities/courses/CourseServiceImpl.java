@@ -137,7 +137,13 @@ public class CourseServiceImpl implements CourseService {
         course.setCreatedAt(courseCreatedAt);
     }
 
+    @Override
     public Page<Course> findAllByCourseNameContains(String contains, Pageable pageable) {
         return courseRepository.findAllByCourseNameContains(contains, pageable);
+    }
+
+    @Override
+    public Page<Course> findAllByDescriptionContains(String containsDescription, Pageable pageable) {
+        return courseRepository.findAllByDescriptionContains(containsDescription, pageable);
     }
 }

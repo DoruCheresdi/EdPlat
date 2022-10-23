@@ -272,6 +272,32 @@ public class CourseController {
 
         // add search string to model for displaying on the view:
         model.addAttribute("searchName", courseName);
+        model.addAttribute("searchAttribute", "course names");
+
+        return "course_search_result";
+    }
+
+    @PostMapping("/course/search_description")
+    public String showSearchResultsForDescription(@RequestParam String description,
+                                                 @RequestParam(required = false) Integer pageNumber,
+                                                 Model model) {
+        // default page size is 5:
+        int pageSize = 5;
+        // if pageNumber is not present in URL, set it to default:
+        if (pageNumber == null) {
+            pageNumber = 0;
+        }
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        Page<Course> listCourses = courseService.findAllByDescriptionContains(description, pageable);
+        model.addAttribute("listCourses", listCourses);
+
+        model.addAttribute("currentPageNumber", pageNumber);
+        model.addAttribute("numberPages", listCourses.getTotalPages());
+
+        // add search string to model for displaying on the view:
+        model.addAttribute("searchName", description);
+        model.addAttribute("searchAttribute", "descriptions");
 
         return "course_search_result";
     }
