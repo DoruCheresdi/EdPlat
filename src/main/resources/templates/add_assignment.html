@@ -26,7 +26,7 @@
             <div class="form-group row">
                 <label for="exampleFormControlTextarea1">Assignment Description</label>
                 <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
-                          th:field="*{description}"></textarea>
+                          th:field="*{description}" required minlength="2" maxlength="250"></textarea>
             </div>
             <div>
                 <button type="submit" class="btn btn-primary">Add new assignment</button>

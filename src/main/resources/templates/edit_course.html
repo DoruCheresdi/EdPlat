@@ -16,7 +16,7 @@
               enctype="multipart/form-data">
             <div class="form-group">
                 <label>Change Course Image: </label>
-                <input type="file" name="image" accept="image/png, image/jpeg" class=""/>
+                <input type="file" name="image" accept="image/png, image/jpeg" required/>
             </div>
             <div class="form-group">
                 <button type="submit" class="btn btn-primary">Upload Photo</button>
@@ -29,7 +29,8 @@
               method="post">
             <div class="form-group">
                 <label>Change Course Name: </label>
-                <input type="text" name="newCourseName" class="form-control"/>
+                <input type="text" name="newCourseName" class="form-control"
+                       required minlength="2" maxlength="250"/>
             </div>
             <div class="form-group">
                 <button type="submit" class="btn btn-primary">Change name</button>
@@ -42,7 +43,8 @@
               method="post"
               id="description_form">
             <label>Change Course Description: </label>
-            <textarea rows="4" cols="50" name="newDescription" form="description_form" class="form-control m-1">Enter description text here...</textarea>
+            <textarea rows="4" cols="50" name="newDescription" form="description_form" class="form-control m-1"
+                      required minlength="2" maxlength="250">Enter description text here...</textarea>
             <div class="form-group">
                 <button type="submit" class="btn btn-primary">Change Description</button>
             </div>

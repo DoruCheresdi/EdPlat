@@ -6,6 +6,7 @@ import edplatform.edplat.entities.submission.Submission;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -20,8 +21,10 @@ public class User {
     private Long id;
 
     @Column(unique=true)
+    @NotBlank
     private String email;
 
+    @NotBlank
     private String password;
 
     private String firstName;
