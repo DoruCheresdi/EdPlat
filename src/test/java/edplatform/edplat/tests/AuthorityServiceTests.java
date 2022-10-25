@@ -31,8 +31,11 @@ public class AuthorityServiceTests {
         User user = new User();
         String email = "authorityTest@test.com";
         String testFirstName = "testFirstName";
+        String testLastName = "testLastName";
         user.setEmail(email);
         user.setFirstName(testFirstName);
+        user.setLastName(testLastName);
+        user.setPassword("test");
         userRepository.save(user);
 
         // get user from database and make sure it is the right one:

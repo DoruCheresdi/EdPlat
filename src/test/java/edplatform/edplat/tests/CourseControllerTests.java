@@ -248,6 +248,7 @@ public class CourseControllerTests {
         user.setEmail("test@springTest.com");
         user.setFirstName("testFirstName");
         user.setLastName("testLastName");
+        user.setPassword("test");
         user.setCourses(new ArrayList<>());
 
         return new CustomUserDetails(user);
