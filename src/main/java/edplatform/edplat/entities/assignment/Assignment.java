@@ -25,7 +25,8 @@ public class Assignment {
 
     @OneToMany(mappedBy = "assignment",
             cascade = CascadeType.ALL,
-            orphanRemoval = true)
+            orphanRemoval = true,
+            fetch = FetchType.LAZY)
     private List<Submission> submissions;
 
     private String description;

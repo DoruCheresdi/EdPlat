@@ -2,6 +2,7 @@ package edplatform.edplat.controllers;
 
 
 import edplatform.edplat.controllers.controllerUtils.AuthenticationUpdater;
+import edplatform.edplat.entities.assignment.Assignment;
 import edplatform.edplat.entities.assignment.AssignmentService;
 import edplatform.edplat.entities.authority.Authority;
 import edplatform.edplat.entities.courses.Course;
