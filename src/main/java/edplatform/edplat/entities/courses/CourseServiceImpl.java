@@ -12,11 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -26,6 +28,9 @@ public class CourseServiceImpl implements CourseService {
 
     @Autowired
     private CourseRepository courseRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private AuthorityStringBuilder authorityStringBuilder;
@@ -63,10 +68,19 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public void createCourse(User user, Course course) {
+    @Transactional
+    public void createCourse(Long userId, Course course) {
+        log.info("Creating course with name {} for user with id {}", course.getCourseName(), userId);
+
+        User user;
+        try {
+            user = userRepository.findById(userId).orElseThrow();
+        } catch (NoSuchElementException e) {
+            log.error("Can't create course with nonexistent user with id {}", userId);
+            return;
+        }
         // add course to user:
         course.getUsers().add(user);
-        user.getCourses().add(course);
         // add the time it was added to the course:
         updateCourseTimestamp(course);
         this.save(course);

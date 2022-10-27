@@ -223,7 +223,7 @@ public class CourseControllerTests {
         userDetails.getUser().setCourses(new ArrayList<>());
         userDetails.getUser().getCourses().add(course);
 
-        courseService.createCourse(userDetails.getUser(), course);
+        courseService.createCourse(userDetails.getUser().getId(), course);
 
         mvc.perform(post("/course/change_description")
                         .param("courseId", course.getId().toString())

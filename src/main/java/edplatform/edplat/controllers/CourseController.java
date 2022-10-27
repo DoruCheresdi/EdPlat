@@ -66,11 +66,10 @@ public class CourseController {
     @PostMapping("/course/process_course")
     public String processCourse(Course course, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        User user = userService.findByEmail(userDetails.getUsername()).get();
 
         // add course to user:
         course.setUsers(new ArrayList<>());
-        courseService.createCourse(user, course);
+        courseService.createCourse(((CustomUserDetails) userDetails).getUser().getId(), course);
 
         // update authorities on the authenticated user:
         Authority authority = new Authority(

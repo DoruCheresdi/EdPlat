@@ -45,10 +45,10 @@ public interface CourseService {
     /**
      * Creates course and adds the user as the course's owner. Also creates and adds
      * the corresponding authority to the user
-     * @param user user to be given a course
+     * @param userId id of the user to be given a course
      * @param course course to be added to the user
      */
-    public void createCourse(User user, Course course);
+    public void createCourse(Long userId, Course course);
 
     /**
      * Method to add a user to a courses' list. Also adds the enrolled authority to the user
