@@ -2,11 +2,13 @@ package edplatform.edplat.entities.authority;
 
 import edplatform.edplat.entities.users.User;
 import lombok.Data;
+import org.hibernate.annotations.NaturalId;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Data
@@ -25,6 +27,7 @@ public class Authority implements GrantedAuthority {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
+    @NaturalId
     private String name;
 
     @ManyToMany(cascade = {
@@ -41,5 +44,22 @@ public class Authority implements GrantedAuthority {
     @Override
     public String getAuthority() {
         return name;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(name);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Authority other = (Authority) obj;
+        return Objects.equals(name, other.getName());
     }
 }

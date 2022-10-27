@@ -15,6 +15,13 @@ public interface UserService {
     public Optional<User> findByEmail(String email);
 
     /**
+     * Loads a user by email and all its courses
+     * @param email email of the user to be retrieved
+     * @return user object with all its courses
+     */
+    Optional<User> findByEmailWithCourses(String email);
+
+    /**
      * Method to return a list of results indicated by the pageable object
      * @param pageable object containing information about the page
      * @return

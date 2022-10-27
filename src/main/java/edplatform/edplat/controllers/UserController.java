@@ -1,5 +1,6 @@
 package edplatform.edplat.controllers;
 
+import edplatform.edplat.entities.authority.AuthorityService;
 import edplatform.edplat.entities.courses.Course;
 import edplatform.edplat.entities.courses.CourseDisplay;
 import edplatform.edplat.entities.users.User;
@@ -27,7 +28,9 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Controller
 @RequestMapping(path="/")
@@ -36,6 +39,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private AuthorityService authorityService;
 
     @Autowired
     private SecurityAuthorizationChecker securityAuthorizationChecker;
@@ -105,8 +111,16 @@ public class UserController {
     public String showUserCourses(Model model,
                                   Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        User user = userService.findByEmail(userDetails.getUsername()).get();
+        User user;
+        try {
+            user = userService.findByEmailWithCourses(userDetails.getUsername()).orElseThrow();
+        } catch (NoSuchElementException e) {
+            log.info("Can't find user");
+            return "error";
+        }
         List<Course> userCourses = user.getCourses();
+        // load authorities:
+        user.setAuthorities(new HashSet<>(authorityService.findAllByUserEmail(user.getEmail())));
 
         List<CourseDisplay> userCoursesDisplay = new ArrayList<>();
         for (Course course :

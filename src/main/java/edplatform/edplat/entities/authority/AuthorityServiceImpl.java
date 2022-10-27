@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -21,6 +22,10 @@ public class AuthorityServiceImpl implements AuthorityService {
 
     public Optional<Authority> findByName(String name) {
         return authorityRepository.findByName(name);
+    }
+
+    public List<Authority> findAllByUserEmail(String email) {
+        return authorityRepository.findAllByUserEmail(email);
     }
 
     public Authority createEnrolledAuthority(Long courseId) {
