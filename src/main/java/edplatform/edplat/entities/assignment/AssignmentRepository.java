@@ -18,4 +18,8 @@ public interface AssignmentRepository extends CrudRepository<Assignment, Long> {
     @QueryHints(value = { @QueryHint(name = "QueryHints.PASS_DISTINCT_THROUGH", value = "false")})
     @Query("select distinct a from Assignment a left join fetch a.submissions where a.course = :course")
     List<Assignment> findAllAssignmentsWithSubmissionsByCourse(Course course);
+
+    @QueryHints(value = { @QueryHint(name = "QueryHints.PASS_DISTINCT_THROUGH", value = "false")})
+    @Query("select distinct a from Assignment a left join fetch a.submissions where a.id = :id")
+    Optional<Assignment> findWithSubmissionsById (Long id);
 }

@@ -33,10 +33,10 @@ public class SubmissionServiceImpl implements SubmissionService {
         assignment.getSubmissions().remove(submission);
 
         User user = submission.getUser();
-        user.getSubmissions().remove(submission);
 
         String uploadDir = filePathBuilder.getSubmissionFileDirectory(assignment, user);
 
+        // delete file from disk:
         try {
             FileUploadUtil.deleteFile(uploadDir, submission.getSubmissionResource());
         } catch (IOException e) {

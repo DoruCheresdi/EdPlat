@@ -35,6 +35,13 @@ public interface AssignmentService {
     public List<Assignment> findAllAssignmentsWithSubmissionsByCourse(Course course);
 
     /**
+     * Returns assignment and its submissions
+     * @param id id of the assignment to be retrieved
+     * @return assignment with its submissions
+     */
+    public Optional<Assignment> findWithSubmissionsById (Long id);
+
+    /**
      * Method that returns whether the user has made a submission
      * for the given assignment
      * @param assignment assignment that the user should have made the sumbission

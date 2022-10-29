@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Controller
@@ -123,7 +124,14 @@ public class AssignmentController {
                                          Authentication authentication) throws IOException {
         User user = ((CustomUserDetails)authentication.getPrincipal()).getUser();
 
-        Assignment assignment = assignmentService.findById(assignmentId).get();
+        Assignment assignment;
+        try {
+            assignment = assignmentService.findWithSubmissionsById(assignmentId).orElseThrow();
+        } catch (NoSuchElementException e) {
+            log.error("Can't find assignment with id {}", assignmentId);
+            return new RedirectView("/error");
+        }
+
         if (!assignmentService.hasUserSubmitted(assignment, user)) {
             log.error("Trying to delete submission for a user that has no submission on assignment");
             return new RedirectView("/course?id=" + assignment.getCourse().getId());

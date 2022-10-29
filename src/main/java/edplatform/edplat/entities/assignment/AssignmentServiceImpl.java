@@ -78,6 +78,11 @@ public class AssignmentServiceImpl implements AssignmentService {
     }
 
     @Override
+    public Optional<Assignment> findWithSubmissionsById (Long id) {
+        return assignmentRepository.findWithSubmissionsById(id);
+    }
+
+    @Override
     @Transactional
     public boolean hasUserSubmitted(Assignment assignment, User user) {
         return assignment.getSubmissions().stream()
