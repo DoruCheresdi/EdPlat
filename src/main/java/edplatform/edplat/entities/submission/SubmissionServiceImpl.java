@@ -5,10 +5,12 @@ import edplatform.edplat.entities.users.User;
 import edplatform.edplat.utils.FilePathBuilder;
 import edplatform.edplat.utils.FileUploadUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.io.IOException;
 
 @Service
@@ -40,7 +42,14 @@ public class SubmissionServiceImpl implements SubmissionService {
         try {
             FileUploadUtil.deleteFile(uploadDir, submission.getSubmissionResource());
         } catch (IOException e) {
-            log.error("Can't delete submission file");
+            log.error("Can't delete submission file in upload directory {}", uploadDir);
+        }
+
+        // delete folder for submission:
+        try {
+            FileUtils.deleteDirectory(new File(uploadDir));
+        } catch (IOException e) {
+            log.error("Can't delete submission folder file {}", uploadDir);
         }
 
         submissionRepository.delete(submission);
