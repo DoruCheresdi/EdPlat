@@ -214,6 +214,9 @@ public class CourseController {
             return "error";
         }
 
+        // initialize the assignments and the submissions:
+        course.setAssignments(assignmentService.findAllAssignmentsWithSubmissionsByCourse(course));
+
         model.addAttribute("course", course);
         model.addAttribute("courseId", id);
         model.addAttribute("assignments", course.getAssignments());

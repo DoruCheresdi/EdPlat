@@ -17,6 +17,12 @@ public interface CourseService {
     public Optional<Course> findById(Long id);
 
     /**
+     * Retrieved a course with its assignments from db by id
+     * @param id id of the course to be retrieved
+     */
+    Optional<Course> findByIdWithAssignments(Long id);
+
+    /**
      * Retrieved a course from db by courseName
      * @param courseName CourseName of the course to be retrieved
      */

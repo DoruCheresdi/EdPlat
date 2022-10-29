@@ -71,7 +71,7 @@ public class AssignmentController {
             courseService.addAssignmentToCourse(assignment, courseId);
         } catch (Exception e) {
             e.printStackTrace();
-            return new RedirectView("error");
+            return new RedirectView("/error");
         }
 
         return new RedirectView("/course?id=" + assignment.getCourse().getId());

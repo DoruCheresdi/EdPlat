@@ -1,12 +1,15 @@
 package edplatform.edplat.entities.assignment;
 
+import edplatform.edplat.entities.courses.Course;
 import edplatform.edplat.entities.courses.CourseRepository;
 import edplatform.edplat.entities.courses.CourseService;
 import edplatform.edplat.entities.submission.Submission;
+import edplatform.edplat.entities.submission.SubmissionRepository;
 import edplatform.edplat.entities.submission.SubmissionService;
 import edplatform.edplat.entities.users.User;
 import edplatform.edplat.utils.FilePathBuilder;
 import edplatform.edplat.utils.FileUploadUtil;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,6 +34,9 @@ public class AssignmentServiceImpl implements AssignmentService {
 
     @Autowired
     private SubmissionService submissionService;
+
+    @Autowired
+    private SubmissionRepository submissionRepository;
 
     @Override
     public Optional<Assignment> findById(Long id) {
@@ -63,6 +70,11 @@ public class AssignmentServiceImpl implements AssignmentService {
 
         // save submission to database:
         submissionService.save(submission);
+    }
+
+    @Override
+    public List<Assignment> findAllAssignmentsWithSubmissionsByCourse(Course course) {
+        return assignmentRepository.findAllAssignmentsWithSubmissionsByCourse(course);
     }
 
     @Override

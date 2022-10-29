@@ -1,9 +1,11 @@
 package edplatform.edplat.entities.assignment;
 
+import edplatform.edplat.entities.courses.Course;
 import edplatform.edplat.entities.submission.Submission;
 import edplatform.edplat.entities.users.User;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface AssignmentService {
@@ -24,6 +26,13 @@ public interface AssignmentService {
      * @throws Exception
      */
     public void addSubmission(MultipartFile multipartFile, Long assignmentId, User user) throws Exception;
+
+    /**
+     * Returns all assignments and their submissions of a course
+     * @param course course whose assignment must be retrieved
+     * @return all assignments with their submissions
+     */
+    public List<Assignment> findAllAssignmentsWithSubmissionsByCourse(Course course);
 
     /**
      * Method that returns whether the user has made a submission

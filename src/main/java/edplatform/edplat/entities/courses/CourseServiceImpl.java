@@ -50,6 +50,11 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public Optional<Course> findByIdWithAssignments(Long id) {
+        return courseRepository.findByIdWithAssignments(id);
+    }
+
+    @Override
     public Optional<Course> findByCourseName(String courseName) {
         return courseRepository.findByCourseName(courseName);
     }
@@ -95,7 +100,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public void addAssignmentToCourse(Assignment assignment, Long courseId) throws Exception {
-        Optional<Course> optionalCourse = courseRepository.findById(courseId);
+        Optional<Course> optionalCourse = courseRepository.findByIdWithAssignments(courseId);
         Course course;
         if (optionalCourse.isPresent()) {
             course = optionalCourse.get();
