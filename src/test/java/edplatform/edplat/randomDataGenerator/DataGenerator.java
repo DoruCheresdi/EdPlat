@@ -60,7 +60,7 @@ public class DataGenerator {
      */
     public Course createAndPersistRandomCourseWithUser(User user) {
         Course generatedCourse = createRandomCourse();
-        courseService.createCourse(user, generatedCourse);
+        courseService.createCourse(user.getId(), generatedCourse);
         return courseService.findByCourseName(generatedCourse.getCourseName()).get();
     }
 

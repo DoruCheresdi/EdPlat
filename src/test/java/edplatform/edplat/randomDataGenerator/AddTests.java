@@ -43,7 +43,7 @@ public class AddTests {
         // create and save courses:
         for (int i = 0; i < numberOfCourses; i++) {
             Course generatedCourse = dataGenerator.createRandomCourse();
-            courseService.createCourse(user, generatedCourse);
+            courseService.createCourse(user.getId(), generatedCourse);
         }
     }
 }
