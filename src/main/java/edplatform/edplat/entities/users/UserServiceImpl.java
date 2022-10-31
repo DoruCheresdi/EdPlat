@@ -1,6 +1,7 @@
 package edplatform.edplat.entities.users;
 
 import edplatform.edplat.entities.authority.Authority;
+import edplatform.edplat.entities.authority.AuthorityRepository;
 import edplatform.edplat.entities.courses.Course;
 import edplatform.edplat.entities.courses.CourseService;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +10,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.Optional;
 
 @Service
@@ -18,6 +21,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private AuthorityRepository authorityRepository;
 
     @Autowired
     private CourseService courseService;
@@ -47,6 +53,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void deleteUser(User user) {
         for (Course course :
                 user.getCourses()) {
@@ -55,6 +62,8 @@ public class UserServiceImpl implements UserService {
                 courseService.deleteCourse(course);
             }
         }
+
+        user.setAuthorities(new HashSet<>(authorityRepository.findAllByUserEmail(user.getEmail())));
 
         for (Authority authority :
                 user.getAuthorities()) {

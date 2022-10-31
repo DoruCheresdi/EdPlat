@@ -1,6 +1,7 @@
 package edplatform.edplat.entities.users;
 
 import edplatform.edplat.entities.authority.Authority;
+import edplatform.edplat.entities.courses.Course;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.QueryHints;
@@ -30,4 +31,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @QueryHints(value = { @QueryHint(name = "QueryHints.PASS_DISTINCT_THROUGH", value = "false")})
     @Query("select distinct u from User u left join fetch u.courses where u.id = :id")
     Optional<User> findByIdWithCourses(Long id);
+
+    /**
+     * Loads a user by id and all its courses
+     * @param id id of the user to be retrieved
+     * @return user object with all its courses
+     */
+    @QueryHints(value = { @QueryHint(name = "QueryHints.PASS_DISTINCT_THROUGH", value = "false")})
+    @Query("select distinct u from User u join fetch u.courses c where c = :course")
+    List<User> findAllWithCourse(Course course);
 }

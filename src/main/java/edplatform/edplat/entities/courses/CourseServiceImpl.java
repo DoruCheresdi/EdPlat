@@ -153,6 +153,13 @@ public class CourseServiceImpl implements CourseService {
         String enrolledAuthority = authorityStringBuilder.getCourseEnrolledAuthority(course.getId().toString());
         authorityService.deleteAuthority(enrolledAuthority);
 
+        // delete users to synchronize this part of the relationship
+        // (otherwise deletion is not visible in transaction):
+        List<User> users = userRepository.findAllWithCourse(course);
+        for (User user :
+                users) {
+            user.getCourses().remove(course);
+        }
         // delete all assignments and the course itself (delete is cascading):
         course.setUsers(new ArrayList<>());
         courseRepository.delete(course);

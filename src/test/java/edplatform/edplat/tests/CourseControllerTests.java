@@ -163,9 +163,7 @@ public class CourseControllerTests {
         // create entities:
         CustomUserDetails userDetails = (CustomUserDetails) getSimpleUserDetails();
 
-        Course course = new Course();
-        course.setCourseName("TestControllerCourse");
-        course.setDescription("TestCourseControllerDescription");
+        Course course = getSimpleCourse();
         course.setUsers(Arrays.asList(userDetails.getUser()));
         userDetails.getUser().setCourses(new ArrayList<>());
         userDetails.getUser().getCourses().add(course);

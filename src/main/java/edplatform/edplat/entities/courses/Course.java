@@ -28,7 +28,8 @@ public class Course {
 
     @OneToMany(mappedBy = "course",
             cascade = CascadeType.ALL,
-            orphanRemoval = true)
+            orphanRemoval = true,
+            fetch = FetchType.LAZY)
     private List<Assignment> assignments;
 
     @ManyToMany(cascade = {
