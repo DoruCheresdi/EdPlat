@@ -71,9 +71,7 @@ public class CourseControllerTests {
     @Test
     @Transactional
     void shouldCreateAndPersistCourse() throws Exception {
-        Course course = new Course();
-        course.setCourseName("TestControllerCourse");
-        course.setDescription("TestCourseControllerDescription");
+        Course course = getSimpleCourse();
 
         CustomUserDetails userDetails = (CustomUserDetails) getSimpleUserDetails();
         userRepository.save(userDetails.getUser());
@@ -95,7 +93,7 @@ public class CourseControllerTests {
         assertThat(retrievedCourse.getDescription()).isEqualTo(course.getDescription());
 
         // check that the user is given the course:
-        User retrievedUser = userRepository.findByEmail(userDetails.getUser().getEmail()).get();
+        User retrievedUser = userRepository.findByEmailWithCourses(userDetails.getUser().getEmail()).get();
         assertThat(retrievedUser.getCourses().get(0)).isEqualTo(retrievedCourse);
 
         // test that the authority given is right:
@@ -104,15 +102,15 @@ public class CourseControllerTests {
         Long id = retrievedCourse.getId();
         String authority = authorityStringBuilder.getCourseOwnerAuthority(id.toString());
         assertThat(retrievedUser.getAuthorities().iterator().next().getAuthority()).isEqualTo(authority);
+
+        // cleanup:
+
     }
 
     @Test
     @Transactional
     void shouldDeleteSimpleCourse() throws Exception {
-        Course course = new Course();
-        course.setCourseName("TestControllerCourse");
-        course.setDescription("TestCourseControllerDescription");
-        course.setUsers(new ArrayList<>());
+        Course course = getSimpleCourse();
 
         courseRepository.save(course);
 
@@ -135,10 +133,7 @@ public class CourseControllerTests {
     @Test
     @Transactional
     void shouldFailDeletingSimpleNonexistentCourse() throws Exception {
-        Course course = new Course();
-        course.setCourseName("TestControllerCourse");
-        course.setDescription("TestCourseControllerDescription");
-        course.setUsers(new ArrayList<>());
+        Course course = getSimpleCourse();
 
         courseRepository.save(course);
 
@@ -216,24 +211,23 @@ public class CourseControllerTests {
         // create entities:
         CustomUserDetails userDetails = (CustomUserDetails) getSimpleUserDetails();
 
-        Course course = new Course();
-        course.setCourseName("TestControllerCourse");
-        course.setDescription("TestCourseControllerDescription");
-        course.setUsers(new ArrayList<>(Arrays.asList(userDetails.getUser())));
-        userDetails.getUser().setCourses(new ArrayList<>());
+        Course course = getSimpleCourse();
+        course.setUsers(new ArrayList<>(List.of(userDetails.getUser())));
+        userDetails.getUser().setCourses(new ArrayList<>(List.of(course)));
         userDetails.getUser().getCourses().add(course);
 
-        courseService.createCourse(userDetails.getUser().getId(), course);
+        courseService.createCourse(userDetails.getUser(), course);
 
+        String newDescription = "newDescription";
         mvc.perform(post("/course/change_description")
                         .param("courseId", course.getId().toString())
-                        .param("newDescription", "newDescription")
+                        .param("newDescription", newDescription)
                         .with(csrf())
                         .with(user(userDetails)))
                 .andExpect(status().is3xxRedirection());
 
         Course retrievedCourse = courseRepository.findByCourseName("TestControllerCourse").get();
-        assertThat(retrievedCourse.getDescription()).isEqualTo("newDescription");
+        assertThat(retrievedCourse.getDescription()).isEqualTo(newDescription);
     }
 
     private void giveCourseOwnerAuthorityToUserDetails(CustomUserDetails userDetails, Course course) {
@@ -252,5 +246,13 @@ public class CourseControllerTests {
         user.setCourses(new ArrayList<>());
 
         return new CustomUserDetails(user);
+    }
+
+    private Course getSimpleCourse() {
+        Course course = new Course();
+        course.setCourseName("TestControllerCourse");
+        course.setDescription("TestCourseControllerDescription");
+        course.setUsers(new ArrayList<>());
+        return course;
     }
 }

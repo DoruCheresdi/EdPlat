@@ -40,7 +40,10 @@ public class User {
             orphanRemoval = true)
     private List<Submission> submissions;
 
-    @ManyToMany(mappedBy = "users")
+    @ManyToMany(mappedBy = "users", cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
     private List<Course> courses;
 
     @ManyToMany(mappedBy = "users")

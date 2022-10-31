@@ -21,4 +21,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @QueryHints(value = { @QueryHint(name = "QueryHints.PASS_DISTINCT_THROUGH", value = "false")})
     @Query("select distinct u from User u left join fetch u.courses where u.email = :email")
     Optional<User> findByEmailWithCourses(String email);
+
+    /**
+     * Loads a user by id and all its courses
+     * @param id id of the user to be retrieved
+     * @return user object with all its courses
+     */
+    @QueryHints(value = { @QueryHint(name = "QueryHints.PASS_DISTINCT_THROUGH", value = "false")})
+    @Query("select distinct u from User u left join fetch u.courses where u.id = :id")
+    Optional<User> findByIdWithCourses(Long id);
 }

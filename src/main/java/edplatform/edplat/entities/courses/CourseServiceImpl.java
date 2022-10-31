@@ -13,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.servlet.view.RedirectView;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -75,17 +74,25 @@ public class CourseServiceImpl implements CourseService {
     @Override
     @Transactional
     public void createCourse(Long userId, Course course) {
-        log.info("Creating course with name {} for user with id {}", course.getCourseName(), userId);
-
         User user;
         try {
-            user = userRepository.findById(userId).orElseThrow();
+            user = userRepository.findByIdWithCourses(userId).orElseThrow();
         } catch (NoSuchElementException e) {
             log.error("Can't create course with nonexistent user with id {}", userId);
             return;
         }
+
+        createCourse(user, course);
+    }
+
+    @Override
+    @Transactional
+    public void createCourse(User user, Course course) {
+        log.info("Creating course with name {} for user with email {}", course.getCourseName(), user.getEmail());
+
         // add course to user:
         course.getUsers().add(user);
+        user.getCourses().add(course);
         // add the time it was added to the course:
         updateCourseTimestamp(course);
         this.save(course);
