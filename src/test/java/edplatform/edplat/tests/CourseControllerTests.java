@@ -11,6 +11,7 @@ import edplatform.edplat.entities.submission.SubmissionRepository;
 import edplatform.edplat.entities.users.CustomUserDetails;
 import edplatform.edplat.entities.users.User;
 import edplatform.edplat.entities.users.UserRepository;
+import edplatform.edplat.entities.users.UserService;
 import edplatform.edplat.security.AuthorityStringBuilder;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ public class CourseControllerTests {
     private UserRepository userRepository;
 
     @Autowired
-    private UserDetailsService userDetailsService;
+    private UserService userService;
 
     @Autowired
     private CourseRepository courseRepository;
@@ -104,11 +105,10 @@ public class CourseControllerTests {
         assertThat(retrievedUser.getAuthorities().iterator().next().getAuthority()).isEqualTo(authority);
 
         // cleanup:
-
+        courseService.deleteCourse(retrievedCourse);
     }
 
     @Test
-    @Transactional
     void shouldDeleteSimpleCourse() throws Exception {
         Course course = getSimpleCourse();
 
@@ -131,7 +131,6 @@ public class CourseControllerTests {
     }
 
     @Test
-    @Transactional
     void shouldFailDeletingSimpleNonexistentCourse() throws Exception {
         Course course = getSimpleCourse();
 
@@ -158,7 +157,6 @@ public class CourseControllerTests {
     }
 
     @Test
-    @Transactional
     void shouldDeleteCourseWithAssignmentsSubmissionsAndAuthorities() throws Exception {
         // create entities:
         CustomUserDetails userDetails = (CustomUserDetails) getSimpleUserDetails();
@@ -204,7 +202,6 @@ public class CourseControllerTests {
     }
 
     @Test
-    @Transactional
     public void shouldChangeDescription() throws Exception {
         // create entities:
         CustomUserDetails userDetails = (CustomUserDetails) getSimpleUserDetails();
@@ -212,7 +209,6 @@ public class CourseControllerTests {
         Course course = getSimpleCourse();
         course.setUsers(new ArrayList<>(List.of(userDetails.getUser())));
         userDetails.getUser().setCourses(new ArrayList<>(List.of(course)));
-        userDetails.getUser().getCourses().add(course);
 
         courseService.createCourse(userDetails.getUser(), course);
 
@@ -226,6 +222,10 @@ public class CourseControllerTests {
 
         Course retrievedCourse = courseRepository.findByCourseName("TestControllerCourse").get();
         assertThat(retrievedCourse.getDescription()).isEqualTo(newDescription);
+
+        // cleanup:
+//        courseService.deleteCourse(retrievedCourse);
+        userService.deleteUser(userDetails.getUser());
     }
 
     private void giveCourseOwnerAuthorityToUserDetails(CustomUserDetails userDetails, Course course) {
@@ -242,6 +242,7 @@ public class CourseControllerTests {
         user.setLastName("testLastName");
         user.setPassword("test");
         user.setCourses(new ArrayList<>());
+        user.setSubmissions(new ArrayList<>());
 
         return new CustomUserDetails(user);
     }

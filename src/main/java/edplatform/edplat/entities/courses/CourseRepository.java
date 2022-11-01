@@ -1,6 +1,7 @@
 package edplatform.edplat.entities.courses;
 
 
+import edplatform.edplat.entities.users.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,4 +25,8 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
      Page<Course> findAllByCourseNameContains(String containsName, Pageable pageable);
 
      Page<Course> findAllByDescriptionContains(String containsDescription, Pageable pageable);
+
+     @QueryHints(value = { @QueryHint(name = "QueryHints.PASS_DISTINCT_THROUGH", value = "false")})
+     @Query("select distinct c from Course c join fetch c.users u where u = :user")
+     List<Course> findAllByUser(User user);
 }

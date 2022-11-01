@@ -3,9 +3,11 @@ package edplatform.edplat.entities.users;
 import edplatform.edplat.entities.authority.Authority;
 import edplatform.edplat.entities.authority.AuthorityRepository;
 import edplatform.edplat.entities.courses.Course;
+import edplatform.edplat.entities.courses.CourseRepository;
 import edplatform.edplat.entities.courses.CourseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -21,6 +23,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CourseRepository courseRepository;
 
     @Autowired
     private AuthorityRepository authorityRepository;
@@ -53,8 +58,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public void deleteUser(User user) {
+        user.setCourses(courseRepository.findAllByUser(user));
         for (Course course :
                 user.getCourses()) {
             // delete course if the user deleted is the only owner of the course:
@@ -63,12 +68,12 @@ public class UserServiceImpl implements UserService {
             }
         }
 
-        user.setAuthorities(new HashSet<>(authorityRepository.findAllByUserEmail(user.getEmail())));
-
-        for (Authority authority :
-                user.getAuthorities()) {
-            authority.getUsers().remove(user);
-        }
+//        user.setAuthorities(new HashSet<>(authorityRepository.findAllByUserEmail(user.getEmail())));
+//
+//        for (Authority authority :
+//                user.getAuthorities()) {
+//            authority.getUsers().remove(user);
+//        }
 
         userRepository.delete(user);
     }

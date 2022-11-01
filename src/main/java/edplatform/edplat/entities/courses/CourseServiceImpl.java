@@ -137,7 +137,9 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    @Transactional
     public List<User> getOwnerUsers(Course course) {
+        course.setUsers(userRepository.findAllWithAuthorities(course));
         return course.getUsers().stream()
                 .filter(user -> securityAuthorizationChecker.checkCourseOwner(user, course.getId()))
                 .collect(Collectors.toList());
