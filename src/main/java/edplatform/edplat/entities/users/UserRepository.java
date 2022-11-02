@@ -39,7 +39,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
      */
     @QueryHints(value = { @QueryHint(name = "QueryHints.PASS_DISTINCT_THROUGH", value = "false")})
     @Query("select distinct u from User u join fetch u.courses c where c = :course")
-    List<User> findAllWithCourse(Course course);
+    List<User> findAllWithCourses(Course course);
 
     /**
      * Loads all user with their authorities by course
@@ -47,6 +47,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @return users list
      */
     @QueryHints(value = { @QueryHint(name = "QueryHints.PASS_DISTINCT_THROUGH", value = "false")})
-    @Query("select distinct u from User u left join fetch u.authorities where u.courses = :course")
+    @Query("select distinct u from User u left join fetch u.authorities where :course in u.courses")
     List<User> findAllWithAuthorities(Course course);
 }

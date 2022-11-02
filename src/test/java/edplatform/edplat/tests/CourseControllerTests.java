@@ -180,7 +180,7 @@ public class CourseControllerTests {
         courseRepository.save(course);
 
         // retrieve entities to check them later:
-        assignment = assignmentRepository.findByAssignmentName("TestAssignment").get();
+        assignment = assignmentRepository.findWithSubmissionsByAssignmentName("TestAssignment").get();
         submission = assignment.getSubmissions().get(0);
         Long submissionId = submission.getId();
         assertThat(submissionRepository.findById(submissionId).isPresent()).isEqualTo(true);
@@ -199,6 +199,9 @@ public class CourseControllerTests {
         assertThat(courseRepository.findByCourseName(course.getCourseName()).isPresent()).isEqualTo(false);
         assertThat(assignmentRepository.findByAssignmentName("TestAssignment").isPresent()).isEqualTo(false);
         assertThat(submissionRepository.findById(submissionId).isPresent()).isEqualTo(false);
+
+        // cleanup:
+        userService.deleteUser(userDetails.getUser());
     }
 
     @Test

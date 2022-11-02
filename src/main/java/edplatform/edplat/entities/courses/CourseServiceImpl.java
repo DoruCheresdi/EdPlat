@@ -157,7 +157,7 @@ public class CourseServiceImpl implements CourseService {
 
         // delete users to synchronize this part of the relationship
         // (otherwise deletion is not visible in transaction):
-        List<User> users = userRepository.findAllWithCourse(course);
+        List<User> users = userRepository.findAllWithCourses(course);
         for (User user :
                 users) {
             user.getCourses().remove(course);
