@@ -71,7 +71,7 @@ public interface CourseService {
      * @param course course to be given the user
      * @param user user to be given the course
      */
-    public void enrollUserToCourse(Course course, User user);
+    public void enrollUserToCourse(Long courseId, Long userId);
 
     /**
      * Returns all the owners of the course

@@ -8,6 +8,7 @@ import edplatform.edplat.entities.users.UserRepository;
 import edplatform.edplat.security.AuthorityStringBuilder;
 import edplatform.edplat.security.SecurityAuthorizationChecker;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -131,10 +132,19 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public void enrollUserToCourse(Course course, User user) {
+    @Transactional
+    public void enrollUserToCourse(Long courseId, Long userId) {
+        Course course = courseRepository.findById(courseId).get();
+        User user = userRepository.findByIdWithCourses(userId).get();
+
+        // check if user already has course:
         if (user.getCourses().contains(course)) {
             log.error("User {} already has course {}", user.getEmail(), course.getCourseName());
             return;
+        }
+
+        if (!Hibernate.isInitialized(course.getUsers())) {
+            course.setUsers(userRepository.findAllByCourse(course));
         }
         course.getUsers().add(user);
         this.save(course);
