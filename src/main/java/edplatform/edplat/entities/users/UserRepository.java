@@ -42,11 +42,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findAllWithCourses(Course course);
 
     /**
-     * Loads all user with their authorities by course
-     * @param course course of the users to be retrieved
+     * Loads all users that own/are enrolled in the course, together with their authorities
+     * @param courseName name of the course of the users to be retrieved
      * @return users list
      */
     @QueryHints(value = { @QueryHint(name = "QueryHints.PASS_DISTINCT_THROUGH", value = "false")})
-    @Query("select distinct u from User u left join fetch u.authorities where :course in u.courses")
-    List<User> findAllWithAuthorities(Course course);
+    @Query("select distinct u from User u left join fetch u.authorities join u.courses c where c.courseName = :courseName")
+    List<User> findAllWithAuthorities(String courseName);
 }

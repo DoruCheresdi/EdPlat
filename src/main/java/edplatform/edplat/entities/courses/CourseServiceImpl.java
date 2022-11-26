@@ -91,11 +91,19 @@ public class CourseServiceImpl implements CourseService {
         log.info("Creating course with name {} for user with email {}", course.getCourseName(), user.getEmail());
 
         // add course to user:
+        if (course.getUsers() == null) {
+            course.setUsers(new ArrayList<>());
+        }
         course.getUsers().add(user);
+        if (user.getCourses() == null) {
+            user.setCourses(new ArrayList<>());
+        }
         user.getCourses().add(course);
+
         // add the time it was added to the course:
         updateCourseTimestamp(course);
         this.save(course);
+
         // retrieve from DB to get id for authority creation:
         course = courseRepository.findByCourseName(course.getCourseName()).get();
         // add the course owner authority to the user that created the course:
@@ -139,7 +147,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     @Transactional
     public List<User> getOwnerUsers(Course course) {
-        course.setUsers(userRepository.findAllWithAuthorities(course));
+        course.setUsers(userRepository.findAllWithAuthorities(course.getCourseName()));
         return course.getUsers().stream()
                 .filter(user -> securityAuthorizationChecker.checkCourseOwner(user, course.getId()))
                 .collect(Collectors.toList());

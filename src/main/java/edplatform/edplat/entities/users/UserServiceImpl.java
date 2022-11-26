@@ -14,7 +14,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -60,21 +62,23 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(User user) {
         user.setCourses(courseRepository.findAllByUser(user));
+
+        // delete the courses that will have no owner after user deletion:
+        List<Course> coursesForDeletion = new ArrayList<>();
         for (Course course :
                 user.getCourses()) {
             // delete course if the user deleted is the only owner of the course:
             if(courseService.getOwnerUsers(course).size() <= 1) {
-                courseService.deleteCourse(course);
+                coursesForDeletion.add(course);
             }
         }
+        for (Course course :
+                coursesForDeletion) {
+            courseService.deleteCourse(course);
+        }
 
-//        user.setAuthorities(new HashSet<>(authorityRepository.findAllByUserEmail(user.getEmail())));
-//
-//        for (Authority authority :
-//                user.getAuthorities()) {
-//            authority.getUsers().remove(user);
-//        }
-
+        // sinchronize entity before deletion:
+        user = userRepository.findByEmail(user.getEmail()).get();
         userRepository.delete(user);
     }
 

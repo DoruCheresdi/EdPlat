@@ -210,7 +210,6 @@ public class CourseControllerTests {
         CustomUserDetails userDetails = (CustomUserDetails) getSimpleUserDetails();
 
         Course course = getSimpleCourse();
-        course.setUsers(new ArrayList<>(List.of(userDetails.getUser())));
         userDetails.getUser().setCourses(new ArrayList<>(List.of(course)));
 
         courseService.createCourse(userDetails.getUser(), course);
@@ -227,7 +226,6 @@ public class CourseControllerTests {
         assertThat(retrievedCourse.getDescription()).isEqualTo(newDescription);
 
         // cleanup:
-//        courseService.deleteCourse(retrievedCourse);
         userService.deleteUser(userDetails.getUser());
     }
 
