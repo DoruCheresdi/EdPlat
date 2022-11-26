@@ -52,9 +52,9 @@ public interface AssignmentService {
 
     /**
      * Returns the submission made by the user to the assignment
-     * @param assignment assignment where the submission is sought
-     * @param user user whose submission is sought
+     * @param assignmentId assignment where the submission is sought
+     * @param userId user whose submission is sought
      * @return submission made by the user for the assignment
      */
-    public Submission getSubmissionForUser(Assignment assignment, User user);
+    public Submission getSubmissionForUser(Long assignmentId, Long userId);
 }

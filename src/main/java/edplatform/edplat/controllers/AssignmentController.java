@@ -111,8 +111,7 @@ public class AssignmentController {
                                             Authentication authentication) throws IOException {
         // get submission:
         User user = ((CustomUserDetails)authentication.getPrincipal()).getUser();
-        Assignment assignment = assignmentService.findById(assignmentId).get();
-        Submission submission = assignmentService.getSubmissionForUser(assignment, user);
+        Submission submission = assignmentService.getSubmissionForUser(assignmentId, user.getId());
         // get file input stream:
         File initialFile = new File(submission.getResourcePath());
         InputStream targetStream = new FileInputStream(initialFile);
@@ -137,7 +136,7 @@ public class AssignmentController {
             return new RedirectView("/course?id=" + assignment.getCourse().getId());
         }
 
-        Submission submission = assignmentService.getSubmissionForUser(assignment, user);
+        Submission submission = assignmentService.getSubmissionForUser(assignment.getId(), user.getId());
         // delete submission:
         submissionService.delete(submission);
 

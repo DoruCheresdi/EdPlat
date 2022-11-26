@@ -7,6 +7,7 @@ import edplatform.edplat.entities.submission.Submission;
 import edplatform.edplat.entities.submission.SubmissionRepository;
 import edplatform.edplat.entities.submission.SubmissionService;
 import edplatform.edplat.entities.users.User;
+import edplatform.edplat.entities.users.UserRepository;
 import edplatform.edplat.utils.FilePathBuilder;
 import edplatform.edplat.utils.FileUploadUtil;
 import org.hibernate.Hibernate;
@@ -28,6 +29,9 @@ public class AssignmentServiceImpl implements AssignmentService {
 
     @Autowired
     private AssignmentRepository assignmentRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private FilePathBuilder filePathBuilder;
@@ -91,7 +95,10 @@ public class AssignmentServiceImpl implements AssignmentService {
 
     @Override
     @Transactional
-    public Submission getSubmissionForUser(Assignment assignment, User user) {
+    public Submission getSubmissionForUser(Long assignmentId, Long userId) {
+        User user = userRepository.findById(userId).get();
+        Assignment assignment = assignmentRepository.findWithSubmissionsById(assignmentId).get();
+
         return assignment.getSubmissions().stream()
                 .filter(submission -> submission.getUser().equals(user))
                 .findAny().get();
