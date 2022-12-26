@@ -254,4 +254,12 @@ public class CourseControllerTests {
         course.setUsers(new ArrayList<>());
         return course;
     }
+
+    private Course getCourse(String courseName, String courseDescription) {
+        Course course = new Course();
+        course.setCourseName(courseName);
+        course.setDescription(courseDescription);
+        course.setUsers(new ArrayList<>());
+        return course;
+    }
 }
