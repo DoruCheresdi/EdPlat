@@ -6,7 +6,7 @@ Spring Boot, Spring Security, Spring Data and Thymeleaf.
 Supports CRUD operations for users, courses, assignments and submissions.
 Uses MySQL for data persistence.
 
-# Deployment
+# Deployment (currently at http://ec2-34-226-147-224.compute-1.amazonaws.com:8080/ )
 
 To deploy the application to linux systems, use the deploy.sh and
 remove-containers.sh scripts. What they do:
