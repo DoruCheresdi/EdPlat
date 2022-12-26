@@ -1,18 +1,13 @@
 package edplatform.edplat.randomDataGenerator;
 
 import edplatform.edplat.entities.courses.Course;
-import edplatform.edplat.entities.courses.CourseRepository;
 import edplatform.edplat.entities.courses.CourseService;
 import edplatform.edplat.entities.users.User;
-import edplatform.edplat.entities.users.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * Random data generation class for courses

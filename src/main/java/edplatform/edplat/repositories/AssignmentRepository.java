@@ -1,5 +1,6 @@
-package edplatform.edplat.entities.assignment;
+package edplatform.edplat.repositories;
 
+import edplatform.edplat.entities.assignment.Assignment;
 import edplatform.edplat.entities.authority.Authority;
 import edplatform.edplat.entities.courses.Course;
 import edplatform.edplat.entities.submission.Submission;

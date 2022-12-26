@@ -2,7 +2,6 @@ package edplatform.edplat.controllers;
 
 
 import edplatform.edplat.controllers.controllerUtils.AuthenticationUpdater;
-import edplatform.edplat.entities.assignment.Assignment;
 import edplatform.edplat.entities.assignment.AssignmentService;
 import edplatform.edplat.entities.authority.Authority;
 import edplatform.edplat.entities.courses.Course;
@@ -18,10 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -247,7 +243,7 @@ public class CourseController {
         return "course_search";
     }
 
-    @PostMapping("/course/search_course_name")
+    @GetMapping("/course/search_course_name")
     public String showSearchResultsForCourseName(@RequestParam String courseName,
                                                  @RequestParam(required = false) Integer pageNumber,
                                                  Model model) {
@@ -267,12 +263,11 @@ public class CourseController {
 
         // add search string to model for displaying on the view:
         model.addAttribute("searchName", courseName);
-        model.addAttribute("searchAttribute", "course names");
 
-        return "course_search_result";
+        return "course_search_name_result";
     }
 
-    @PostMapping("/course/search_description")
+    @GetMapping("/course/search_description")
     public String showSearchResultsForDescription(@RequestParam String description,
                                                  @RequestParam(required = false) Integer pageNumber,
                                                  Model model) {
@@ -292,8 +287,7 @@ public class CourseController {
 
         // add search string to model for displaying on the view:
         model.addAttribute("searchName", description);
-        model.addAttribute("searchAttribute", "descriptions");
 
-        return "course_search_result";
+        return "course_search_description_result";
     }
 }

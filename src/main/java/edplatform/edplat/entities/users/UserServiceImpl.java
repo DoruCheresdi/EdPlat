@@ -1,21 +1,18 @@
 package edplatform.edplat.entities.users;
 
-import edplatform.edplat.entities.authority.Authority;
-import edplatform.edplat.entities.authority.AuthorityRepository;
+import edplatform.edplat.repositories.AuthorityRepository;
 import edplatform.edplat.entities.courses.Course;
-import edplatform.edplat.entities.courses.CourseRepository;
+import edplatform.edplat.repositories.CourseRepository;
 import edplatform.edplat.entities.courses.CourseService;
+import edplatform.edplat.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 

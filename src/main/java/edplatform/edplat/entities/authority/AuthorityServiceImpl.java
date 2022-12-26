@@ -1,6 +1,7 @@
 package edplatform.edplat.entities.authority;
 
 import edplatform.edplat.entities.users.User;
+import edplatform.edplat.repositories.AuthorityRepository;
 import edplatform.edplat.security.AuthorityStringBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

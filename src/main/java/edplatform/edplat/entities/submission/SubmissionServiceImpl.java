@@ -2,6 +2,7 @@ package edplatform.edplat.entities.submission;
 
 import edplatform.edplat.entities.assignment.Assignment;
 import edplatform.edplat.entities.users.User;
+import edplatform.edplat.repositories.SubmissionRepository;
 import edplatform.edplat.utils.FilePathBuilder;
 import edplatform.edplat.utils.FileUploadUtil;
 import lombok.extern.slf4j.Slf4j;

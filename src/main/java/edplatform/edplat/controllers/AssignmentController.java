@@ -2,17 +2,12 @@ package edplatform.edplat.controllers;
 
 import edplatform.edplat.entities.assignment.Assignment;
 import edplatform.edplat.entities.assignment.AssignmentService;
-import edplatform.edplat.entities.courses.Course;
-import edplatform.edplat.entities.courses.CourseRepository;
 import edplatform.edplat.entities.courses.CourseService;
 import edplatform.edplat.entities.submission.Submission;
-import edplatform.edplat.entities.submission.SubmissionRepository;
 import edplatform.edplat.entities.submission.SubmissionService;
 import edplatform.edplat.entities.users.CustomUserDetails;
 import edplatform.edplat.entities.users.User;
-import edplatform.edplat.entities.users.UserRepository;
 import edplatform.edplat.utils.FilePathBuilder;
-import edplatform.edplat.utils.FileUploadUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,13 +23,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
 
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 

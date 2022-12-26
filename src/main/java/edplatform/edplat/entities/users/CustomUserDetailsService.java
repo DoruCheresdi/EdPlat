@@ -1,7 +1,7 @@
 package edplatform.edplat.entities.users;
 
-import edplatform.edplat.entities.authority.AuthorityRepository;
-import org.hibernate.Hibernate;
+import edplatform.edplat.repositories.AuthorityRepository;
+import edplatform.edplat.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

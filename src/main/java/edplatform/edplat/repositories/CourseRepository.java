@@ -1,6 +1,7 @@
-package edplatform.edplat.entities.courses;
+package edplatform.edplat.repositories;
 
 
+import edplatform.edplat.entities.courses.Course;
 import edplatform.edplat.entities.users.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

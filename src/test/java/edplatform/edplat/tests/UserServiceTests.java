@@ -1,14 +1,12 @@
 package edplatform.edplat.tests;
 
 import edplatform.edplat.entities.users.User;
-import edplatform.edplat.entities.users.UserRepository;
+import edplatform.edplat.repositories.UserRepository;
 import edplatform.edplat.entities.users.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 

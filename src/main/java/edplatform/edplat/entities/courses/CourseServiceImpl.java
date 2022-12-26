@@ -1,10 +1,11 @@
 package edplatform.edplat.entities.courses;
 
 import edplatform.edplat.entities.assignment.Assignment;
-import edplatform.edplat.entities.assignment.AssignmentRepository;
+import edplatform.edplat.repositories.AssignmentRepository;
 import edplatform.edplat.entities.authority.AuthorityService;
 import edplatform.edplat.entities.users.User;
-import edplatform.edplat.entities.users.UserRepository;
+import edplatform.edplat.repositories.CourseRepository;
+import edplatform.edplat.repositories.UserRepository;
 import edplatform.edplat.security.AuthorityStringBuilder;
 import edplatform.edplat.security.SecurityAuthorizationChecker;
 import lombok.extern.slf4j.Slf4j;

@@ -11,7 +11,7 @@
 <div th:insert="navbar :: navbar"></div>
 <div class="container align-items-center m-5">
     <form th:action="@{/course/search_course_name}"
-          method="post">
+          method="get">
         <div class="form-group">
             <label>Search for courses with name: </label>
             <input type="text" name="courseName" class="form-control"/>
@@ -20,8 +20,9 @@
             <button type="submit" class="btn btn-primary">Search</button>
         </div>
     </form>
+
     <form th:action="@{/course/search_description}"
-          method="post">
+          method="get">
         <div class="form-group">
             <label>Search for courses with description: </label>
             <input type="text" name="description" class="form-control"/>

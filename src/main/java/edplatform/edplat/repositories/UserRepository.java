@@ -1,7 +1,8 @@
-package edplatform.edplat.entities.users;
+package edplatform.edplat.repositories;
 
 import edplatform.edplat.entities.authority.Authority;
 import edplatform.edplat.entities.courses.Course;
+import edplatform.edplat.entities.users.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.QueryHints;
