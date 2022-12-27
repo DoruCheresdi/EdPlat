@@ -17,8 +17,10 @@ if ! docker run --name edplat-mysql --network edplat-net \
                 -e MYSQL_ROOT_PASSWORD=root -e MYSQL_USER=springuser \
                 -e MYSQL_PASSWORD=ThePassword -e MYSQL_DATABASE=db_edplat \
                 -d mysql:latest; then
-    echo failed
-    exit
+    if ! docker start edplat-mysql; then
+        echo "can't run or start mysql container, exiting..."
+        exit
+    fi
 fi
 echo "mysql container started"
 
