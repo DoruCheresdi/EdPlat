@@ -2,6 +2,7 @@ package edplatform.edplat.randomDataGenerator;
 
 import edplatform.edplat.entities.courses.Course;
 import edplatform.edplat.entities.courses.CourseService;
+import edplatform.edplat.entities.courses.enrollment.CourseEnrollment;
 import edplatform.edplat.entities.users.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +33,18 @@ public class AddCoursesWithAssignments {
     public void addCoursesWithAssignments(Integer numberOfCourses) {
         User user = dataGenerator.createRandomUser();
 
+        CourseEnrollment.EnrollmentType enrollmentType = CourseEnrollment.EnrollmentType.FREE;
+
         // create and save courses:
         for (int i = 0; i < numberOfCourses; i++) {
-            Course generatedCourse = dataGenerator.createRandomCourse();
+            // switch enrollment type for diversity:
+            if (enrollmentType.equals(CourseEnrollment.EnrollmentType.FREE)) {
+                enrollmentType = CourseEnrollment.EnrollmentType.ONE_OWNER_DECIDES;
+            } else {
+                enrollmentType = CourseEnrollment.EnrollmentType.FREE;
+            }
+
+            Course generatedCourse = dataGenerator.createRandomCourse(enrollmentType);
             courseService.createCourse(user.getId(), generatedCourse);
 
             Course retrievedCourse = courseService

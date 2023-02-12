@@ -2,6 +2,7 @@ package edplatform.edplat.randomDataGenerator;
 
 import edplatform.edplat.entities.courses.Course;
 import edplatform.edplat.entities.courses.CourseService;
+import edplatform.edplat.entities.courses.enrollment.CourseEnrollment;
 import edplatform.edplat.entities.users.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ public class AddTests {
 
         // create and save courses:
         for (int i = 0; i < numberOfCourses; i++) {
-            Course generatedCourse = dataGenerator.createRandomCourse();
+            Course generatedCourse = dataGenerator.createRandomCourse(CourseEnrollment.EnrollmentType.FREE);
             courseService.createCourse(user.getId(), generatedCourse);
         }
     }

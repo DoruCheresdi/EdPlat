@@ -178,12 +178,7 @@ public class CourseController {
                                      Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         User user = userService.findByEmail(userDetails.getUsername()).get();
-        courseService.enrollUserToCourse(courseId, user.getId());
-
-        // update authorities on the authenticated user:
-        Authority authority = new Authority(
-                authorityStringBuilder.getCourseEnrolledAuthority(courseId.toString()));
-        authenticationUpdater.addAuthorityToAuthentication(authority, authentication);
+        courseService.enrollUserToCourse(courseId, user.getId(), authentication);
 
         return new RedirectView("/course/courses");
     }

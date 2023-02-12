@@ -2,6 +2,7 @@ package edplatform.edplat.entities.users;
 
 import edplatform.edplat.entities.authority.Authority;
 import edplatform.edplat.entities.courses.Course;
+import edplatform.edplat.entities.courses.enrollment.CourseJoinRequest;
 import edplatform.edplat.entities.submission.Submission;
 import lombok.Data;
 
@@ -37,8 +38,15 @@ public class User {
 
     @OneToMany(mappedBy = "user",
             cascade = CascadeType.ALL,
-            orphanRemoval = true)
+            orphanRemoval = true,
+            fetch = FetchType.LAZY)
     private List<Submission> submissions;
+
+    @OneToMany(mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY)
+    private List<CourseJoinRequest> joinRequests;
 
     @ManyToMany(mappedBy = "users", cascade = {
             CascadeType.PERSIST,

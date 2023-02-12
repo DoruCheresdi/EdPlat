@@ -1,6 +1,12 @@
 package edplatform.edplat.entities.courses;
 
+import edplatform.edplat.controllers.controllerUtils.AuthenticationUpdater;
 import edplatform.edplat.entities.assignment.Assignment;
+import edplatform.edplat.entities.authority.Authority;
+import edplatform.edplat.entities.courses.enrollment.CourseEnrollment;
+import edplatform.edplat.entities.courses.enrollment.CourseJoinRequest;
+import edplatform.edplat.entities.courses.enrollment.EnrollmentRequestCreationStrategy;
+import edplatform.edplat.entities.courses.enrollment.EnrollmentRequestCreationStrategyFactory;
 import edplatform.edplat.repositories.AssignmentRepository;
 import edplatform.edplat.entities.authority.AuthorityService;
 import edplatform.edplat.entities.users.User;
@@ -13,6 +19,7 @@ import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +51,9 @@ public class CourseServiceImpl implements CourseService {
 
     @Autowired
     private SecurityAuthorizationChecker securityAuthorizationChecker;
+
+    @Autowired
+    private EnrollmentRequestCreationStrategyFactory enrollmentRequestCreationStrategyFactory;
 
     @Override
     public Optional<Course> findById(Long id) {
@@ -134,7 +144,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     @Transactional
-    public void enrollUserToCourse(Long courseId, Long userId) {
+    public void enrollUserToCourse(Long courseId, Long userId, Authentication authentication) {
         Course course = courseRepository.findById(courseId).get();
         User user = userRepository.findByIdWithCourses(userId).get();
 
@@ -147,12 +157,9 @@ public class CourseServiceImpl implements CourseService {
         if (!Hibernate.isInitialized(course.getUsers())) {
             course.setUsers(userRepository.findAllByCourse(course));
         }
-        course.getUsers().add(user);
-        this.save(course);
 
-        // add the course owner authority to the user that created the course:
-        String authorityName = authorityStringBuilder.getCourseEnrolledAuthority(course.getId().toString());
-        authorityService.giveAuthorityToUser(user, authorityName);
+        EnrollmentRequestCreationStrategy strategy = enrollmentRequestCreationStrategyFactory.creationStrategy(course.getEnrollmentType());
+        strategy.enroll(user, course, authentication);
     }
 
     @Override
