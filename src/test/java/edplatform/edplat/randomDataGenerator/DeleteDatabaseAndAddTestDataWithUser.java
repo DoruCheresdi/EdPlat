@@ -20,7 +20,7 @@ public class DeleteDatabaseAndAddTestDataWithUser {
     @Rollback(value = false)
     public void resetDatabase() throws Exception {
         databaseOperations.deleteAllUsers();
-        databaseOperations.addCoursesWithAssignments(10);
+        databaseOperations.addCoursesWithAssignments(32);
         databaseOperations.addBasicTestUser();
     }
 }

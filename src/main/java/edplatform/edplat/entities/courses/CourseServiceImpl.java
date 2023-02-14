@@ -4,7 +4,6 @@ import edplatform.edplat.controllers.controllerUtils.AuthenticationUpdater;
 import edplatform.edplat.entities.assignment.Assignment;
 import edplatform.edplat.entities.authority.Authority;
 import edplatform.edplat.entities.courses.enrollment.CourseEnrollment;
-import edplatform.edplat.entities.courses.enrollment.CourseJoinRequest;
 import edplatform.edplat.entities.courses.enrollment.EnrollmentRequestCreationStrategy;
 import edplatform.edplat.entities.courses.enrollment.EnrollmentRequestCreationStrategyFactory;
 import edplatform.edplat.repositories.AssignmentRepository;

@@ -5,11 +5,12 @@ import edplatform.edplat.entities.users.User;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 @Data
 @Entity
-@Table(name = "courseJoinRequests")
-public class CourseJoinRequest {
+@Table(name = "courseEnrollRequests")
+public class CourseEnrollRequest {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -20,4 +21,6 @@ public class CourseJoinRequest {
 
     @ManyToOne
     private Course course;
+
+    private Timestamp createdAt;
 }

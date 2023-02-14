@@ -2,7 +2,7 @@ package edplatform.edplat.entities.users;
 
 import edplatform.edplat.entities.authority.Authority;
 import edplatform.edplat.entities.courses.Course;
-import edplatform.edplat.entities.courses.enrollment.CourseJoinRequest;
+import edplatform.edplat.entities.courses.enrollment.CourseEnrollRequest;
 import edplatform.edplat.entities.submission.Submission;
 import lombok.Data;
 
@@ -46,7 +46,7 @@ public class User {
             cascade = CascadeType.ALL,
             orphanRemoval = true,
             fetch = FetchType.LAZY)
-    private List<CourseJoinRequest> joinRequests;
+    private List<CourseEnrollRequest> enrollRequests;
 
     @ManyToMany(mappedBy = "users", cascade = {
             CascadeType.PERSIST,

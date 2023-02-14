@@ -3,11 +3,17 @@ package edplatform.edplat.controllers;
 import edplatform.edplat.entities.authority.AuthorityService;
 import edplatform.edplat.entities.courses.Course;
 import edplatform.edplat.entities.courses.CourseDisplay;
+import edplatform.edplat.entities.courses.CourseService;
+import edplatform.edplat.entities.courses.enrollment.CourseEnrollRequest;
+import edplatform.edplat.entities.courses.enrollment.CourseEnrollRequestService;
+import edplatform.edplat.entities.courses.enrollment.EnrollRequestViewDTO;
 import edplatform.edplat.entities.users.User;
 import edplatform.edplat.entities.users.UserService;
 import edplatform.edplat.security.SecurityAuthorizationChecker;
 import edplatform.edplat.utils.FileUploadUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.ocpsoft.prettytime.PrettyTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,10 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Controller
 @RequestMapping(path="/")
@@ -39,10 +42,16 @@ public class UserController {
     private UserService userService;
 
     @Autowired
+    private CourseService courseService;
+
+    @Autowired
     private AuthorityService authorityService;
 
     @Autowired
     private SecurityAuthorizationChecker securityAuthorizationChecker;
+
+    @Autowired
+    private CourseEnrollRequestService courseEnrollRequestService;
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
@@ -84,6 +93,30 @@ public class UserController {
     @GetMapping("/user/edit")
     public String showUserEditForm(Model model) {
         return "edit_user";
+    }
+
+    @GetMapping("/user/enroll_requests")
+    public String showUserEnrollRequests(Model model, Authentication authentication) {
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        User user = userService.findByEmail(userDetails.getUsername()).get();
+
+        // get names of the courses that the user tries to enroll in:
+        List<CourseEnrollRequest> courseEnrollRequests = courseEnrollRequestService.findAllByUser(user);
+        List<EnrollRequestViewDTO> courseEnrollmentRequestsDTO = new ArrayList<>();
+
+        for (CourseEnrollRequest courseEnrollRequest : courseEnrollRequests) {
+            // get time since course has been created in pretty format:
+            PrettyTime t = new PrettyTime(new Date(System.currentTimeMillis()));
+            String timeSinceString = t.format(new Date(courseEnrollRequest.getCreatedAt().getTime()));
+
+            courseEnrollmentRequestsDTO.add(
+                    new EnrollRequestViewDTO(courseEnrollRequest.getCourse().getCourseName(),
+                            timeSinceString)
+            );
+        }
+
+        model.addAttribute("courseEnrollmentRequests", courseEnrollmentRequestsDTO);
+        return "enroll_requests";
     }
 
     @PostMapping("/user/process_img_edit")

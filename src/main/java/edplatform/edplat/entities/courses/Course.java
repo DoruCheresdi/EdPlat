@@ -1,8 +1,8 @@
 package edplatform.edplat.entities.courses;
 
 import edplatform.edplat.entities.assignment.Assignment;
+import edplatform.edplat.entities.courses.enrollment.CourseEnrollRequest;
 import edplatform.edplat.entities.courses.enrollment.CourseEnrollment;
-import edplatform.edplat.entities.courses.enrollment.CourseJoinRequest;
 import edplatform.edplat.entities.users.User;
 import lombok.Data;
 
@@ -52,7 +52,7 @@ public class Course {
             cascade = CascadeType.ALL,
             orphanRemoval = true,
             fetch = FetchType.LAZY)
-    private List<CourseJoinRequest> joinRequests;
+    private List<CourseEnrollRequest> enrollRequests;
 
     @Transient
     public String getImagePath() {
