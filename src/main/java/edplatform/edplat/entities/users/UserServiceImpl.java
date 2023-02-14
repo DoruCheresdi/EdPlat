@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
             courseService.deleteCourse(course);
         }
 
-        // sinchronize entity before deletion:
+        // synchronize entity before deletion:
         user = userRepository.findByEmail(user.getEmail()).get();
         userRepository.delete(user);
     }

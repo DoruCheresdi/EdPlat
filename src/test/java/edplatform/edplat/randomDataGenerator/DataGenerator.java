@@ -7,6 +7,7 @@ import edplatform.edplat.entities.courses.enrollment.CourseEnrollment;
 import edplatform.edplat.entities.users.User;
 import edplatform.edplat.entities.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.TestComponent;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
