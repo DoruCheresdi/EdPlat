@@ -6,9 +6,11 @@ import edplatform.edplat.entities.authority.Authority;
 import edplatform.edplat.entities.courses.enrollment.CourseEnrollment;
 import edplatform.edplat.entities.courses.enrollment.EnrollmentRequestCreationStrategy;
 import edplatform.edplat.entities.courses.enrollment.EnrollmentRequestCreationStrategyFactory;
+import edplatform.edplat.exceptions.EnrollRequestAlreadySentException;
 import edplatform.edplat.repositories.AssignmentRepository;
 import edplatform.edplat.entities.authority.AuthorityService;
 import edplatform.edplat.entities.users.User;
+import edplatform.edplat.repositories.CourseEnrollRequestRepository;
 import edplatform.edplat.repositories.CourseRepository;
 import edplatform.edplat.repositories.UserRepository;
 import edplatform.edplat.security.AuthorityStringBuilder;
@@ -47,6 +49,9 @@ public class CourseServiceImpl implements CourseService {
 
     @Autowired
     private AssignmentRepository assignmentRepository;
+
+    @Autowired
+    private CourseEnrollRequestRepository courseEnrollRequestRepository;
 
     @Autowired
     private SecurityAuthorizationChecker securityAuthorizationChecker;
@@ -143,7 +148,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     @Transactional
-    public void enrollUserToCourse(Long courseId, Long userId, Authentication authentication) {
+    public void enrollUserToCourse(Long courseId, Long userId, Authentication authentication) throws EnrollRequestAlreadySentException {
         Course course = courseRepository.findById(courseId).get();
         User user = userRepository.findByIdWithCourses(userId).get();
 
@@ -155,6 +160,11 @@ public class CourseServiceImpl implements CourseService {
 
         if (!Hibernate.isInitialized(course.getUsers())) {
             course.setUsers(userRepository.findAllByCourse(course));
+        }
+
+        // check if request was already sent:
+        if (courseEnrollRequestRepository.findByCourseAndUser(course, user).isPresent()) {
+            throw new EnrollRequestAlreadySentException("User already requested enrollment");
         }
 
         EnrollmentRequestCreationStrategy strategy = enrollmentRequestCreationStrategyFactory.creationStrategy(course.getEnrollmentType());

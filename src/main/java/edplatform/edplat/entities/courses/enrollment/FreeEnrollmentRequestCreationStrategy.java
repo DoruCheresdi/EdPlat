@@ -38,4 +38,14 @@ public class FreeEnrollmentRequestCreationStrategy implements EnrollmentRequestC
                 authorityStringBuilder.getCourseEnrolledAuthority(course.getId().toString()));
         authenticationUpdater.addAuthorityToAuthentication(authority, authentication);
     }
+
+    @Transactional
+    public void enroll(User user, Course course) {
+        // enroll user in course without asking permission:
+        course.getUsers().add(user);
+
+        // add the course enrolled authority to the user that enrolled in the course:
+        String authorityName = authorityStringBuilder.getCourseEnrolledAuthority(course.getId().toString());
+        authorityService.giveAuthorityToUser(user, authorityName);
+    }
 }

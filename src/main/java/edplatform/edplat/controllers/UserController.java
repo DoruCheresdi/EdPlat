@@ -11,6 +11,7 @@ import edplatform.edplat.entities.users.User;
 import edplatform.edplat.entities.users.UserService;
 import edplatform.edplat.security.SecurityAuthorizationChecker;
 import edplatform.edplat.utils.FileUploadUtil;
+import edplatform.edplat.utils.TimePrettier;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.ocpsoft.prettytime.PrettyTime;
@@ -42,10 +43,10 @@ public class UserController {
     private UserService userService;
 
     @Autowired
-    private CourseService courseService;
+    private AuthorityService authorityService;
 
     @Autowired
-    private AuthorityService authorityService;
+    private TimePrettier timePrettier;
 
     @Autowired
     private SecurityAuthorizationChecker securityAuthorizationChecker;
@@ -106,8 +107,7 @@ public class UserController {
 
         for (CourseEnrollRequest courseEnrollRequest : courseEnrollRequests) {
             // get time since course has been created in pretty format:
-            PrettyTime t = new PrettyTime(new Date(System.currentTimeMillis()));
-            String timeSinceString = t.format(new Date(courseEnrollRequest.getCreatedAt().getTime()));
+            String timeSinceString = timePrettier.prettyTimestamp(courseEnrollRequest.getCreatedAt());
 
             courseEnrollmentRequestsDTO.add(
                     new EnrollRequestViewDTO(courseEnrollRequest.getCourse().getCourseName(),

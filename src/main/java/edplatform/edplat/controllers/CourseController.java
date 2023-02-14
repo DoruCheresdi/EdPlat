@@ -6,12 +6,18 @@ import edplatform.edplat.entities.assignment.AssignmentService;
 import edplatform.edplat.entities.authority.Authority;
 import edplatform.edplat.entities.courses.Course;
 import edplatform.edplat.entities.courses.CourseService;
+import edplatform.edplat.entities.courses.enrollment.CourseEnrollRequest;
+import edplatform.edplat.entities.courses.enrollment.CourseEnrollRequestService;
+import edplatform.edplat.entities.courses.enrollment.EnrollRequestOwnerViewDTO;
+import edplatform.edplat.entities.courses.enrollment.EnrollRequestViewDTO;
 import edplatform.edplat.entities.users.CustomUserDetails;
 import edplatform.edplat.entities.users.User;
 import edplatform.edplat.entities.users.UserService;
+import edplatform.edplat.exceptions.EnrollRequestAlreadySentException;
 import edplatform.edplat.security.AuthorityStringBuilder;
 import edplatform.edplat.security.SecurityAuthorizationChecker;
 import edplatform.edplat.utils.FileUploadUtil;
+import edplatform.edplat.utils.TimePrettier;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -51,6 +57,12 @@ public class CourseController {
 
     @Autowired
     private AuthenticationUpdater authenticationUpdater;
+
+    @Autowired
+    private CourseEnrollRequestService courseEnrollRequestService;
+
+    @Autowired
+    private TimePrettier timePrettier;
 
     @GetMapping("/course/new")
     public String showCourseCreationForm(Model model) {
@@ -178,9 +190,25 @@ public class CourseController {
                                      Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         User user = userService.findByEmail(userDetails.getUsername()).get();
-        courseService.enrollUserToCourse(courseId, user.getId(), authentication);
+
+        // try to enroll:
+        try {
+            courseService.enrollUserToCourse(courseId, user.getId(), authentication);
+        } catch (EnrollRequestAlreadySentException e) {
+            log.error(e.getMessage());
+            return new RedirectView("/error");
+        }
 
         return new RedirectView("/course/courses");
+    }
+
+    @PostMapping("/course/accept_enroll_request")
+    public RedirectView acceptEnrollRequest(@RequestParam Long courseId,
+                                            @RequestParam Long userId,
+                                           Authentication authentication) {
+        courseEnrollRequestService.acceptRequest(courseId, userId);
+
+        return new RedirectView("/course?id=" + courseId);
     }
 
     @GetMapping("/course")
@@ -209,6 +237,21 @@ public class CourseController {
 
         // return the appropriate view:
         if (securityAuthorizationChecker.checkCourseOwner(user, course.getId())) {
+            List<CourseEnrollRequest> courseEnrollRequestList = courseEnrollRequestService.findAllByCourse(course);
+            List<EnrollRequestOwnerViewDTO> enrollRequestOwnerViewDTOS = new ArrayList<>();
+
+            for (CourseEnrollRequest courseEnrollRequest : courseEnrollRequestList) {
+                // get time since course has been created in pretty format:
+                String timeSinceString = timePrettier.prettyTimestamp(courseEnrollRequest.getCreatedAt());
+
+                enrollRequestOwnerViewDTOS.add(
+                        new EnrollRequestOwnerViewDTO(courseEnrollRequest.getUser().getId().toString(),
+                                courseEnrollRequest.getUser().getFirstName() + courseEnrollRequest.getUser().getLastName(),
+                                timeSinceString)
+                );
+            }
+
+            model.addAttribute("enrollRequestOwnerViewDTOS", enrollRequestOwnerViewDTOS);
             return "course_owner";
         } else {
             return "course_enrolled";
