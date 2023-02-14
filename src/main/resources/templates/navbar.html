@@ -9,6 +9,9 @@
             <li class="nav-item">
                 <a class="nav-link" th:href="@{/}">Home <span class="sr-only">(current)</span></a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/user/edit}">[[${#request.userPrincipal.principal.fullName}]] <span class="sr-only">(current)</span></a>
+            </li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Navigation
@@ -16,15 +19,13 @@
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" th:href="@{/user/courses}">My Courses</a>
                     <a class="dropdown-item" th:href="@{/course/courses}">All Courses</a>
-                    <a class="dropdown-item" th:href="@{/users}">Users</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Something else here</a>
+                    <a class="dropdown-item" th:href="@{/users}">Users</a>
                 </div>
             </li>
             <li class="nav-item">
-                <h4 class="navbar-text"><a th:href="@{/user/edit}">[[${#request.userPrincipal.principal.fullName}]]</a></h4>
+                <a class="nav-link" th:href="@{/logout}">Logout <span class="sr-only">(current)</span></a>
             </li>
-
         </ul>
         <form class="form-inline my-2 my-lg-0">
             <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
