@@ -2,6 +2,7 @@ package edplatform.edplat.controllers;
 
 import edplatform.edplat.entities.assignment.Assignment;
 import edplatform.edplat.entities.assignment.AssignmentService;
+import edplatform.edplat.entities.courses.Course;
 import edplatform.edplat.entities.courses.CourseService;
 import edplatform.edplat.entities.submission.Submission;
 import edplatform.edplat.entities.submission.SubmissionService;
@@ -27,6 +28,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -157,5 +159,24 @@ public class AssignmentController {
 
         String courseId = assignment.getCourse().getId().toString();
         return new RedirectView("/course?id=" + courseId);
+    }
+
+    @GetMapping("/assignment/submissions")
+    public String showSubmissionsForAssignment(Model model,
+                                               @RequestParam Long assignmentId) {
+        List<Submission> submissionList = submissionService.findAllByAssignmentIdWithUser(assignmentId);
+        model.addAttribute("submissions", submissionList);
+
+        return "submissions";
+    }
+
+    @PostMapping("/assignment/submission/add_grade")
+    public RedirectView showSubmissionsForAssignment(Model model,
+                                               @RequestParam Float grade,
+                                               @RequestParam Long submissionId) {
+        submissionService.updateGrade(submissionId, grade);
+
+        Assignment assignment = submissionService.getAssignmentForSubmissionId(submissionId);
+        return new RedirectView("/assignment/submissions?assignmentId=" + assignment.getId());
     }
 }

@@ -252,6 +252,7 @@ public class CourseController {
             }
 
             model.addAttribute("enrollRequestOwnerViewDTOS", enrollRequestOwnerViewDTOS);
+
             return "course_owner";
         } else {
             return "course_enrolled";

@@ -56,7 +56,13 @@
                 Edit assignment
             </a>
         </div>
-        <div class="row">
+        <div class="row py-2">
+            <a class="btn btn-primary"
+               th:href="@{/assignment/submissions(assignmentId=${assignment.getId})}">
+                See user submissions for this assignment
+            </a>
+        </div>
+        <div class="row py-2">
             <p>
                 <b>Assignment name: </b>
             </p>

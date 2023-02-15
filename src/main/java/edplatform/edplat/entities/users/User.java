@@ -64,6 +64,10 @@ public class User {
         return "/user-photos/" + id + "/" + photo;
     }
 
+    public String getFullName() {
+        return String.valueOf(firstName) + " " + String.valueOf(lastName);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
