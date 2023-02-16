@@ -3,6 +3,7 @@ package edplatform.edplat.entities.courses;
 import edplatform.edplat.entities.assignment.Assignment;
 import edplatform.edplat.entities.courses.enrollment.CourseEnrollRequest;
 import edplatform.edplat.entities.courses.enrollment.CourseEnrollment;
+import edplatform.edplat.entities.grading.Quiz;
 import edplatform.edplat.entities.users.User;
 import lombok.Data;
 
@@ -53,6 +54,13 @@ public class Course {
             orphanRemoval = true,
             fetch = FetchType.LAZY)
     private List<CourseEnrollRequest> enrollRequests;
+
+
+    @OneToMany(mappedBy = "course",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY)
+    private List<Quiz> quizzes;
 
     @Transient
     public String getImagePath() {

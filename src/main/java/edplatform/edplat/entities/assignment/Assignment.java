@@ -31,7 +31,7 @@ public class Assignment {
 
     private String description;
 
-    private int gradeWeight;
+    private Integer gradeWeight;
 
     @Override
     public String toString() {

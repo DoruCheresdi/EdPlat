@@ -20,6 +20,9 @@
             <a class="btn btn-primary" th:href="@{/assignment/new(courseId=${courseId})}">Create new assignment</a>
         </div>
         <div class="col m-1">
+            <a class="btn btn-primary" th:href="@{/quiz/new(courseId=${courseId})}">Create new quiz</a>
+        </div>
+        <div class="col m-1">
             <a class="btn btn-primary" th:href="@{/course/edit(id=${courseId})}" role="button">Edit Course</a>
         </div>
         <form th:action="@{/course/delete(courseId=${courseId})}" method="post" class="col">
