@@ -54,11 +54,17 @@
 
     <div class="container text-center py-5" th:each = "quiz: ${quizzes}">
         <hr>
-        <div class="row">
+        <div class="row py-2">
+            <p>
+                <b>Quiz Name: </b>
+            </p>
+            <p th:text=" ${quiz.getQuizName}"></p>
+        </div>
+        <div class="row" py-2>
             <h3 th:text="'This quiz has ' + ${quiz.quizQuestions.size} + ' questions'">
             </h3>
         </div>
-        <div th:if="!${quiz.getIsComplete}" class="row">
+        <div th:if="!${quiz.getIsComplete}" class="row py-2">
             <a class="btn btn-primary"
                th:href="@{/quiz/question/new/choose_type(quizId=${quiz.getId})}">
                 Add a new question to quiz
@@ -73,10 +79,10 @@
             <p>Complete Quiz</p>
         </div>
         <div class="row py-2">
-            <p>
-                <b>Quiz Name: </b>
-            </p>
-            <p th:text=" ${quiz.getQuizName}"></p>
+            <a class="btn btn-primary"
+               th:href="@{/quiz/show(quizId=${quiz.getId})}">
+                Show Quiz questions
+            </a>
         </div>
     </div>
 

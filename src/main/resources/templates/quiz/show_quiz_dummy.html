@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Show Quiz</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div th:insert="navbar :: navbar"></div>
+<div class="container text-center">
+    <div class="container">
+        <h1 th:text="${quiz.quizName}"></h1>
+    </div>
+
+    <div class="container">
+        <h2> Free Answer Questions: </h2>
+    </div>
+    <div class="container text-center py-5" th:each = "freeAnswerQuestion: ${freeAnswerQuestions}">
+        <hr>
+        <div class="row">
+            <p>
+                <b>Question: </b>
+            </p>
+            <p th:text="${freeAnswerQuestion.quizText}"></p>
+        </div>
+        <div class="row">
+            <p>
+                <b>Answer: </b>
+            </p>
+            <p th:text="${freeAnswerQuestion.answer}"></p>
+        </div>
+        <div class="row">
+            <p>
+                <b>Answer type: </b>
+            </p>
+            <p th:text="${freeAnswerQuestion.freeAnswerType}"></p>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2> Single Choice Questions: </h2>
+    </div>
+    <div class="container text-center py-5" th:each = "singleChoiceQuestion: ${singleChoiceQuestions}">
+        <hr>
+        <div class="row">
+            <p>
+                <b>Question: </b>
+            </p>
+            <p th:text="${singleChoiceQuestion.quizText}"></p>
+        </div>
+        <div class="container text-center py-5" th:each = "questionChoice: ${singleChoiceQuestion.questionChoices}">
+            <div class="row">
+                <p>
+                    <b>Question Choice: </b>
+                </p>
+                <p th:text="${questionChoice.choiceText}"></p>
+            </div>
+            <div class="row">
+                <p>
+                    <b>Is True: </b>
+                </p>
+                <p th:text="${questionChoice.isCorrect}"></p>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

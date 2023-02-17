@@ -4,7 +4,9 @@ import edplatform.edplat.entities.courses.Course;
 import edplatform.edplat.entities.grading.Quiz;
 import edplatform.edplat.entities.grading.QuizService;
 import edplatform.edplat.entities.grading.questions.FreeAnswerQuestion;
+import edplatform.edplat.entities.grading.questions.QuestionChoice;
 import edplatform.edplat.entities.grading.questions.QuestionType;
+import edplatform.edplat.entities.grading.questions.SingleChoiceQuestion;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.view.RedirectView;
+
+import java.util.List;
 
 @Controller
 @RequestMapping(path="/")
@@ -63,7 +67,7 @@ public class QuizController {
             case FREE_ANSWER:
                 return new RedirectView("/quiz/question/new/free_answer?quizId=" + quizId);
             case SINGLE_CHOICE:
-                break;
+                return new RedirectView("/quiz/question/new/single_choice?quizId=" + quizId);
         }
 
         return new RedirectView("/error");
@@ -86,5 +90,55 @@ public class QuizController {
         Course course = quizService.getCourseForQuizId(quizId);
 
         return new RedirectView("/course?id=" + course.getId());
+    }
+
+    @GetMapping("/quiz/question/new/single_choice")
+    public String showQuestionFormSingleChoice(Model model,
+                                             @RequestParam Long quizId) {
+        SingleChoiceQuestion singleChoiceQuestion = new SingleChoiceQuestion();
+        model.addAttribute("singleChoiceQuestion", singleChoiceQuestion);
+        model.addAttribute("quizId", quizId);
+        return "quiz/create_question_single_choice";
+    }
+
+    @PostMapping("/quiz/question/new/single_choice")
+    public RedirectView processSingleChoiceQuestion(Model model,
+                                                  @RequestParam Long quizId,
+                                                    SingleChoiceQuestion singleChoiceQuestion) {
+        quizService.createSingleChoiceQuestion(singleChoiceQuestion, quizId);
+
+        return new RedirectView("/quiz/choice/new?questionId=" + singleChoiceQuestion.getId());
+    }
+
+    @GetMapping("/quiz/choice/new")
+    public String showQuestionChoiceForm(Model model,
+                                         @RequestParam Long questionId) {
+        model.addAttribute("questionId", questionId);
+        QuestionChoice questionChoice = new QuestionChoice();
+        model.addAttribute("questionChoice", questionChoice);
+        Course course = quizService.getCourseForQuestionId(questionId);
+        model.addAttribute("courseId", course.getId());
+        return "quiz/new_question_choice";
+    }
+
+    @PostMapping("/quiz/choice/new")
+    public RedirectView createQuestionChoice(@RequestParam Long questionId,
+                                             QuestionChoice questionChoice) {
+        quizService.createChoiceForSingleChoice(questionChoice, questionId);
+
+        return new RedirectView("/quiz/choice/new?questionId=" + questionId);
+    }
+
+    @GetMapping("/quiz/show")
+    public String showQuiz(Model model,
+                           @RequestParam Long quizId) {
+        List<FreeAnswerQuestion> freeAnswerQuestions = quizService.getFreeAnswerQuestions(quizId);
+        List<SingleChoiceQuestion> singleChoiceQuestions = quizService.getSingleChoiceQuestionsWithChoices(quizId);
+        Quiz quiz = quizService.findQuizById(quizId);
+
+        model.addAttribute("freeAnswerQuestions", freeAnswerQuestions);
+        model.addAttribute("singleChoiceQuestions", singleChoiceQuestions);
+        model.addAttribute("quiz", quiz);
+        return "quiz/show_quiz_dummy";
     }
 }
