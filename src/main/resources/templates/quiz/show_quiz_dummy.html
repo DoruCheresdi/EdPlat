@@ -20,19 +20,19 @@
     <div class="container text-center py-5" th:each = "freeAnswerQuestion: ${freeAnswerQuestions}">
         <hr>
         <div class="row">
-            <p>
+            <p class="px-2">
                 <b>Question: </b>
             </p>
             <p th:text="${freeAnswerQuestion.quizText}"></p>
         </div>
         <div class="row">
-            <p>
+            <p class="px-2">
                 <b>Answer: </b>
             </p>
             <p th:text="${freeAnswerQuestion.answer}"></p>
         </div>
         <div class="row">
-            <p>
+            <p class="px-2">
                 <b>Answer type: </b>
             </p>
             <p th:text="${freeAnswerQuestion.freeAnswerType}"></p>
@@ -45,23 +45,23 @@
     <div class="container text-center py-5" th:each = "singleChoiceQuestion: ${singleChoiceQuestions}">
         <hr>
         <div class="row">
-            <p>
+            <p class="px-2">
                 <b>Question: </b>
             </p>
             <p th:text="${singleChoiceQuestion.quizText}"></p>
         </div>
-        <div class="container text-center py-5" th:each = "questionChoice: ${singleChoiceQuestion.questionChoices}">
+        <div class="container text-center py-1" th:each = "questionChoice: ${singleChoiceQuestion.questionChoices}">
             <div class="row">
-                <p>
+                <p class="px-2">
                     <b>Question Choice: </b>
                 </p>
                 <p th:text="${questionChoice.choiceText}"></p>
             </div>
             <div class="row">
-                <p>
+                <p class="px-2">
                     <b>Is True: </b>
                 </p>
-                <p th:text="${questionChoice.isCorrect}"></p>
+                <p th:text="${questionChoice.isCorrect}" th:classappend="${questionChoice.isCorrect ? 'text-primary' : 'text-danger'}"></p>
             </div>
         </div>
     </div>
