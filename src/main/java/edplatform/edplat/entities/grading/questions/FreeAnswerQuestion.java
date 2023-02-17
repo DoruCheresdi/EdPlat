@@ -1,11 +1,17 @@
 package edplatform.edplat.entities.grading.questions;
 
+import lombok.Data;
+
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 @Entity
+@Data
 public class FreeAnswerQuestion extends QuizQuestion {
 
-    private String freeAnswerType;
+    private String answer;
 
-    private AnswerType answer;
+    @Enumerated(EnumType.STRING)
+    private AnswerType freeAnswerType;
 }

@@ -29,7 +29,7 @@
             <button type="submit" class="btn btn-primary red-button">Delete Course</button>
         </form>
     </div>
-    <div>
+    <div th:if="${hasRequests}">
         <table class="table table-striped table-bordered">
             <thead class="thead-dark">
             <tr>
@@ -51,6 +51,35 @@
             </tbody>
         </table>
     </div>
+
+    <div class="container text-center py-5" th:each = "quiz: ${quizzes}">
+        <hr>
+        <div class="row">
+            <h3 th:text="'This quiz has ' + ${quiz.quizQuestions.size} + ' questions'">
+            </h3>
+        </div>
+        <div th:if="!${quiz.getIsComplete}" class="row">
+            <a class="btn btn-primary"
+               th:href="@{/quiz/question/new/choose_type(quizId=${quiz.getId})}">
+                Add a new question to quiz
+            </a>
+        </div>
+        <div th:if="!${quiz.getIsComplete}" class="row py-2">
+            <form th:action="@{/quiz/finish(quizId=${quiz.getId},courseId=${courseId})}" method="post">
+                <button type="submit" class="btn btn-primary">Mark as finished</button>
+            </form>
+        </div>
+        <div th:if="${quiz.getIsComplete}" class="row py-2">
+            <p>Complete Quiz</p>
+        </div>
+        <div class="row py-2">
+            <p>
+                <b>Quiz Name: </b>
+            </p>
+            <p th:text=" ${quiz.getQuizName}"></p>
+        </div>
+    </div>
+
     <div class="container text-center py-5" th:each = "assignment: ${assignments}">
         <hr>
         <div class="row">
@@ -69,14 +98,14 @@
             <p>
                 <b>Assignment name: </b>
             </p>
-            <p th:text="${assignment.getAssignmentName}"></p>
+            <p th:text=" ${assignment.getAssignmentName}"></p>
 
         </div>
         <div class="row">
             <p>
                 <b>Description: </b>
             </p>
-            <p th:text="${assignment.getDescription}"></p>
+            <p th:text=" ${assignment.getDescription}"></p>
         </div>
     </div>
 </div>

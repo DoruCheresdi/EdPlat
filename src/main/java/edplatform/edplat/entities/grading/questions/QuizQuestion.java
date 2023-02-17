@@ -1,6 +1,7 @@
 package edplatform.edplat.entities.grading.questions;
 
 import edplatform.edplat.entities.grading.Quiz;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.List;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type")
+@Data
 public abstract class QuizQuestion {
 
     @Id
@@ -16,6 +18,8 @@ public abstract class QuizQuestion {
 
     @ManyToOne
     private Quiz quiz;
+
+    private String quizText;
 
     @OneToMany(mappedBy = "quizQuestion",
             cascade = CascadeType.ALL,

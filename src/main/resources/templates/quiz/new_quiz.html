@@ -13,37 +13,26 @@
     <div>
         <h1>Create New Quiz</h1>
     </div>
-    <form th:action="@{/course/process_course}" th:object="${course}"
+    <form th:action="@{/quiz/new(courseId=${courseId})}" th:object="${quiz}"
           method="post" style="max-width: 600px; margin: 0 auto;">
         <div class="m-3">
             <div class="form-group row">
-                <label class="col-4 col-form-label">Course Name:</label>
+                <label class="col-4 col-form-label">Quiz Name:</label>
                 <div class="col-8">
-                    <input type="text" th:field="*{courseName}" class="form-control"
+                    <input type="text" th:field="*{quizName}" class="form-control"
                            required minlength="2" maxlength="250" />
                 </div>
             </div>
-
             <div class="form-group row">
-                <label class="col-4 col-form-label">Description: </label>
+                <label class="col-4 col-form-label">Grade weight for quiz:</label>
                 <div class="col-8">
-                    <input type="text" th:field="*{description}" class="form-control"
-                           required minlength="2" maxlength="250"/>
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <label class="col-4 col-form-label">Enrollment Type: </label>
-                <div class="col-8">
-                    <select th:field="*{enrollmentType}" name="enrollmentType">
-                        <option th:each="enrollmentTypeOption : ${T(edplatform.edplat.entities.courses.enrollment.CourseEnrollment.EnrollmentType).values()}"
-                                th:value="${enrollmentTypeOption}" th:text="${enrollmentTypeOption}"></option>
-                    </select>
+                    <input type="number" th:field="*{gradeWeight}" name="gradeWeight" class="form-control"
+                           placeholder="1" step="1" min="0" max="100"/>
                 </div>
             </div>
 
             <div>
-                <button type="submit" class="btn btn-primary">Create Course</button>
+                <button type="submit" class="btn btn-primary">Create Quiz</button>
             </div>
         </div>
     </form>

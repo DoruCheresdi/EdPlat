@@ -10,6 +10,8 @@ import edplatform.edplat.entities.courses.enrollment.CourseEnrollRequest;
 import edplatform.edplat.entities.courses.enrollment.CourseEnrollRequestService;
 import edplatform.edplat.entities.courses.enrollment.EnrollRequestOwnerViewDTO;
 import edplatform.edplat.entities.courses.enrollment.EnrollRequestViewDTO;
+import edplatform.edplat.entities.grading.Quiz;
+import edplatform.edplat.entities.grading.QuizService;
 import edplatform.edplat.entities.users.CustomUserDetails;
 import edplatform.edplat.entities.users.User;
 import edplatform.edplat.entities.users.UserService;
@@ -60,6 +62,9 @@ public class CourseController {
 
     @Autowired
     private CourseEnrollRequestService courseEnrollRequestService;
+
+    @Autowired
+    private QuizService quizService;
 
     @Autowired
     private TimePrettier timePrettier;
@@ -237,6 +242,7 @@ public class CourseController {
 
         // return the appropriate view:
         if (securityAuthorizationChecker.checkCourseOwner(user, course.getId())) {
+            // get course enroll requests:
             List<CourseEnrollRequest> courseEnrollRequestList = courseEnrollRequestService.findAllByCourse(course);
             List<EnrollRequestOwnerViewDTO> enrollRequestOwnerViewDTOS = new ArrayList<>();
 
@@ -252,6 +258,19 @@ public class CourseController {
             }
 
             model.addAttribute("enrollRequestOwnerViewDTOS", enrollRequestOwnerViewDTOS);
+
+            boolean hasRequests = false;
+            if (enrollRequestOwnerViewDTOS.size() > 0) {
+                hasRequests = true;
+            }
+            model.addAttribute("hasRequests", hasRequests);
+
+            // add quizzes to model:
+            List<Quiz> quizzes = quizService.getQuizzesForCourse(course.getId());
+            for (Quiz quiz : quizzes) {
+                quizService.loadQuestions(quiz);
+            }
+            model.addAttribute("quizzes", quizzes);
 
             return "course_owner";
         } else {
