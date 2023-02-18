@@ -174,6 +174,7 @@ public class CourseControllerTests {
         Assignment assignment = new Assignment();
         assignment.setAssignmentName("TestAssignment");
         assignment.setCourse(course);
+        assignment.setGradeWeight(2);
         course.setAssignments(Arrays.asList(assignment));
 
         Submission submission = new Submission();

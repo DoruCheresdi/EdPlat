@@ -135,7 +135,7 @@ public class QuizCreationController {
         List<FreeAnswerQuestion> freeAnswerQuestions = quizService.getFreeAnswerQuestions(quizId);
         List<SingleChoiceQuestion> singleChoiceQuestions = quizService.getSingleChoiceQuestionsWithChoices(quizId);
         Quiz quiz = quizService.findQuizById(quizId);
-        
+
         Course course = quizService.getCourseForQuizId(quizId);
         model.addAttribute("courseId", course.getId());
 
