@@ -26,4 +26,8 @@ public abstract class QuizQuestion {
             orphanRemoval = true,
             fetch = FetchType.LAZY)
     private List<QuizQuestionResult> quizQuestionResults;
+
+    public QuestionType getQuestionType() {
+        return null;
+    }
 }

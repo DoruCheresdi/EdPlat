@@ -14,6 +14,28 @@
         <h1 th:text="${course.getCourseName}"></h1>
         <h2 th:text="${course.getDescription}"></h2>
     </div>
+
+
+    <div class="container text-center py-5" th:each = "quiz: ${quizzes}">
+        <hr>
+        <div class="row py-2">
+            <p>
+                <b>Quiz Name: </b>
+            </p>
+            <p th:text=" ${quiz.getQuizName}"></p>
+        </div>
+        <div class="row" py-2>
+            <h3 th:text="'This quiz has ' + ${quiz.quizQuestions.size} + ' questions'">
+            </h3>
+        </div>
+        <div th:if="${quiz.getIsComplete}" class="row py-2">
+            <a class="btn btn-primary"
+               th:href="@{/quiz/take_quiz(quizId=${quiz.getId})}">
+                Take quiz
+            </a>
+        </div>
+    </div>
+
     <div class="container text-center py-5" th:each = "assignment: ${assignments}">
         <hr>
         <div class="row">

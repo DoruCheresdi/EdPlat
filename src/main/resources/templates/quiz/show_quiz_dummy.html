@@ -13,6 +13,14 @@
     <div class="container">
         <h1 th:text="${quiz.quizName}"></h1>
     </div>
+    <div class="container">
+        <div class="col m-1">
+            <a class="btn btn-primary"
+               th:href="@{/course(id=${courseId})}">
+                Back to course
+            </a>
+        </div>
+    </div>
 
     <div class="container">
         <h2> Free Answer Questions: </h2>

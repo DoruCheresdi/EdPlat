@@ -1,14 +1,16 @@
 package edplatform.edplat.controllers;
 
-import edplatform.edplat.entities.courses.Course;
 import edplatform.edplat.entities.grading.Quiz;
 import edplatform.edplat.entities.grading.QuizService;
 import edplatform.edplat.entities.grading.questions.FreeAnswerQuestion;
-import edplatform.edplat.entities.grading.questions.QuestionChoice;
-import edplatform.edplat.entities.grading.questions.QuestionType;
 import edplatform.edplat.entities.grading.questions.SingleChoiceQuestion;
+import edplatform.edplat.entities.users.User;
+import edplatform.edplat.entities.users.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.constraints.pl.REGON;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.util.List;
+import java.util.Objects;
 
 @Controller
 @RequestMapping(path="/")
@@ -27,118 +29,62 @@ public class QuizController {
     @Autowired
     private QuizService quizService;
 
-    @GetMapping("/quiz/new")
-    public String showQuizCreationForm(Model model,
-                                       @RequestParam Long courseId) {
-        model.addAttribute("courseId", courseId);
-        model.addAttribute("quiz", new Quiz());
-        return "quiz/new_quiz";
-    }
+    @Autowired
+    private UserService userService;
 
-    @PostMapping("/quiz/new")
-    public RedirectView createQuiz(@RequestParam Long courseId,
-                                   Quiz quiz) {
-        quizService.createQuiz(courseId, quiz.getQuizName(), quiz.getGradeWeight());
-
-        return new RedirectView("/course?id=" + courseId);
-    }
-
-    @PostMapping("/quiz/finish")
-    public RedirectView markAsComplete(@RequestParam Long courseId,
-                                       Long quizId) {
-        quizService.markAsDone(quizId);
-        log.info("Marked quizz with id {} as complete", quizId);
-
-        return new RedirectView("/course?id=" + courseId);
-    }
-
-    @GetMapping("/quiz/question/new/choose_type")
-    public String showQuestionTypeChoosingForm(Model model,
-                                               @RequestParam Long quizId) {
-        model.addAttribute("quizId", quizId);
-        return "quiz/choose_type";
-    }
-
-    @PostMapping("/quiz/question/new/choose_type")
-    public RedirectView chooseQuestionType(Model model,
-                                           @RequestParam Long quizId,
-                                           @RequestParam QuestionType questionType) {
-        switch (questionType) {
-            case FREE_ANSWER:
-                return new RedirectView("/quiz/question/new/free_answer?quizId=" + quizId);
-            case SINGLE_CHOICE:
-                return new RedirectView("/quiz/question/new/single_choice?quizId=" + quizId);
+    @GetMapping("/quiz/take_quiz")
+    public String getNextQuestion(Model model,
+                           @RequestParam Long quizId,
+                           @RequestParam(required = false) Integer questionIndex, Authentication authentication) {
+        if (Objects.isNull(questionIndex)) {
+            questionIndex = 0;
         }
 
-        return new RedirectView("/error");
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        User user = userService.findByEmail(userDetails.getUsername()).get();
+        return quizService.getNextQuestion(model, quizId, questionIndex, user);
     }
 
-    @GetMapping("/quiz/question/new/free_answer")
-    public String showQuestionFormFreeAnswer(Model model,
-                                             @RequestParam Long quizId) {
-        FreeAnswerQuestion freeAnswerQuestion = new FreeAnswerQuestion();
+    @PostMapping("quiz/process_free_answer")
+    public String processFreeAnswer(Authentication authentication,
+                                    @RequestParam Long quizId,
+                                    @RequestParam Long questionId,
+                                    @RequestParam Integer questionIndex,
+                                    @RequestParam String answer,
+                                    Model model) {
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        User user = userService.findByEmail(userDetails.getUsername()).get();
+
+        boolean answerIsCorrect = quizService.submitAnswerFreeQuestion(user, questionId, answer);
+        model.addAttribute("answerIsCorrect", answerIsCorrect);
+        FreeAnswerQuestion freeAnswerQuestion = quizService.findFreeAnswerQuestionById(questionId);
         model.addAttribute("freeAnswerQuestion", freeAnswerQuestion);
         model.addAttribute("quizId", quizId);
-        return "quiz/create_question_free_answer";
+        model.addAttribute("answer", answer);
+
+        model.addAttribute("nextQuestionIndex", questionIndex + 1);
+        return "quiz/show_answer_free_answer_question";
     }
 
-    @PostMapping("/quiz/question/new/free_answer")
-    public RedirectView processFreeAnswerQuestion(Model model,
-                                            @RequestParam Long quizId,
-                                            FreeAnswerQuestion freeAnswerQuestion) {
-        quizService.createFreeAnswerQuestion(freeAnswerQuestion, quizId);
-        Course course = quizService.getCourseForQuizId(quizId);
+    @PostMapping("quiz/process_single_choice")
+    public String processSingleChoiceAnswer(Authentication authentication,
+                                    @RequestParam Long quizId,
+                                    @RequestParam Long questionId,
+                                    @RequestParam Integer questionIndex,
+                                    @RequestParam Long answerChoiceId,
+                                    Model model) {
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        User user = userService.findByEmail(userDetails.getUsername()).get();
 
-        return new RedirectView("/course?id=" + course.getId());
-    }
-
-    @GetMapping("/quiz/question/new/single_choice")
-    public String showQuestionFormSingleChoice(Model model,
-                                             @RequestParam Long quizId) {
-        SingleChoiceQuestion singleChoiceQuestion = new SingleChoiceQuestion();
+        boolean answerIsCorrect = quizService.submitSingleChoiceAnswer(user, questionId, answerChoiceId);
+        model.addAttribute("answerIsCorrect", answerIsCorrect);
+        SingleChoiceQuestion singleChoiceQuestion = quizService.findSingleChoiceQuestionByIdWithChoices(questionId);
         model.addAttribute("singleChoiceQuestion", singleChoiceQuestion);
         model.addAttribute("quizId", quizId);
-        return "quiz/create_question_single_choice";
-    }
+        model.addAttribute("answerChoiceId", answerChoiceId);
 
-    @PostMapping("/quiz/question/new/single_choice")
-    public RedirectView processSingleChoiceQuestion(Model model,
-                                                  @RequestParam Long quizId,
-                                                    SingleChoiceQuestion singleChoiceQuestion) {
-        quizService.createSingleChoiceQuestion(singleChoiceQuestion, quizId);
-
-        return new RedirectView("/quiz/choice/new?questionId=" + singleChoiceQuestion.getId());
-    }
-
-    @GetMapping("/quiz/choice/new")
-    public String showQuestionChoiceForm(Model model,
-                                         @RequestParam Long questionId) {
-        model.addAttribute("questionId", questionId);
-        QuestionChoice questionChoice = new QuestionChoice();
-        model.addAttribute("questionChoice", questionChoice);
-        Course course = quizService.getCourseForQuestionId(questionId);
-        model.addAttribute("courseId", course.getId());
-        return "quiz/new_question_choice";
-    }
-
-    @PostMapping("/quiz/choice/new")
-    public RedirectView createQuestionChoice(@RequestParam Long questionId,
-                                             QuestionChoice questionChoice) {
-        quizService.createChoiceForSingleChoice(questionChoice, questionId);
-
-        return new RedirectView("/quiz/choice/new?questionId=" + questionId);
-    }
-
-    @GetMapping("/quiz/show")
-    public String showQuiz(Model model,
-                           @RequestParam Long quizId) {
-        List<FreeAnswerQuestion> freeAnswerQuestions = quizService.getFreeAnswerQuestions(quizId);
-        List<SingleChoiceQuestion> singleChoiceQuestions = quizService.getSingleChoiceQuestionsWithChoices(quizId);
-        Quiz quiz = quizService.findQuizById(quizId);
-
-        model.addAttribute("freeAnswerQuestions", freeAnswerQuestions);
-        model.addAttribute("singleChoiceQuestions", singleChoiceQuestions);
-        model.addAttribute("quiz", quiz);
-        return "quiz/show_quiz_dummy";
+        model.addAttribute("questionIndex", questionIndex);
+        model.addAttribute("nextQuestionIndex", questionIndex + 1);
+        return "quiz/show_answer_single_choice";
     }
 }

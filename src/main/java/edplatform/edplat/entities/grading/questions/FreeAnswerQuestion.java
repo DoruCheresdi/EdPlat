@@ -14,4 +14,9 @@ public class FreeAnswerQuestion extends QuizQuestion {
 
     @Enumerated(EnumType.STRING)
     private AnswerType freeAnswerType;
+
+    @Override
+    public QuestionType getQuestionType() {
+        return QuestionType.FREE_ANSWER;
+    }
 }

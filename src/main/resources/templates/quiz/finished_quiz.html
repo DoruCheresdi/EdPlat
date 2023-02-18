@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Show Quiz Result</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div th:insert="navbar :: navbar"></div>
+<div class="container text-center">
+    <div class="container">
+        <h1 th:text="${quiz.quizName}"></h1>
+    </div>
+    <div class="container">
+        <h1 th:text="'Your result was: ' + ${averageQuizGrade} + '/10'"></h1>
+    </div>
+    <div class="container">
+        <div class="col m-1">
+            <a class="btn btn-primary"
+               th:href="@{/course(id=${courseId})}">
+                Back to course
+            </a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

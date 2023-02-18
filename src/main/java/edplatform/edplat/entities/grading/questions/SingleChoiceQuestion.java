@@ -17,4 +17,9 @@ public class SingleChoiceQuestion extends QuizQuestion {
             orphanRemoval = true,
             fetch = FetchType.LAZY)
     private List<QuestionChoice> questionChoices;
+
+    @Override
+    public QuestionType getQuestionType() {
+        return QuestionType.SINGLE_CHOICE;
+    }
 }

@@ -240,6 +240,14 @@ public class CourseController {
         User user = ((CustomUserDetails)authentication.getPrincipal()).getUser();
         model.addAttribute("user", user);
 
+
+        // add quizzes to model:
+        List<Quiz> quizzes = quizService.getQuizzesForCourse(course.getId());
+        for (Quiz quiz : quizzes) {
+            quizService.loadQuestions(quiz);
+        }
+        model.addAttribute("quizzes", quizzes);
+
         // return the appropriate view:
         if (securityAuthorizationChecker.checkCourseOwner(user, course.getId())) {
             // get course enroll requests:
@@ -264,13 +272,6 @@ public class CourseController {
                 hasRequests = true;
             }
             model.addAttribute("hasRequests", hasRequests);
-
-            // add quizzes to model:
-            List<Quiz> quizzes = quizService.getQuizzesForCourse(course.getId());
-            for (Quiz quiz : quizzes) {
-                quizService.loadQuestions(quiz);
-            }
-            model.addAttribute("quizzes", quizzes);
 
             return "course_owner";
         } else {
