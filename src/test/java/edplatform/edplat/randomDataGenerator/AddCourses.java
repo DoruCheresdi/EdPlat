@@ -2,10 +2,12 @@ package edplatform.edplat.randomDataGenerator;
 
 import edplatform.edplat.entities.courses.Course;
 import edplatform.edplat.entities.courses.CourseService;
+import edplatform.edplat.entities.courses.enrollment.CourseEnrollment;
 import edplatform.edplat.entities.users.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.stereotype.Component;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Random data generation class for courses
  */
 @SpringBootTest
-public class AddTests {
+public class AddCourses {
 
     @Autowired
     private CourseService courseService;
@@ -37,7 +39,7 @@ public class AddTests {
 
         // create and save courses:
         for (int i = 0; i < numberOfCourses; i++) {
-            Course generatedCourse = dataGenerator.createRandomCourse();
+            Course generatedCourse = dataGenerator.createRandomCourse(CourseEnrollment.EnrollmentType.FREE);
             courseService.createCourse(user.getId(), generatedCourse);
         }
     }

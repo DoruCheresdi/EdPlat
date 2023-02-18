@@ -22,6 +22,7 @@
         <th>Course Name</th>
         <th>Description</th>
         <th>Image</th>
+        <th>Enrollment Type</th>
         <th></th>
         <th></th>
         <th></th>
@@ -33,6 +34,9 @@
         <td th:text="${course.description}">Description</td>
         <td>
           <img th:src="@{${course.getImagePath()}}" class="img-thumbnail" style="width: 15vw;" />
+        </td>
+        <td th:text="${course.getEnrollmentType()}">
+          Enrollment Type
         </td>
         <td>
           <a class="btn btn-primary" th:href="@{/course/edit(id=${course.id})}" role="button">Edit</a>

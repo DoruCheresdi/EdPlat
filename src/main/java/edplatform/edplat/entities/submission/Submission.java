@@ -25,6 +25,10 @@ public class Submission {
 
     private String submissionResource;
 
+    private float grade;
+
+    private boolean isGraded;
+
     @Transient
     public String getResourcePath() {
         if (submissionResource == null || id == null) return null;

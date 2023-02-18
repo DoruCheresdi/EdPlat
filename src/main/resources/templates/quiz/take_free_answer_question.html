@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Free answer question</title>
+  <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+  <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div th:insert="navbar :: navbar"></div>
+<div class="container text-center">
+  <div class="container">
+    <h2 th:text="'Question number ' + ${questionIndex}"></h2>
+  </div>
+
+
+  <div class="row">
+    <p class="px-2">
+      <b>Question: </b>
+    </p>
+    <p th:text="${freeAnswerQuestion.quizText}"></p>
+  </div>
+  <div class="row">
+    <p class="px-2">
+      <b>Answer type: </b>
+    </p>
+    <p th:text="${freeAnswerQuestion.freeAnswerType}"></p>
+  </div>
+
+  <form th:action="@{/quiz/process_free_answer(quizId=${quizId},questionId=${freeAnswerQuestion.id},questionIndex=${questionIndex})}"
+        method="post" style="max-width: 600px; margin: 0 auto;">
+    <div class="m-3">
+      <div class="form-group row">
+        <label class="col-4 col-form-label">Answer:</label>
+        <div class="col-8">
+          <input type="text" name="answer" class="form-control"
+                 required minlength="0" maxlength="250" />
+        </div>
+      </div>
+      <div>
+        <button type="submit" class="btn btn-primary">Send answer</button>
+      </div>
+    </div>
+  </form>
+</div>
+</body>
+</html>

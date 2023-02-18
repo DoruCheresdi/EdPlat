@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -54,5 +55,22 @@ public class SubmissionServiceImpl implements SubmissionService {
         }
 
         submissionRepository.delete(submission);
+    }
+
+    public List<Submission> findAllByAssignmentIdWithUser(Long assignmentId) {
+        return submissionRepository.findAllByAssignmentIdWithUser(assignmentId);
+    }
+
+    public void updateGrade(Long submissionId, Float grade) {
+        Submission submission = submissionRepository.findById(submissionId).get();
+        submission.setGraded(true);
+        submission.setGrade(grade);
+        submissionRepository.save(submission);
+        log.info("Added grade {} to submission with id {}", grade, submissionId);
+    }
+
+    public Assignment getAssignmentForSubmissionId(Long submissionId) {
+        Submission submission = submissionRepository.findById(submissionId).get();
+        return submission.getAssignment();
     }
 }

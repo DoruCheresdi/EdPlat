@@ -2,6 +2,8 @@ package edplatform.edplat.entities.users;
 
 import edplatform.edplat.entities.authority.Authority;
 import edplatform.edplat.entities.courses.Course;
+import edplatform.edplat.entities.courses.enrollment.CourseEnrollRequest;
+import edplatform.edplat.entities.grading.questions.QuizQuestionResult;
 import edplatform.edplat.entities.submission.Submission;
 import lombok.Data;
 
@@ -37,8 +39,23 @@ public class User {
 
     @OneToMany(mappedBy = "user",
             cascade = CascadeType.ALL,
-            orphanRemoval = true)
+            orphanRemoval = true,
+            fetch = FetchType.LAZY)
     private List<Submission> submissions;
+
+    @OneToMany(mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY)
+    private List<CourseEnrollRequest> enrollRequests;
+
+
+    @OneToMany(mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY)
+    private List<QuizQuestionResult> quizQuestionResults;
+
 
     @ManyToMany(mappedBy = "users", cascade = {
             CascadeType.PERSIST,
@@ -54,6 +71,10 @@ public class User {
         if (photo == null || id == null) return null;
 
         return "/user-photos/" + id + "/" + photo;
+    }
+
+    public String getFullName() {
+        return String.valueOf(firstName) + " " + String.valueOf(lastName);
     }
 
     @Override

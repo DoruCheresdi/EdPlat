@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Create New Choice</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div th:insert="navbar :: navbar"></div>
+<div class="container text-center">
+    <div>
+        <h1>Create Question Choice</h1>
+    </div>
+
+    <div class="container">
+        <div class="col m-1">
+            <a class="btn btn-primary"
+               th:href="@{/course(id=${courseId})}">
+                Stop adding choices for question
+            </a>
+        </div>
+    </div>
+
+    <form th:action="@{/quiz/choice/new(questionId=${questionId})}" th:object="${questionChoice}"
+          method="post" style="max-width: 600px; margin: 0 auto;">
+        <div class="m-3">
+            <div class="form-group row">
+                <label class="col-4 col-form-label">Choice text:</label>
+                <div class="col-8">
+                    <input type="text" th:field="*{choiceText}" class="form-control"
+                           required minlength="1" maxlength="250" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-4 col-form-label">Is a correct answer:</label>
+                <div class="col-8">
+                    <input type="checkbox" th:field="*{isCorrect}" class="form-control"/>
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" class="btn btn-primary">Create Choice</button>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+</html>

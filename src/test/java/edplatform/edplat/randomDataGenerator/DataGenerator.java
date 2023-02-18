@@ -3,9 +3,11 @@ package edplatform.edplat.randomDataGenerator;
 import edplatform.edplat.entities.assignment.Assignment;
 import edplatform.edplat.entities.courses.Course;
 import edplatform.edplat.entities.courses.CourseService;
+import edplatform.edplat.entities.courses.enrollment.CourseEnrollment;
 import edplatform.edplat.entities.users.User;
 import edplatform.edplat.entities.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.TestComponent;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -59,7 +61,7 @@ public class DataGenerator {
      * @return Created coursed retrieved from the database
      */
     public Course createAndPersistRandomCourseWithUser(User user) {
-        Course generatedCourse = createRandomCourse();
+        Course generatedCourse = createRandomCourse(CourseEnrollment.EnrollmentType.FREE);
         courseService.createCourse(user.getId(), generatedCourse);
         return courseService.findByCourseName(generatedCourse.getCourseName()).get();
     }
@@ -68,7 +70,7 @@ public class DataGenerator {
      * Generates a Course with a random name and description
      * @return generated course
      */
-    public Course createRandomCourse() {
+    public Course createRandomCourse(CourseEnrollment.EnrollmentType enrollmentType) {
         int courseNameSize = 12;
         int courseDescriptionSize = 20;
 
@@ -77,6 +79,7 @@ public class DataGenerator {
         generatedCourse.setDescription(generateRandomName(courseDescriptionSize));
         generatedCourse.setUsers(new ArrayList<>());
         generatedCourse.setAssignments(new ArrayList<>());
+        generatedCourse.setEnrollmentType(enrollmentType);
 
         return generatedCourse;
     }

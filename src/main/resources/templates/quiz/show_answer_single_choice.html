@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Single choice question</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div th:insert="navbar :: navbar"></div>
+<div class="container text-center">
+    <div class="container">
+        <h2 th:text="'Question number ' + ${questionIndex}"></h2>
+    </div>
+
+    <div class="row">
+        <p class="px-2" th:if="!${answerIsCorrect}">
+            <b>Your answer was incorrect</b>
+        </p>
+        <p class="px-2" th:if="${answerIsCorrect}">
+            <b>Your answer was correct</b>
+        </p>
+    </div>
+
+    <div class="row">
+        <p class="px-2">
+            <b>Question: </b>
+        </p>
+        <p th:text="${singleChoiceQuestion.quizText}"></p>
+    </div>
+    <div class="container text-center py-1" th:each = "questionChoice: ${singleChoiceQuestion.questionChoices}">
+        <div class="row">
+            <p class="px-2">
+                <b>Question Choice: </b>
+            </p>
+            <p th:text="${questionChoice.choiceText}" th:classappend="${questionChoice.isCorrect ? 'text-primary' : 'text-danger'}"></p>
+            <p th:if="${questionChoice.id==answerChoiceId}"><-- This was your choice</p>
+        </div>
+    </div>
+
+    <div class="row py-2">
+        <a class="btn btn-primary"
+           th:href="@{/quiz/take_quiz(quizId=${quizId},questionIndex=${nextQuestionIndex})}">
+            Next Question
+        </a>
+    </div>
+</div>
+</body>
+</html>

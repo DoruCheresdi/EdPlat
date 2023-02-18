@@ -31,6 +31,8 @@ public class Assignment {
 
     private String description;
 
+    private Integer gradeWeight;
+
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder("Assignment{");

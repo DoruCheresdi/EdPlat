@@ -2,8 +2,10 @@ package edplatform.edplat.entities.courses;
 
 import edplatform.edplat.entities.assignment.Assignment;
 import edplatform.edplat.entities.users.User;
+import edplatform.edplat.exceptions.EnrollRequestAlreadySentException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -71,7 +73,7 @@ public interface CourseService {
      * @param course course to be given the user
      * @param user user to be given the course
      */
-    public void enrollUserToCourse(Long courseId, Long userId);
+    public void enrollUserToCourse(Long courseId, Long userId, Authentication authentication) throws EnrollRequestAlreadySentException;
 
     /**
      * Returns all the owners of the course

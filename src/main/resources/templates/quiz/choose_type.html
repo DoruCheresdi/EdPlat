@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Choose type of new Question</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div th:insert="navbar :: navbar"></div>
+<div class="container text-center">
+    <div>
+        <h1>Choose type of new Question</h1>
+    </div>
+    <form th:action="@{/quiz/question/new/choose_type(quizId=${quizId})}"
+          method="post" style="max-width: 600px; margin: 0 auto;">
+        <div class="m-3">
+            <div class="col-8 py-1">
+                <select name="questionType">
+                    <option th:each="questionType : ${T(edplatform.edplat.entities.grading.questions.QuestionType).values()}"
+                            th:value="${questionType}" th:text="${questionType}"></option>
+                </select>
+            </div>
+            <div class="col-8">
+                <button type="submit" class="btn btn-primary">Choose type for question</button>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+</html>

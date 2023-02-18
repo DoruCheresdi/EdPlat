@@ -1,6 +1,7 @@
 package edplatform.edplat.tests;
 
 import edplatform.edplat.entities.assignment.Assignment;
+import edplatform.edplat.entities.courses.enrollment.CourseEnrollment;
 import edplatform.edplat.repositories.AssignmentRepository;
 import edplatform.edplat.entities.authority.Authority;
 import edplatform.edplat.entities.courses.Course;
@@ -17,7 +18,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,6 +61,9 @@ public class CourseControllerTests {
 
     @Autowired
     private AuthorityStringBuilder authorityStringBuilder;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Test
     void shouldGetListContainingAllCourses() throws Exception {
@@ -228,6 +234,40 @@ public class CourseControllerTests {
         userService.deleteUser(userDetails.getUser());
     }
 
+    @Test
+    public void shouldEnrollUserInCourseWithFreeEnrollment() throws Exception {
+        // create entities:
+        CustomUserDetails userDetails = (CustomUserDetails) getSimpleUserDetails();
+
+        // student to enroll:
+        CustomUserDetails userDetailsStudent = (CustomUserDetails) getSimpleUserDetails();
+        userDetailsStudent.getUser().setEmail("testStudent@test.com");
+        userDetailsStudent.getUser().setLastName("testStudent");
+        userDetailsStudent.getUser().setFirstName("testStudent");
+
+        Course course = getSimpleCourse();
+        userDetails.getUser().setCourses(new ArrayList<>(List.of(course)));
+
+        courseService.createCourse(userDetails.getUser(), course);
+        userService.save(userDetailsStudent.getUser());
+
+        mvc.perform(post("/course/enroll")
+                        .param("courseId", course.getId().toString())
+                        .with(csrf())
+                        .with(user(userDetailsStudent)))
+                .andExpect(status().is3xxRedirection());
+
+        Course retrievedCourse = courseRepository.findByCourseName(course.getCourseName()).get();
+        retrievedCourse.setUsers(userRepository.findAllByCourse(retrievedCourse));
+        assertThat(retrievedCourse.getUsers().contains(userDetailsStudent.getUser()));
+        assertThat(userDetailsStudent.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+                .anyMatch(authority -> authority.equals(authorityStringBuilder.getCourseEnrolledAuthority(course.getId().toString()))));
+
+        // cleanup:
+        userService.deleteUser(userDetails.getUser());
+        userService.deleteUser(userDetailsStudent.getUser());
+    }
+
     private void giveCourseOwnerAuthorityToUserDetails(CustomUserDetails userDetails, Course course) {
         userDetails.getUser().getAuthorities().add(
                 new Authority(
@@ -240,7 +280,10 @@ public class CourseControllerTests {
         user.setEmail("test@springTest.com");
         user.setFirstName("testFirstName");
         user.setLastName("testLastName");
-        user.setPassword("test");
+
+        String encodedPassword = passwordEncoder.encode("test");
+        user.setPassword(encodedPassword);
+
         user.setCourses(new ArrayList<>());
         user.setSubmissions(new ArrayList<>());
 
@@ -252,6 +295,7 @@ public class CourseControllerTests {
         course.setCourseName("TestControllerCourse");
         course.setDescription("TestCourseControllerDescription");
         course.setUsers(new ArrayList<>());
+        course.setEnrollmentType(CourseEnrollment.EnrollmentType.FREE);
         return course;
     }
 

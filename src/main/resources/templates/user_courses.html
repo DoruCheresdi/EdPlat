@@ -9,7 +9,7 @@
 </head>
 <body>
 <div th:insert="navbar :: navbar"></div>
-<div class="card-deck">
+<div class="card-columns">
     <div class="card" th:each="course: ${userCoursesDisplay}">
         <img class="card-img-top" th:src="${course.getImagePath}" alt="Card image cap" style="width: 200px; height: 150px;" >
         <div class="card-body">

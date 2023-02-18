@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Enroll requests</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div th:insert="navbar :: navbar"></div>
+<div class="container text-center">
+    <div>
+        <h1>Your enrollment requests</h1>
+    </div>
+    <div>
+        <table class="table table-striped table-bordered">
+            <thead class="thead-dark">
+            <tr>
+                <th>Course Name</th>
+                <th>Time since request was sent</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="enrollRequestViewDTO: ${courseEnrollmentRequests}">
+                <td th:text="${enrollRequestViewDTO.courseName}">Course Name</td>
+                <td th:text="${enrollRequestViewDTO.createdAt}">Time since request was sent</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
